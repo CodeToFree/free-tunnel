@@ -1,0 +1,21 @@
+{
+  "main": "./contracts/lock/AtomicLockContract.sol",
+  "deploy": "",
+  "framework": "hardhat",
+  "npmClient": "yarn",
+  "compilers": {
+    "solc": "0.8.20",
+    "truffle": "",
+    "evmVersion": "paris",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    }
+  },
+  "linter": "solhint",
+  "editor": {
+    "fontFamily": "Hack",
+    "fontSize": "13px",
+    "ligatures": false
+  }
+}

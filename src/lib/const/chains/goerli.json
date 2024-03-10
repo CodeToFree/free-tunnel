@@ -1,0 +1,11 @@
+{
+  "chainId": 5,
+  "name": "Goerli",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.ankr.com/eth_goerli",
+  "explorerUrl": "https://goerli.etherscan.io",
+  "tokens": {
+    "USDC": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+    "USDT": "0xC2C527C0CACF457746Bd31B2a698Fe89de2b6d49"
+  }
+}
