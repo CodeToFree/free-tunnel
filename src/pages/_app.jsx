@@ -23,7 +23,10 @@ createWeb3Modal({
   projectId,
   themeMode: DARK_MODE ? 'dark' : 'light',
   chains: CHAINS.filter(c => c.chainId !== 'tron'),
-  chainImages: {},
+  chainImages: {
+    5: '/tokens/eth.png',
+    1102: '/tokens/b2.png',
+  },
   ethersConfig: defaultConfig({ metadata }),
   excludeWalletIds: [
     'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'

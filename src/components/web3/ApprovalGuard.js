@@ -1,15 +1,16 @@
 import React from 'react'
 import { Spinner } from 'flowbite-react'
-import { ethers } from 'ethers'
-import { useChain, useERC20Allowance, useERC20Call } from '@/lib/hooks'
+import { toValue, useChain, useERC20Allowance, useERC20Call } from '@/lib/hooks'
 
-export default function ApprovalGuard ({ token, spender, required = 0, onClick, pending, Wrapper = ({ children }) => children, children }) {
+export default function ApprovalGuard ({ token, input, balance, decimals, spender, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
   const chain = useChain()
   const tokenAddr = chain?.tokens[token]
   const { approved, refresh } = useERC20Allowance(tokenAddr, spender)
 
-  const _required = ethers.BigNumber.from(required || 0).toString()
-  const args = React.useMemo(() => [spender, _required], [spender, _required])
+  const value = toValue(input, decimals)
+  const overBalance = balance && toValue(balance, decimals).lt(value)
+
+  const args = React.useMemo(() => [spender, value], [spender, value])
   const { call, pending: approvePending } = useERC20Call(tokenAddr, 'approve', args)
   const onApprove = React.useCallback(async () => {
     const success = await call()
@@ -18,19 +19,33 @@ export default function ApprovalGuard ({ token, spender, required = 0, onClick, 
     }
   }, [call, refresh])
 
-  if (!tokenAddr) {
-    return <Wrapper onClick={onClick}>{children}</Wrapper>
-  } else if (!approved) {
-    return <Wrapper disabled><Spinner size='sm' className='mr-2' />Loading...</Wrapper>
-  } else if (approved.lt(_required)) {
-    if (approvePending) {
-      return <Wrapper disabled><Spinner size='sm' className='mr-2' />Approving...</Wrapper>
-    } else {
-      return <Wrapper onClick={onApprove}>Approve</Wrapper>
+  if (!input) {
+    return <Wrapper disabled>Enter Amount</Wrapper>
+  } else if (isNaN(input)) {
+    return <Wrapper disabled>Invalid Amount</Wrapper>
+  } else if (value.eq(0)) {
+    return <Wrapper disabled>Amount Cannot be Zero</Wrapper>
+  } else if (value.eq(-1)) {
+    return <Wrapper disabled>Decimals Overflow</Wrapper>
+  } else if (overBalance) {
+    return <Wrapper disabled>Amount Over Balance</Wrapper>
+  }
+
+  if (tokenAddr) {
+    if (!approved) {
+      return <Wrapper disabled><Spinner size='sm' className='mr-2' />Loading...</Wrapper>
+    }
+    if (approved.lt(value)) {
+      if (approvePending) {
+        return <Wrapper disabled><Spinner size='sm' className='mr-2' />Approving...</Wrapper>
+      } else {
+        return <Wrapper onClick={onApprove}>Approve</Wrapper>
+      }
     }
   }
+
   return (
-    <Wrapper onClick={onClick} disabled={pending}>
+    <Wrapper onClick={onClick} disabled={disabled || pending}>
       {pending && <Spinner size='sm' className='mr-2' />}
       {children}
     </Wrapper>

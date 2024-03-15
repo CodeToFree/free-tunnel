@@ -1,4 +1,13 @@
-import { Dropdown, Button, TextInput, Spinner } from 'flowbite-react'
+import { Card, Dropdown, Button, TextInput, Label, Spinner } from 'flowbite-react'
+
+Card.defaultProps = {
+  ...Dropdown.defaultProps,
+  theme: {
+    root: {
+      base: 'bg-white/80 dark:bg-gray-900/50 backdrop-blur border border-white dark:border-gray-700 rounded-2xl shadow-2xl overflow-y-auto'
+    }
+  }
+}
 
 Dropdown.defaultProps = {
   ...Dropdown.defaultProps,
@@ -29,6 +38,14 @@ Button.defaultProps = {
     disabled: 'cursor-not-allowed opacity-60',
   }
 }
+
+Button.Group.defaultProps = {
+  ...Button.Group.defaultProps,
+  theme: {
+    base: 'inline-flex w-full bg-primary-100/50 backdrop-blur dark:bg-dark-800/50 rounded-xl'
+  }
+}
+
 TextInput.defaultProps = {
   ...TextInput.defaultProps,
   theme: {
@@ -41,6 +58,16 @@ TextInput.defaultProps = {
     }
   }
 }
+
+Label.defaultProps = {
+  ...Label.defaultProps,
+  theme: {
+    root: {
+      base: 'text-xs text-primary-400 dark:text-gray-400'
+    }
+  }
+}
+
 Spinner.defaultProps = {
   ...Spinner.defaultProps,
   theme: {

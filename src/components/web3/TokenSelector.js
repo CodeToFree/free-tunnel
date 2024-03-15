@@ -8,9 +8,9 @@ export default function TokenSelector({ onChange, extraTokens }) {
 
   const tokens = React.useMemo(() => {
     if (!chain) {
-      return [{ symbol: 'ETH' }, { symbol: 'USDC' }, { symbol: 'USDT' }]
+      return [{ symbol: 'USDC' }, { symbol: 'USDT' }]
     }
-    return Object.entries({ [chain?.currency]: true, ...chain?.tokens, ...extraTokens })
+    return Object.entries({ ...chain?.tokens, ...extraTokens })
       .map(([symbol, addr]) => ({ symbol, addr }))
       .filter(t => t.addr)
   }, [chain, extraTokens])

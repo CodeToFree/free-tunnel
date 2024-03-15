@@ -3,29 +3,37 @@ import { ethers } from 'ethers'
 import { Spinner } from 'flowbite-react'
 import { useChain, useCoreBalance, useERC20Balance } from '@/lib/hooks'
 
-export default function TokenBalance ({ className, token, refreshTrigger }) {
+export default function TokenBalance ({ className, address, token, placeholder = '(N/A)', onUpdate, refreshTrigger }) {
   const chain = useChain()
   if (!chain) {
-    return
+    return <span className='text-gray-500'>{placeholder}</span>
   } else if (chain.currency === token) {
-    return <CoreBalance className={className} refreshTrigger={refreshTrigger} />
+    return <CoreBalance className={className} address={address} placeholder={placeholder} onUpdate={onUpdate} refreshTrigger={refreshTrigger} />
   } else {
-    return <ERC20Balance className={className} token={token} refreshTrigger={refreshTrigger} />
+    return <ERC20Balance className={className} address={address} token={token} placeholder={placeholder} onUpdate={onUpdate} refreshTrigger={refreshTrigger} />
   }
 }
 
-export function CoreBalance ({ className, refreshTrigger }) {
+export function CoreBalance ({ className, address, placeholder, onUpdate = () => {}, refreshTrigger }) {
   const chain = useChain()
-  const { symbol, balance, decimals, refresh } = useCoreBalance()
+  const { symbol, balance, decimals, refresh } = useCoreBalance(address)
 
   React.useEffect(() => {
     if (refreshTrigger) {
       refresh()
     }
-  }, [refreshTrigger, refresh])
+  }, [refresh, refreshTrigger])
+
+  React.useEffect(() => {
+    if (balance) {
+      onUpdate({ value: balance, decimals })
+    } else {
+      onUpdate(null)
+    }
+  }, [balance, decimals, onUpdate])
 
   if (!chain) {
-    return
+    return <span className='text-gray-500'>{placeholder}</span>
   } else if (!balance) {
     return <Spinner size='sm' className='' />
   }
@@ -37,19 +45,27 @@ export function CoreBalance ({ className, refreshTrigger }) {
   )
 }
 
-export function ERC20Balance ({ className, token, refreshTrigger }) {
+export function ERC20Balance ({ className, address, token, placeholder, onUpdate = () => {}, refreshTrigger }) {
   const chain = useChain()
   const tokenAddr = chain?.tokens[token]
-  const { balance, decimals, refresh } = useERC20Balance(tokenAddr)
+  const { balance, decimals, refresh } = useERC20Balance(tokenAddr, address)
 
   React.useEffect(() => {
     if (refreshTrigger) {
       refresh()
     }
-  }, [refreshTrigger, refresh])
+  }, [refresh, refreshTrigger])
+
+  React.useEffect(() => {
+    if (balance) {
+      onUpdate({ value: balance, decimals })
+    } else {
+      onUpdate(null)
+    }
+  }, [balance, decimals, onUpdate])
 
   if (!chain) {
-    return
+    return <span className='text-gray-500'>{placeholder}</span>
   } else if (!balance) {
     return <Spinner size='sm' className='' />
   }

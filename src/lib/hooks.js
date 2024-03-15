@@ -7,6 +7,17 @@ import ERC20 from '@/lib/abis/ERC20.json'
 import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
 
+export function toValue(input, decimals = 18) {
+  if (ethers.BigNumber.isBigNumber(input)) {
+    return input
+  }
+  try {
+    return ethers.utils.parseUnits(Number(input) ? input : '0', decimals)
+  } catch {
+    return ethers.BigNumber.from(-1)
+  }
+}
+
 export function useChain() {
   const [ready, setReady] = React.useState(false)
   React.useEffect(() => setReady(true), [])
@@ -20,11 +31,13 @@ export function useChain() {
   )
 }
 
-export function useAddress() {
+export function useAddress(_address) {
   const { isConnected, address } = useWeb3ModalAccount()
   const { tronlink } = useAppHooks()
 
-  if (tronlink.account) {
+  if (_address) {
+    return _address
+  } else if (tronlink.account) {
     return tronlink.account.base58
   } else if (isConnected) {
     return address
@@ -63,9 +76,9 @@ export function useERC20(tokenAddress) {
   return useContract(tokenAddress, ERC20)
 }
 
-export function useCoreBalance() {
+export function useCoreBalance(_address) {
   const chain = useChain()
-  const address = useAddress()
+  const address = useAddress(_address)
   const provider = useProvider()
 
   const symbol = chain?.currency
@@ -91,9 +104,9 @@ export function useCoreBalance() {
   return { symbol, decimals, balance, refresh }
 }
 
-export function useERC20Balance(tokenAddress) {
+export function useERC20Balance(tokenAddress, _address) {
   const chain = useChain()
-  const address = useAddress()
+  const address = useAddress(_address)
   const tokenContract = useERC20(tokenAddress)
 
   const [decimals, setDecimals] = React.useState()
@@ -154,6 +167,36 @@ export function useERC20Allowance(tokenAddress, spender) {
   React.useEffect(() => refresh(), [refresh])
 
   return { approved, refresh }
+}
+
+export function useContractQuery(address, abi, method, args = [], refreshTrigger = true) {
+  const chain = useChain()
+  const contractInstance = useContract(address, abi)
+
+  const [pending, setPending] = React.useState(false)
+  const [result, setResult] = React.useState()
+
+  const refresh = React.useCallback(() => {
+    setPending(false)
+    setResult()
+    if (!chain || !contractInstance) {
+      return
+    }
+
+    setPending(true)
+    contractInstance[method](...args).then(result => {
+      setPending(false)
+      setResult(result)
+    })
+  }, [chain, contractInstance, method, args])
+
+  React.useEffect(() => {
+    if (refreshTrigger) {
+      refresh()
+    }
+  }, [refresh, refreshTrigger])
+
+  return { pending, result }
 }
 
 export function useContractCall(address, abi, method, args = []) {
