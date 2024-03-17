@@ -14,6 +14,7 @@ import {
 
 import { useAddress } from '@/lib/hooks'
 import { newRequestId } from '@/lib/request'
+import { useBoundStore } from '@/stores'
 
 const SPENDER = '0x0d12d15b26a32e72A3330B2ac9016A22b1410CB6'
 // const SPENDER = '0x25aB3Efd52e6470681CE037cD546Dc60726948D3'
@@ -24,6 +25,8 @@ export default function Home() {
   const [amount, setAmount] = React.useState('')
   const [balance, setBalance] = React.useState()
 
+  const addReuest = useBoundStore((state) => state.addReuest)
+  const requests = useBoundStore((state) => state.requests)
   React.useEffect(() => setAmount(''), [token])
 
   const reqId = React.useMemo(() => newRequestId(amount), [amount])
@@ -107,6 +110,7 @@ export default function Home() {
             // TODO: store request
             if (address && reqId) {
               const otherData = {}
+              addReuest({ address, id: reqId, ...otherData })
               // xxx.saveReqForAddress(address, { id: reqId, ...otherData })
             }
           }}
@@ -156,6 +160,16 @@ export default function Home() {
             <Label value='Recent Requests' />
           </div>
           <div className='text-gray-500'>(None)</div>
+          {requests.map((req, index) => <div key={index}>
+            <div className='mb-2'>
+              <div>
+                Address: {req.address}
+              </div>
+              <div>
+                ID: {req.id}
+              </div>
+            </div>
+          </div>)}
           {/* Should display stored requests for current address in a list */}
         </div>
       </Card>
