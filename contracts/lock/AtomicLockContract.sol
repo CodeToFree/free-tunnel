@@ -1,34 +1,42 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "../Permissions.sol";
 import "../ReqHelpers.sol";
 
-interface IERC20 {
-    function transfer(address to, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
-
-contract AtomicLockContract is ReqHelpers, UUPSUpgradeable {
-
+contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
+    using SafeERC20 for IERC20;
+    
     mapping(address => uint256) public lockedBalanceOf;
 
     mapping(bytes32 => address) public proposedLock;
     mapping(bytes32 => address) public proposedUnlock;
 
-    function initialize(address _admin) public initializer {
+    function initialize(address _admin, address proposer, address[] calldata executors, uint256 threshold) public initializer {
         admin = _admin;
+        _addProposer(proposer);
+        _initExecutors(executors, threshold);
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
+
+    function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
+        _addToken(tokenIndex, tokenAddr);
+    }
+
+    function removeToken(uint8 tokenIndex) external onlyAdmin {
+        _removeToken(tokenIndex);
+    }
 
     event TokenLockProposed(bytes32 indexed reqId, address indexed proposer);
     event TokenLockExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenLockCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeLock(bytes32 reqId) external onlyProposer {
+    function proposeLock(bytes32 reqId) external onlyProposer fromChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) == 1, "Invalid action; not lock-mint");
         require(proposedLock[reqId] == address(0), "Invalid reqId");
@@ -40,22 +48,20 @@ contract AtomicLockContract is ReqHelpers, UUPSUpgradeable {
         address tokenAddr = _tokenFrom(reqId);
         proposedLock[reqId] = proposer;
 
-        IERC20(tokenAddr).transferFrom(proposer, address(this), amount);
+        IERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
 
         emit TokenLockProposed(reqId, proposer);
     }
 
-    function executeLock(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors) external onlyExecutor {
+    function executeLock(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         address proposer = proposedLock[reqId];
         require(proposer > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + WAIT_PERIOD, "Wait at least 3 hours to execute");
 
-        require(r.length == yParityAndS.length, "Array length should equal");
-        require(r.length == executors.length, "Array length should equal");
-        require(r.length >= executeThreshold, "Does not meet threshold");
-        for (uint256 i = 0; i < r.length; i++) {
-            _checkSignature(reqId, r[i], yParityAndS[i], executors[i]);
-        }
+        bytes32 digest = keccak256(abi.encodePacked(
+            ETH_SIGN_HEADER, "95", // 29 + 66
+            "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
+        ));
+        _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedLock[reqId] = address(1);
 
@@ -69,13 +75,13 @@ contract AtomicLockContract is ReqHelpers, UUPSUpgradeable {
     function cancelLock(bytes32 reqId) external {
         address proposer = proposedLock[reqId];
         require(proposer > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, "Wait expire time to cancel");
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, "Wait until expired to cancel");
 
         delete proposedLock[reqId];
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IERC20(tokenAddr).transfer(proposer, amount);
+        IERC20(tokenAddr).safeTransfer(proposer, amount);
 
         emit TokenLockCancelled(reqId, proposer);
     }
@@ -84,7 +90,7 @@ contract AtomicLockContract is ReqHelpers, UUPSUpgradeable {
     event TokenUnlockExecuted(bytes32 indexed reqId, address indexed recipient);
     event TokenUnlockCancelled(bytes32 indexed reqId, address indexed recipient);
 
-    function proposeUnlock(bytes32 reqId, address recipient) external onlyProposer {
+    function proposeUnlock(bytes32 reqId, address recipient) external onlyProposer fromChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) == 2, "Invalid action; not burn-unlock");
         require(proposedUnlock[reqId] == address(0), "Invalid reqId");
@@ -98,23 +104,21 @@ contract AtomicLockContract is ReqHelpers, UUPSUpgradeable {
         emit TokenUnlockProposed(reqId, recipient);
     }
 
-    function executeUnlock(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors) external {
+    function executeUnlock(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         address recipient = proposedUnlock[reqId];
         require(recipient > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + WAIT_PERIOD, "Wait at least 3 hours to execute");
 
-        require(r.length == yParityAndS.length, "Array length should equal");
-        require(r.length == executors.length, "Array length should equal");
-        require(r.length >= executeThreshold, "Does not meet threshold");
-        for (uint256 i = 0; i < r.length; i++) {
-            _checkSignature(reqId, r[i], yParityAndS[i], executors[i]);
-        }
+        bytes32 digest = keccak256(abi.encodePacked(
+            ETH_SIGN_HEADER, "97", // 31 + 66
+            "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
+        ));
+        _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedUnlock[reqId] = address(1);
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IERC20(tokenAddr).transfer(recipient, amount);
+        IERC20(tokenAddr).safeTransfer(recipient, amount);
 
         emit TokenUnlockExecuted(reqId, recipient);
     }
@@ -122,7 +126,7 @@ contract AtomicLockContract is ReqHelpers, UUPSUpgradeable {
     function cancelUnlock(bytes32 reqId) external {
         address recipient = proposedUnlock[reqId];
         require(recipient > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, "Wait expire time to cancel");
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, "Wait until expired to cancel");
 
         delete proposedUnlock[reqId];
 

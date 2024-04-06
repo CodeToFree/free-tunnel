@@ -1,34 +1,42 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "./MintableERC20.sol";
+import "../Permissions.sol";
 import "../ReqHelpers.sol";
 
-interface IMintableERC20 {
-    function transfer(address to, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-    function mint(address account, uint256 amount) external returns (bool);
-    function burn(address account, uint256 amount) external returns (bool);
-}
+contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
+    using SafeERC20 for MintableERC20;
 
-contract AtomicMintContract is ReqHelpers, UUPSUpgradeable, ERC20Upgradeable {
     mapping(bytes32 => address) public proposedMint;
     mapping(bytes32 => address) public proposedBurn;
 
-    function initialize(address _admin) public initializer {
+    function initialize(address _admin, address proposer, address[] calldata executors, uint256 threshold) public initializer {
         admin = _admin;
+        _addProposer(proposer);
+        _initExecutors(executors, threshold);
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
+
+    function addToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
+        MintableERC20 tokenAddr = new MintableERC20(address(this), name, symbol, decimals);
+        _addToken(tokenIndex, address(tokenAddr));
+    }
+
+    function removeToken(uint8 tokenIndex) external onlyAdmin {
+        _removeToken(tokenIndex);
+    }
 
     event TokenMintProposed(bytes32 indexed reqId, address indexed recipient);
     event TokenMintExecuted(bytes32 indexed reqId, address indexed recipient);
     event TokenMintCancelled(bytes32 indexed reqId, address indexed recipient);
 
-    function proposeMint(bytes32 reqId, address recipient) external onlyProposer {
+    function proposeMint(bytes32 reqId, address recipient) external onlyProposer toChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) == 1, "Invalid action; not lock-mint");
         require(proposedMint[reqId] == address(0), "Invalid reqId");
@@ -41,23 +49,21 @@ contract AtomicMintContract is ReqHelpers, UUPSUpgradeable, ERC20Upgradeable {
         emit TokenMintProposed(reqId, recipient);
     }
 
-    function executeMint(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors) external onlyExecutor {
+    function executeMint(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         address recipient = proposedMint[reqId];
         require(recipient > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + WAIT_PERIOD, "Wait at least 3 hours to execute");
 
-        require(r.length == yParityAndS.length, "Array length should equal");
-        require(r.length == executors.length, "Array length should equal");
-        require(r.length >= executeThreshold, "Does not meet threshold");
-        for (uint256 i = 0; i < r.length; i++) {
-            _checkSignature(reqId, r[i], yParityAndS[i], executors[i]);
-        }
+        bytes32 digest = keccak256(abi.encodePacked(
+            ETH_SIGN_HEADER, "95", // 29 + 66
+            "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
+        ));
+        _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedMint[reqId] = address(1);
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IMintableERC20(tokenAddr).mint(recipient, amount);
+        MintableERC20(tokenAddr).mint(recipient, amount);
 
         emit TokenMintExecuted(reqId, recipient);
     }
@@ -65,7 +71,7 @@ contract AtomicMintContract is ReqHelpers, UUPSUpgradeable, ERC20Upgradeable {
     function cancelMint(bytes32 reqId) external {
         address recipient = proposedMint[reqId];
         require(recipient > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, "Wait expire time to cancel");
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, "Wait until expired to cancel");
 
         delete proposedMint[reqId];
 
@@ -76,7 +82,7 @@ contract AtomicMintContract is ReqHelpers, UUPSUpgradeable, ERC20Upgradeable {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId) external onlyProposer {
+    function proposeBurn(bytes32 reqId) external onlyProposer toChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) == 2, "Invalid action; not burn-unlock");
         require(proposedBurn[reqId] == address(0), "Invalid reqId");
@@ -88,28 +94,26 @@ contract AtomicMintContract is ReqHelpers, UUPSUpgradeable, ERC20Upgradeable {
         address tokenAddr = _tokenFrom(reqId);
         proposedBurn[reqId] = proposer;
 
-        IMintableERC20(tokenAddr).transferFrom(proposer, address(this), amount);
+        MintableERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
 
         emit TokenBurnProposed(reqId, proposer);
     }
 
-    function executeBurn(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors) external onlyExecutor {
+    function executeBurn(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         address proposer = proposedBurn[reqId];
         require(proposer > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + WAIT_PERIOD, "Wait at least 3 hours to execute");
 
-        require(r.length == yParityAndS.length, "Array length should equal");
-        require(r.length == executors.length, "Array length should equal");
-        require(r.length >= executeThreshold, "Does not meet threshold");
-        for (uint256 i = 0; i < r.length; i++) {
-            _checkSignature(reqId, r[i], yParityAndS[i], executors[i]);
-        }
+        bytes32 digest = keccak256(abi.encodePacked(
+            ETH_SIGN_HEADER, "97", // 31 + 66
+            "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
+        ));
+        _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedBurn[reqId] = address(1);
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IMintableERC20(tokenAddr).burn(address(this), amount);
+        MintableERC20(tokenAddr).burn(address(this), amount);
 
         emit TokenBurnExecuted(reqId, proposer);
     }
@@ -117,13 +121,13 @@ contract AtomicMintContract is ReqHelpers, UUPSUpgradeable, ERC20Upgradeable {
     function cancelBurn(bytes32 reqId) external {
         address proposer = proposedBurn[reqId];
         require(proposer > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, "Wait expire time to cancel");
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, "Wait until expired to cancel");
 
         delete proposedBurn[reqId];
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IMintableERC20(tokenAddr).transfer(proposer, amount);
+        MintableERC20(tokenAddr).safeTransfer(proposer, amount);
 
         emit TokenBurnCancelled(reqId, proposer);
     }

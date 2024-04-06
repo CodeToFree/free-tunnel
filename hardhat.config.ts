@@ -1,4 +1,5 @@
 import '@nomiclabs/hardhat-ethers'
+import '@nomiclabs/hardhat-waffle'
 
 import { task } from 'hardhat/config'
 
@@ -10,7 +11,13 @@ task('deploy', 'Deploy Contract')
     await deploy()
   })
 
-export default {
+task('upgrade', 'Upgrade Contract')
+  .setAction(async () => {
+    const upgrade = require('./scripts/upgrade')
+    await upgrade()
+  })
+
+const hardhatConfig = {
   solidity: {
     version: config.compilers.solc,
     settings: {
@@ -32,6 +39,17 @@ export default {
     },
     arbitrum: {
       url: "https://1rpc.io/arb",
-    }
+    },
+    sepolia: {
+      url: "https://eth-sepolia.public.blastapi.io",
+    },
+    merlin_testnet: {
+      url: "https://testnet-rpc.merlinchain.io",
+    },
+    b2_testnet: {
+      url: "https://haven-rpc.bsquared.network",
+    },
   }
 }
+
+export default hardhatConfig

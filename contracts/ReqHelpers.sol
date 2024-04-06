@@ -1,26 +1,62 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-import "./Permissions.sol";
+contract ReqHelpers {
+    // 0x00: ethereum
+    // 0x01: arbitrum
+    // 0x10: merlin
+    // 0x11: b2
+    // 0x12: bitlayer
+    // 0xf0: sepolia
+    // 0xf1: merlin-testnet
+    // 0xf2: b2-testnet
+    uint8 constant CHAIN = 1;
 
-contract ReqHelpers is Permissions {
-    uint256 constant WAIT_PERIOD = 3 hours;
     uint256 constant EXPIRE_PERIOD = 24 hours;
     uint256 constant EXPIRE_EXTRA_PERIOD = 36 hours;
 
-    bytes28 constant ETH_SIGN_HEADER = bytes28("\x19Ethereum Signed Message:\n32");
-
     mapping(uint8 => address) public tokens;
 
-    function addSupportedToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
+    event TokenAdded(uint8 tokenIndex, address tokenAddr);
+    event TokenRemoved(uint8 tokenIndex, address tokenAddr);
+
+    function _addToken(uint8 tokenIndex, address tokenAddr) internal {
+        require(tokens[tokenIndex] == address(0), "Token index occupied");
+        require(tokenAddr != address(0), "Token address cannot be zero");
         tokens[tokenIndex] = tokenAddr;
+
+        emit TokenAdded(tokenIndex, tokenAddr);
     }
 
-    function removeSupportedToken(uint8 tokenIndex) external onlyAdmin {
+    function _removeToken(uint8 tokenIndex) internal {
+        address tokenAddr = tokens[tokenIndex];
+        require(tokenAddr != address(0), "No token for this tokenIndex");
         delete tokens[tokenIndex];
+
+        emit TokenRemoved(tokenIndex, tokenAddr);
     }
 
-    /// `reqId` in format of `version:uint8|createdTime:uint40|action:uint8|tokenIndex:uint8｜amount:uint64|(TBD):uint128`
+    function getSupportedTokens() external view returns (address[] memory supportedTokens, uint8[] memory indexes) {
+        uint8 i;
+        uint8 num = 0;
+        for (i = 0; i < 255; i++) {
+            if (tokens[i+1] != address(0)) {
+                num++;
+            }
+        }
+        supportedTokens = new address[](num);
+        indexes = new uint8[](num);
+        uint8 j = 0;
+        for (i = 0; i < 255; i++) {
+            if (tokens[i+1] != address(0)) {
+                supportedTokens[j] = tokens[i+1];
+                indexes[j] = i+1;
+                j++;
+            }
+        }
+    }
+
+    /// `reqId` in format of `version:uint8|createdTime:uint40|action:uint8|tokenIndex:uint8|amount:uint64|from:uint8|to:uint8|(TBD):uint112`
     function _versionFrom(bytes32 reqId) internal pure returns (uint8) {
         return uint8(uint256(reqId) >> 248);
     }
@@ -28,8 +64,8 @@ contract ReqHelpers is Permissions {
     function _createdTimeFrom(bytes32 reqId, bool check) internal view returns (uint256 createdTime) {
         createdTime = uint40(uint256(reqId) >> 208);
         if (check) {
-            require(createdTime > block.timestamp - 20 minutes, "createdTime too early");
-            require(createdTime < block.timestamp, "createdTime too late");
+            require(createdTime > block.timestamp - 30 minutes, "createdTime too early");
+            require(createdTime < block.timestamp + 1 minutes, "createdTime too late");
         }
     }
 
@@ -51,13 +87,13 @@ contract ReqHelpers is Permissions {
         require(amount > 0, "Amount must be greater than zero");
     }
 
-    function _checkSignature(bytes32 reqId, bytes32 r, bytes32 yParityAndS, address signer) internal pure {
-        require(signer != address(0), "Signer cannot be empty address");
-        bytes32 s = yParityAndS & bytes32(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
-        uint8 v = uint8((uint256(yParityAndS) >> 255) + 27);
-        require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0, "Invalid signature");
+    modifier fromChainOnly(bytes32 reqId) {
+        require(CHAIN == uint8(uint256(reqId) >> 120), "Request not from the current chain");
+        _;
+    }
 
-        bytes32 digest = keccak256(abi.encodePacked(ETH_SIGN_HEADER, reqId));
-        require(signer == ecrecover(digest, v, r, s), "Invalid signature");
+    modifier toChainOnly(bytes32 reqId) {
+        require(CHAIN == uint8(uint256(reqId) >> 112), "Request not to the current chain");
+        _;
     }
 }
