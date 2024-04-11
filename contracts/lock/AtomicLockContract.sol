@@ -16,8 +16,9 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
     mapping(bytes32 => address) public proposedLock;
     mapping(bytes32 => address) public proposedUnlock;
 
-    function initialize(address _admin, address proposer, address[] calldata executors, uint256 threshold) public initializer {
-        admin = _admin;
+    function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
+        _initAdmin(_admin);
+        _initVault(_vault);
         _addProposer(proposer);
         _initExecutors(executors, threshold);
     }
@@ -36,9 +37,10 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenLockExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenLockCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeLock(bytes32 reqId) external onlyProposer fromChainOnly(reqId) {
+    function proposeLock(bytes32 reqId) payable external fromChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
-        require(_actionFrom(reqId) == 1, "Invalid action; not lock-mint");
+        uint8 action = _actionFrom(reqId);
+        require(action & 0x0f == 1, "Invalid action; not lock-mint");
         require(proposedLock[reqId] == address(0), "Invalid reqId");
 
         address proposer = msg.sender;
@@ -48,7 +50,20 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
         address tokenAddr = _tokenFrom(reqId);
         proposedLock[reqId] = proposer;
 
-        IERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
+        if (tokenAddr == address(1)) {
+            require(amount == msg.value, "msg.value should equal the amount encoded in reqId");
+            if (action & 0x10 > 0) {
+                address vault = getVault();
+                (bool success, ) = vault.call{value: amount}("");
+                require(success, "Transfer failed");
+            }
+        } else {
+            if (action & 0x10 > 0) {
+                IERC20(tokenAddr).safeTransferFrom(proposer, getVault(), amount);
+            } else {
+                IERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
+            }
+        }
 
         emit TokenLockProposed(reqId, proposer);
     }
@@ -81,7 +96,16 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IERC20(tokenAddr).safeTransfer(proposer, amount);
+        if (tokenAddr == address(1)) {
+            (bool success, ) = proposer.call{value: amount}("");
+            require(success, "Transfer failed");
+        } else {
+            if (_actionFrom(reqId) & 0x10 > 0) {
+                IERC20(tokenAddr).safeTransferFrom(getVault(), proposer, amount);
+            } else {
+                IERC20(tokenAddr).safeTransfer(proposer, amount);
+            }
+        }
 
         emit TokenLockCancelled(reqId, proposer);
     }
@@ -92,7 +116,7 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
     function proposeUnlock(bytes32 reqId, address recipient) external onlyProposer fromChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
-        require(_actionFrom(reqId) == 2, "Invalid action; not burn-unlock");
+        require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
         require(proposedUnlock[reqId] == address(0), "Invalid reqId");
         require(recipient > address(1), "Invalid recipient");
 
@@ -118,7 +142,16 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        IERC20(tokenAddr).safeTransfer(recipient, amount);
+        if (tokenAddr == address(1)) {
+            (bool success, ) = recipient.call{value: amount}("");
+            require(success, "Transfer failed");
+        } else {
+            if (_actionFrom(reqId) & 0x10 > 0) {
+                IERC20(tokenAddr).safeTransferFrom(getVault(), recipient, amount);
+            } else {
+                IERC20(tokenAddr).safeTransfer(recipient, amount);
+            }
+        }
 
         emit TokenUnlockExecuted(reqId, recipient);
     }

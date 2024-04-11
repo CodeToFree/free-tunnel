@@ -4,11 +4,15 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract MintableERC20 is ERC20 {
-    address public minter;
     uint8 private _decimals;
 
-    constructor(address minter_, string memory name, string memory symbol, uint8 decimals_) ERC20(name, symbol) {
+    address public minter;
+    address public vault;
+    uint256 public mintQuota;
+
+    constructor(address minter_, address vault_, string memory name, string memory symbol, uint8 decimals_) ERC20(name, symbol) {
         minter = minter_;
+        vault = vault_;
         _decimals = decimals_;
     }
 
@@ -21,7 +25,36 @@ contract MintableERC20 is ERC20 {
         _;
     }
 
+    modifier onlyVault() {
+        require(msg.sender == vault, "Require vault");
+        _;
+    }
+
+    event MinterTransferred(address indexed prevMinter, address indexed newMinter);
+
+    function transferMinter(address newMinter) external onlyMinter {
+        address prevMinter = minter;
+        minter = newMinter;
+        emit MinterTransferred(prevMinter, newMinter);
+    }
+
+    event VaultTransferred(address indexed prevVault, address indexed newVault);
+
+    function transferVault(address newVault) external onlyVault {
+        address prevVault = vault;
+        vault = newVault;
+        emit VaultTransferred(prevVault, newVault);
+    }
+
+
+    function updateMintQuota(uint256 delta) onlyVault external {
+        mintQuota += delta;
+    }
+
     function mint(address account, uint256 amount) onlyMinter external {
+        if (account != vault) {
+            mintQuota -= amount;
+        }
         _mint(account, amount);
     }
 

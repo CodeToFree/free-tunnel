@@ -15,16 +15,21 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     mapping(bytes32 => address) public proposedMint;
     mapping(bytes32 => address) public proposedBurn;
 
-    function initialize(address _admin, address proposer, address[] calldata executors, uint256 threshold) public initializer {
-        admin = _admin;
+    function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
+        _initAdmin(_admin);
+        _initVault(_vault);
         _addProposer(proposer);
         _initExecutors(executors, threshold);
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
-    function addToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
-        MintableERC20 tokenAddr = new MintableERC20(address(this), name, symbol, decimals);
+    function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
+        _addToken(tokenIndex, tokenAddr);
+    }
+
+    function createToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
+        MintableERC20 tokenAddr = new MintableERC20(address(this), getVault(), name, symbol, decimals);
         _addToken(tokenIndex, address(tokenAddr));
     }
 
@@ -38,7 +43,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
     function proposeMint(bytes32 reqId, address recipient) external onlyProposer toChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
-        require(_actionFrom(reqId) == 1, "Invalid action; not lock-mint");
+        require(_actionFrom(reqId) & 0x0f == 1, "Invalid action; not lock-mint");
         require(proposedMint[reqId] == address(0), "Invalid reqId");
         require(recipient > address(1), "Invalid recipient");
 
@@ -63,7 +68,11 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        MintableERC20(tokenAddr).mint(recipient, amount);
+        if (_actionFrom(reqId) & 0x10 > 0) {
+            MintableERC20(tokenAddr).mint(getVault(), amount);
+        } else {
+            MintableERC20(tokenAddr).mint(recipient, amount);
+        }
 
         emit TokenMintExecuted(reqId, recipient);
     }
@@ -82,9 +91,9 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId) external onlyProposer toChainOnly(reqId) {
+    function proposeBurn(bytes32 reqId) external toChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
-        require(_actionFrom(reqId) == 2, "Invalid action; not burn-unlock");
+        require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
         require(proposedBurn[reqId] == address(0), "Invalid reqId");
 
         address proposer = msg.sender;

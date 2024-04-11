@@ -5,33 +5,97 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
 contract Permissions {
-    address public admin;
-
-    mapping(address => uint256) public proposerIndex;
-    address[] public proposerList;
-
-    address[][] public executorsForIndex;
-    uint256[] public exeThresholdForIndex;
-    uint256[] public exeActiveSinceForIndex;
-
     bytes26 constant ETH_SIGN_HEADER = bytes26("\x19Ethereum Signed Message:\n");
 
+    struct PermissionsStorage {
+        address _admin;
+        address _vault;
+
+        mapping(address => uint256) _proposerIndex;
+        address[] _proposerList;
+
+        address[][] _executorsForIndex;
+        uint256[] _exeThresholdForIndex;
+        uint256[] _exeActiveSinceForIndex;
+    }
+
+    // keccak256(abi.encode(uint256(keccak256("atomic-lock-mint.Permissions")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant PermissionsLocation = 0xd1028ee8b04e383c5a05bb344e0e3bf65a78ced42fbbac56a26c8b6f5a4f7100;
+
+    function _getPermissionsStorage() private pure returns (PermissionsStorage storage $) {
+        assembly {
+            $.slot := PermissionsLocation
+        }
+    }
+
     modifier onlyAdmin() {
-        require(msg.sender == admin, "Require admin");
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require(msg.sender == $._admin, "Require admin");
+        _;
+    }
+
+    modifier onlyVault() {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require(msg.sender == $._vault, "Require vault");
         _;
     }
 
     modifier onlyProposer() {
-        require(proposerIndex[msg.sender] > 0, "Require a proposer");
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require($._proposerIndex[msg.sender] > 0, "Require a proposer");
         _;
+    }
+
+    function getAdmin() external view returns (address) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._admin;
     }
 
     event AdminTransferred(address indexed prevAdmin, address indexed newAdmin);
 
+    function _initAdmin(address admin) internal {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        $._admin = admin;
+        emit AdminTransferred(address(0), admin);
+    }
+
     function transferAdmin(address newAdmin) external onlyAdmin {
-        address prevAdmin = admin;
-        admin = newAdmin;
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        address prevAdmin = $._admin;
+        $._admin = newAdmin;
         emit AdminTransferred(prevAdmin, newAdmin);
+    }
+
+
+    function getVault() public view returns (address) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._vault;
+    }
+
+    event VaultTransferred(address indexed prevVault, address indexed newVault);
+
+    function _initVault(address vault) internal {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        $._vault = vault;
+        emit VaultTransferred(address(0), vault);
+    }
+
+    function transferVault(address newVault) external onlyVault {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        address prevVault = $._vault;
+        $._vault = newVault;
+        emit VaultTransferred(prevVault, newVault);
+    }
+
+
+    function proposerIndex(address proposer) external view returns (uint256) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._proposerIndex[proposer];
+    }
+
+    function proposerOfIndex(uint256 index) external view returns (address) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._proposerList[index];
     }
 
     event ProposerAdded(address indexed proposer);
@@ -42,33 +106,61 @@ contract Permissions {
     }
 
     function _addProposer(address proposer) internal {
-        require(proposerIndex[proposer] == 0, "Already a proposer");
-        proposerList.push(proposer);
-        proposerIndex[proposer] = proposerList.length;
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require($._proposerIndex[proposer] == 0, "Already a proposer");
+        $._proposerList.push(proposer);
+        $._proposerIndex[proposer] = $._proposerList.length;
         emit ProposerAdded(proposer);
     }
 
     function removeProposer(address proposer) external onlyAdmin {
-        uint256 index = proposerIndex[proposer];
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        uint256 index = $._proposerIndex[proposer];
         require(index > 0, "Not an existing proposer");
-        delete proposerIndex[proposer];
+        delete $._proposerIndex[proposer];
 
-        uint256 len = proposerList.length;
+        uint256 len = $._proposerList.length;
         if (index < len) {
-            address lastProposer = proposerList[len - 1];
-            proposerList[index - 1] = lastProposer;
-            proposerIndex[lastProposer] = index;
+            address lastProposer = $._proposerList[len - 1];
+            $._proposerList[index - 1] = lastProposer;
+            $._proposerIndex[lastProposer] = index;
         }
-        proposerList.pop();
+        $._proposerList.pop();
         emit ProposerRemoved(proposer);
     }
 
+
+    function executorsForIndex(uint256 index) external view returns (address[] memory) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._executorsForIndex[index];
+    }
+
+    function exeThresholdForIndex(uint256 index) external view returns (uint256) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._exeThresholdForIndex[index];
+    }
+
+    function exeActiveSinceForIndex(uint256 index) external view returns (uint256) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        return $._exeActiveSinceForIndex[index];
+    }
+
+    function getActiveExecutors() external view returns (address[] memory, uint256) {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        uint256 lastExeIndex = $._exeActiveSinceForIndex.length - 1;
+        if ($._exeActiveSinceForIndex[lastExeIndex] < block.timestamp) {
+            return ($._executorsForIndex[lastExeIndex], lastExeIndex);
+        }
+        return ($._executorsForIndex[lastExeIndex - 1], lastExeIndex - 1);
+    }
+
     function _initExecutors(address[] memory executors, uint256 threshold) internal {
-        require(exeThresholdForIndex.length == 0, "Executors already initialized");
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require($._exeThresholdForIndex.length == 0, "Executors already initialized");
         require(threshold > 0, "Threshold must be greater than 0");
-        executorsForIndex.push(executors);
-        exeThresholdForIndex.push(threshold);
-        exeActiveSinceForIndex.push(1);
+        $._executorsForIndex.push(executors);
+        $._exeThresholdForIndex.push(threshold);
+        $._exeActiveSinceForIndex.push(1);
     }
 
     // All history executors will be recorded and indexed in chronological order. 
@@ -97,31 +189,20 @@ contract Permissions {
         ));
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
+        PermissionsStorage storage $ = _getPermissionsStorage();
         uint256 newIndex = exeIndex + 1;
-        if (newIndex == exeActiveSinceForIndex.length) {
-            executorsForIndex.push(newExecutors);
-            exeThresholdForIndex.push(threshold);
-            exeActiveSinceForIndex.push(activeSince);
+        if (newIndex == $._exeActiveSinceForIndex.length) {
+            $._executorsForIndex.push(newExecutors);
+            $._exeThresholdForIndex.push(threshold);
+            $._exeActiveSinceForIndex.push(activeSince);
         } else {
-            require(activeSince >= exeActiveSinceForIndex[newIndex], "Failed to overwrite existing executors");
-            require(threshold >= exeThresholdForIndex[newIndex], "Failed to overwrite existing executors");
-            require(__cmpAddrList(newExecutors, executorsForIndex[newIndex]), "Failed to overwrite existing executors");
-            executorsForIndex[newIndex] = newExecutors;
-            exeThresholdForIndex[newIndex] = threshold;
-            exeActiveSinceForIndex[newIndex] = activeSince;
+            require(activeSince >= $._exeActiveSinceForIndex[newIndex], "Failed to overwrite existing executors");
+            require(threshold >= $._exeThresholdForIndex[newIndex], "Failed to overwrite existing executors");
+            require(__cmpAddrList(newExecutors, $._executorsForIndex[newIndex]), "Failed to overwrite existing executors");
+            $._executorsForIndex[newIndex] = newExecutors;
+            $._exeThresholdForIndex[newIndex] = threshold;
+            $._exeActiveSinceForIndex[newIndex] = activeSince;
         }
-    }
-
-    function packParameters(
-        address[] calldata newExecutors,
-        uint256 threshold
-    ) external pure returns (bytes32) {
-        return keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER, Strings.toString(29 + 43 * newExecutors.length + 11 + Math.log10(threshold) + 1),
-            "Sign to update executors to:\n",
-            __joinAddressList(newExecutors),
-            "Threshold: ", Strings.toString(threshold)
-        ));
     }
 
     function __joinAddressList(address[] memory addrs) private pure returns (string memory) {
@@ -174,18 +255,19 @@ contract Permissions {
     }
 
     function __checkExecutorsForIndex(address[] memory executors, uint256 exeIndex) private view {
-        require(executors.length >= exeThresholdForIndex[exeIndex], "Does not meet threshold");
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require(executors.length >= $._exeThresholdForIndex[exeIndex], "Does not meet threshold");
 
         uint256 blockTime = block.timestamp;
-        uint256 activeSince = exeActiveSinceForIndex[exeIndex];
+        uint256 activeSince = $._exeActiveSinceForIndex[exeIndex];
         require(activeSince < blockTime, "Executors not yet active");
 
-        if (exeActiveSinceForIndex.length > exeIndex + 1) {
-            uint256 nextActiveSince = exeActiveSinceForIndex[exeIndex + 1];
+        if ($._exeActiveSinceForIndex.length > exeIndex + 1) {
+            uint256 nextActiveSince = $._exeActiveSinceForIndex[exeIndex + 1];
             require(nextActiveSince > blockTime, "Executors of next index is active");
         }
 
-        address[] memory currentExecutors = executorsForIndex[exeIndex];
+        address[] memory currentExecutors = $._executorsForIndex[exeIndex];
         for (uint256 i = 0; i < executors.length; i++) {
             address executor = executors[i];
             for (uint256 j = 0; j < i; j++) {
