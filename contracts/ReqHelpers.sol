@@ -14,6 +14,9 @@ contract ReqHelpers {
     // 0xf2: b2-testnet
     uint8 constant CHAIN = 1;
 
+    // This value should be different for different bridge deployments
+    string constant BRIDGE_CHANNEL = "Merlin ERC20 Bridge";
+
     uint256 constant EXPIRE_PERIOD = 24 hours;
     uint256 constant EXPIRE_EXTRA_PERIOD = 36 hours;
 
