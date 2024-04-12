@@ -8,7 +8,7 @@ import { useRequests } from '@/stores'
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
-export default function CardRequestsForProposer ({ action = 'lock-mint', proposer, role, exes }) {
+export default function CardRequestsForProposer ({ action = 'lock-mint', tokens, proposer, role, exes }) {
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
@@ -27,7 +27,7 @@ export default function CardRequestsForProposer ({ action = 'lock-mint', propose
           <Label value={`${fromActionName}-${toActionName} Requests`} />
         </div>
         {!reqs.length && <div className='text-gray-500'>(None)</div>}
-        {reqs.map(req => <RequestItem key={`req-${req.id}`} {...req} role={ROLES.Proposer} action={action} proposer={proposer} exes={exes} />)}
+        {reqs.map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={tokens} role={ROLES.Proposer} action={action} proposer={proposer} exes={exes} />)}
       </div>
     </Card>
   )

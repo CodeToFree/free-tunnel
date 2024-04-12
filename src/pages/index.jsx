@@ -111,13 +111,13 @@ export default function Home() {
       {
         (!role || role === ROLES.Proposer) &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='lock-mint' proposer={address} role={role} exes={exes} />
+          <CardRequestsForProposer action='lock-mint' tokens={tokens} proposer={address} role={role} exes={exes} />
         </div>
       }
       {
         role === ROLES.Executor &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForExecutor action='lock-mint' exes={exes} />
+          <CardRequestsForExecutor action='lock-mint' tokens={tokens} exes={exes} />
         </div>
       }
     </AppContainer>

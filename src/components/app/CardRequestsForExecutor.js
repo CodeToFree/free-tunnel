@@ -9,7 +9,7 @@ import { useRequests, useRequestsMethods } from '@/stores'
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
-export default function CardRequestsForExecutor ({ action = 'lock-mint', exes }) {
+export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens, exes }) {
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
@@ -33,7 +33,7 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', exes })
           <Label value={`${fromActionName}-${toActionName} Requests`} />
         </div>
         {!reqs.length && <div className='text-gray-500'>(None)</div>}
-        {reqs.map(req => <RequestItem key={`req-${req.id}`} {...req} role={ROLES.Executor} action={action} exes={exes} />)}
+        {reqs.map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={tokens} role={ROLES.Executor} action={action} exes={exes} />)}
       </div>
     </Card>
   )

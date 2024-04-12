@@ -9,21 +9,16 @@ import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
 import ButtonExecute from './ButtonExecute'
 
-const tokenByIndex = {
-  1: 'USDC',
-  2: 'USDT',
-  64: 'BTC'
-}
-
-export default function RequestItem ({ role, action, exes, ...req }) {
+export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
   const { id, proposer, value, tokenIndex, created, fromChain, toChain, vault, recipient, hash } = req
 
-  const token = tokenByIndex[tokenIndex]
-
   const chain1 = action === 'lock-mint' ? fromChain : toChain
   const chain2 = action === 'lock-mint' ? toChain : fromChain
+
+  const token = tokens?.find(t => t.index === tokenIndex)
+  const tokenSymbol = fromChain.tokens[token?.addr] || toChain.tokens[token?.addr]
 
   return (
     <Card className='mt-2'>
@@ -33,11 +28,11 @@ export default function RequestItem ({ role, action, exes, ...req }) {
           <div className='text-xs'>{new Date(created * 1000).toLocaleString()}</div>
         </div>
         <div className='mt-1.5 mb-1 flex items-center text-sm whitespace-nowrap overflow-hidden'>
-          <TokenIcon token={token?.toLowerCase()} className='mr-1.5' />
+          <TokenIcon token={tokenSymbol?.toLowerCase()} className='shrink-0 mr-1.5' />
           <div className='flex items-end text-gray-400 overflow-hidden'>
             <div className='text-white text-xl'>{value}</div>
             <div className='mb-[2.5px] overflow-hidden text-ellipsis'>
-              <span className='ml-1 text-white'>{token}</span>
+              <span className='ml-1 text-white'>{tokenSymbol}</span>
               <span className='mx-1 whitespace-nowrap'>{`->`}</span>
               <a
                 className='cursor-pointer hover:text-cyan-500 hover:underline'

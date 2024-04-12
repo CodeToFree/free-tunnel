@@ -107,13 +107,13 @@ export default function PageUnlock() {
       {
         (!role || role === ROLES.Proposer) &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='burn-unlock' proposer={address} role={role} exes={exes} />
+          <CardRequestsForProposer action='burn-unlock' tokens={tokens} proposer={address} role={role} exes={exes} />
         </div>
       }
       {
         role === ROLES.Executor &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForExecutor action='burn-unlock' exes={exes} />
+          <CardRequestsForExecutor action='burn-unlock' tokens={tokens} exes={exes} />
         </div>
       }
     </AppContainer>
