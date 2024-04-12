@@ -101,13 +101,13 @@ export default function PageUnlock() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer) && <SectionPropose action='burn-unlock' token={token} />}
+          {(!role || role === ROLES.Proposer) && <SectionPropose action='burn-unlock' role={role} token={token} />}
         </Card>
       </div>
       {
-        role === ROLES.Proposer &&
+        (!role || role === ROLES.Proposer) &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='burn-unlock' proposer={address} exes={exes} />
+          <CardRequestsForProposer action='burn-unlock' proposer={address} role={role} exes={exes} />
         </div>
       }
       {

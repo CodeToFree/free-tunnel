@@ -13,14 +13,14 @@ import {
 import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId } from '@/lib/request'
-import { getRequests, postRequest } from '@/lib/api'
+import { getAllRequests, getRequests, postRequest } from '@/lib/api'
 import AtomicLock from '@/lib/abis/AtomicLock.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
 
-export default function SectionPropose ({ action = 'lock-mint', token }) {
+export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const chain = useChain()
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
@@ -50,13 +50,16 @@ export default function SectionPropose ({ action = 'lock-mint', token }) {
     () => newRequestId(action, amount, token?.index, from, to, vault),
     [action, amount, token?.index, from, to, vault]
   )
-  const { addRequest, updateProposerRequests } = useRequestsMethods()
-
+  const { addRequest, updateProposerRequests, updateAllRequests } = useRequestsMethods()
   React.useEffect(() => {
     if (proposer) {
-      getRequests(proposer).then(reqs => updateProposerRequests(proposer, reqs))
+      if (role) {
+        getAllRequests().then(reqs => updateAllRequests(reqs))
+      } else {
+        getRequests(proposer).then(reqs => updateProposerRequests(proposer, reqs))
+      }
     }
-  }, [proposer, updateProposerRequests])
+  }, [proposer, role, updateProposerRequests, updateAllRequests])
 
   const contract = chain?.AtomicContract
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint

@@ -105,13 +105,13 @@ export default function Home() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer) && <SectionPropose action='lock-mint' token={token} />}
+          {(!role || role === ROLES.Proposer) && <SectionPropose action='lock-mint' role={role} token={token} />}
         </Card>
       </div>
       {
-        role === ROLES.Proposer &&
+        (!role || role === ROLES.Proposer) &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='lock-mint' proposer={address} exes={exes} />
+          <CardRequestsForProposer action='lock-mint' proposer={address} role={role} exes={exes} />
         </div>
       }
       {

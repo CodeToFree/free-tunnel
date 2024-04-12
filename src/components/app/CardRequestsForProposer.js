@@ -8,11 +8,11 @@ import { useRequests } from '@/stores'
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
-export default function CardRequestsForProposer ({ action = 'lock-mint', proposer, exes }) {
+export default function CardRequestsForProposer ({ action = 'lock-mint', proposer, role, exes }) {
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
-  const requests = useRequests(proposer)
+  const requests = useRequests(role ? '' : proposer)
   const actionId = action === 'lock-mint' ? 1 : 2
   const reqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))
