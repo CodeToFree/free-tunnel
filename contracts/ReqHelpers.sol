@@ -6,13 +6,14 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 contract ReqHelpers {
     // 0x00: ethereum
     // 0x01: arbitrum
+    // 0x0a: mode
     // 0x10: merlin
     // 0x11: b2
     // 0x12: bitlayer
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet
-    uint8 constant CHAIN = 1;
+    uint8 constant CHAIN = 0x00;
 
     // This value should be different for different bridge deployments
     string constant BRIDGE_CHANNEL = "Merlin ERC20 Bridge";

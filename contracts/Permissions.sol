@@ -145,13 +145,15 @@ contract Permissions {
         return $._exeActiveSinceForIndex[index];
     }
 
-    function getActiveExecutors() external view returns (address[] memory, uint256) {
+    function getActiveExecutors() external view returns (address[] memory executors, uint256 threshold, uint256 activeSince, uint256 exeIndex) {
         PermissionsStorage storage $ = _getPermissionsStorage();
-        uint256 lastExeIndex = $._exeActiveSinceForIndex.length - 1;
-        if ($._exeActiveSinceForIndex[lastExeIndex] < block.timestamp) {
-            return ($._executorsForIndex[lastExeIndex], lastExeIndex);
+        exeIndex = $._exeActiveSinceForIndex.length - 1;
+        if ($._exeActiveSinceForIndex[exeIndex] > block.timestamp) {
+            exeIndex--;
         }
-        return ($._executorsForIndex[lastExeIndex - 1], lastExeIndex - 1);
+        executors = $._executorsForIndex[exeIndex];
+        threshold = $._exeThresholdForIndex[exeIndex];
+        activeSince = $._exeActiveSinceForIndex[exeIndex];
     }
 
     function _initExecutors(address[] memory executors, uint256 threshold) internal {
