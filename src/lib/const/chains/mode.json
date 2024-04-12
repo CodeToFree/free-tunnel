@@ -7,7 +7,8 @@
   "explorerUrl": "https://explorer.mode.network",
   "tokens": {
     "0xd988097fb8612cc24eeC14542bC03424c656005f": "USDC",
-    "0xf0F161fDA2712DB8b566946122a5af183995e2eD": "USDT"
+    "0xf0F161fDA2712DB8b566946122a5af183995e2eD": "USDT",
+    "0x59889b7021243dB5B1e065385F918316cD90D46c": "M-BTC"
   },
   "atomicId": 10
 }
