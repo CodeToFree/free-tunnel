@@ -1,11 +1,14 @@
 {
   "chainId": 1102,
   "name": "B2 Testnet",
+  "icon": "b2",
   "currency": "BTC",
   "rpcUrl": "https://haven-rpc.bsquared.network",
   "explorerUrl": "https://haven-explorer.bsquared.network",
   "tokens": {
-    "USDC": "0xb471644294eD4648F07f404a5d257B381b1E1e26",
-    "USDT": "0x62f4c6A2fEcc5A4EA394d8f1341c90EF7ffED6C8"
-  }
+    "0x1": "ETH",
+    "0x2": "USDC",
+    "0x3": "USDT"
+  },
+  "atomicId": 242
 }

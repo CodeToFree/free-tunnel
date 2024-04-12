@@ -7,7 +7,7 @@ import { useChain, useAddress } from '@/lib/hooks'
 
 import { useAppHooks } from '../AppProvider'
 
-export default function ConnectButton ({ pill, size, color, onClick, children }) {
+export default function ConnectButton ({ pill, size, color, forceChains, disabled, onClick, children }) {
   const [ready, setReady] = React.useState(false)
   React.useEffect(() => setReady(true), [])
 
@@ -33,11 +33,17 @@ export default function ConnectButton ({ pill, size, color, onClick, children })
     } else {
       return <Button pill={pill} size={size} color={color} onClick={() => open({ view: 'Connect' })}>Connect Wallet</Button>
     }
+  } else if (forceChains && !forceChains.find(c => c.chainId === chain?.chainId)) {
+    return (
+      <Button pill={pill} size={size} color={color} onClick={() => open({ view: 'Networks' })}>
+        Switch to {forceChains.map(c => c.name).join('/')}
+      </Button>
+    )
   } else if (!chain) {
     return <Button pill={pill} size={size} color={color} onClick={() => open({ view: 'Networks' })}>Switch Network</Button>
   } else if (children) {
     if (onClick) {
-      return <Button pill={pill} size={size} color={color} onClick={onClick}>{children}</Button>
+      return <Button pill={pill} size={size} color={color} disabled={disabled} onClick={onClick}>{children}</Button>
     }
     return React.cloneElement(children, {
       Wrapper: ({ onClick, disabled, children }) => <Button pill={pill} size={size} color={color} disabled={disabled} onClick={onClick}>{children}</Button>

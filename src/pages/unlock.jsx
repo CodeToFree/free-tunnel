@@ -18,13 +18,9 @@ import {
   capitalize,
 } from '@/components/app'
 
-export const ROLE_COLORS = {
-  [ROLES.Admin]: 'red', 
-  [ROLES.Proposer]: 'info', 
-  [ROLES.Executor]: 'success', 
-}
+import { ROLE_COLORS } from './index'
 
-export default function Home() {
+export default function PageUnlock() {
   const router = useRouter()
   const chain = useChain()
   const address = useAddress()
@@ -72,17 +68,17 @@ export default function Home() {
       <div className='w-[480px] max-w-full'>
         <Button.Group>
           <Button
-            color='purple'
+            color='gray'
             size='sm'
             className='flex-1'
+            onClick={() => router.push('/')}
           >
             Lock-Mint
           </Button>
           <Button
-            color='gray'
+            color='purple'
             size='sm'
             className='flex-1'
-            onClick={() => router.push('/unlock')}
           >
             Burn-Unlock
           </Button>
@@ -105,19 +101,19 @@ export default function Home() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer) && <SectionPropose action='lock-mint' token={token} />}
+          {(!role || role === ROLES.Proposer) && <SectionPropose action='burn-unlock' token={token} />}
         </Card>
       </div>
       {
         role === ROLES.Proposer &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='lock-mint' proposer={address} exes={exes} />
+          <CardRequestsForProposer action='burn-unlock' proposer={address} exes={exes} />
         </div>
       }
       {
         role === ROLES.Executor &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForExecutor action='lock-mint' exes={exes} />
+          <CardRequestsForExecutor action='burn-unlock' exes={exes} />
         </div>
       }
     </AppContainer>

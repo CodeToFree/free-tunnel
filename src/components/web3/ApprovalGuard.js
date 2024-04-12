@@ -1,10 +1,8 @@
 import React from 'react'
 import { Spinner } from 'flowbite-react'
-import { toValue, useChain, useERC20Allowance, useERC20Call } from '@/lib/hooks'
+import { toValue, useERC20Allowance, useERC20Call } from '@/lib/hooks'
 
-export default function ApprovalGuard ({ token, input, balance, decimals, spender, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
-  const chain = useChain()
-  const tokenAddr = chain?.tokens[token]
+export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, spender, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
   const { approved, refresh } = useERC20Allowance(tokenAddr, spender)
 
   const value = toValue(input, decimals)

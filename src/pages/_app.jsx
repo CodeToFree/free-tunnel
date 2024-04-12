@@ -4,7 +4,7 @@ import { Manrope } from 'next/font/google'
 import '@/styles/globals.css'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import '@/lib/theme'
-import { DARK_MODE, CHAINS } from '@/lib/const'
+import { DARK_MODE, CHAINS_FROM, CHAINS_TO } from '@/lib/const'
 
 import { AppProvider } from '@/components/AppProvider'
 
@@ -22,10 +22,16 @@ const metadata = {
 createWeb3Modal({
   projectId,
   themeMode: DARK_MODE ? 'dark' : 'light',
-  chains: CHAINS.filter(c => c.chainId !== 'tron'),
+  chains: [...CHAINS_FROM, ...CHAINS_TO].filter(c => c.chainId !== 'tron'),
   chainImages: {
-    5: '/tokens/eth.png',
+    5: '/tokens/eth.png', // goerli
+    11155111: '/tokens/eth.png', // sepolia
+    34443: '/tokens/mode.png',
+    4200: '/tokens/merlin.png',
+    686868: '/tokens/merlin.png',
+    223: '/tokens/b2.png',
     1102: '/tokens/b2.png',
+    200901: '/tokens/bitlayer.png',
   },
   ethersConfig: defaultConfig({ metadata }),
   excludeWalletIds: [

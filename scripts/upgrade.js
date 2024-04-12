@@ -4,14 +4,13 @@ require('dotenv').config()
 
 const {
   PRIVATE_KEY,
+  NEXT_PUBLIC_CONTRACT_ADDRS,
 } = process.env
 
 const CONTRACT_NAME = 'AtomicLockContract' // AtomicLockContract, AtomicMintContract
 
 module.exports = async function upgrade() {
   await hre.run('compile')
-
-  const networkConfig = require(`../src/lib/const/chains/${hre.network.name}.json`)
 
   const wallet = new ethers.Wallet(PRIVATE_KEY, ethers.provider)
   const admin = wallet.address
@@ -24,7 +23,8 @@ module.exports = async function upgrade() {
 
   console.log('Upgrading...')
   const abi = JSON.parse(impl.interface.format('json'))
-  const proxy = new ethers.Contract(networkConfig[CONTRACT_NAME], abi, wallet)
+  const proxyAddress = JSON.parse(NEXT_PUBLIC_CONTRACT_ADDRS)[hre.network.name]
+  const proxy = new ethers.Contract(proxyAddress, abi, wallet)
   await proxy.upgradeToAndCall(impl.address, '0x')
   console.log(`${CONTRACT_NAME} Upgraded.`)
 }

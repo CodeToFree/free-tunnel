@@ -14,8 +14,8 @@ describe('Permissions', () => {
     contract = await waffle.loadFixture(fixture)
   })
 
-  describe('#tokenForIndex', () => {
-    it('match packed', async () => {
+  describe('#updateExecutors', () => {
+    it('updates executors', async () => {
       const executors = [
         '0x666d6b8a44d226150ca9058bEEbafe0e3aC065A2',
         '0x666d6b8a44d226150ca9058bEEbafe0e3aC065A2',

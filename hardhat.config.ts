@@ -17,6 +17,12 @@ task('upgrade', 'Upgrade Contract')
     await upgrade()
   })
 
+task('update-quota', 'Update Mint Quota')
+  .setAction(async () => {
+    const updateMintQuota = require('./scripts/updateMintQuota')
+    await updateMintQuota()
+  })
+
 const hardhatConfig = {
   solidity: {
     version: config.compilers.solc,
@@ -32,13 +38,25 @@ const hardhatConfig = {
       },
     },
   },
-  defaultNetwork: 'arbitrum',
+  defaultNetwork: 'eth',
   networks: {
-    mainnet: {
+    eth: {
       url: "https://rpc.ankr.com/eth",
     },
     arbitrum: {
       url: "https://1rpc.io/arb",
+    },
+    mode: {
+      url: "https://mainnet.mode.network",
+    },
+    merlin: {
+      url: "https://rpc.merlinchain.io",
+    },
+    b2: {
+      url: "https://rpc.bsquared.network",
+    },
+    bitlayer: {
+      url: "https://mainnet-rpc.bitlayer.org",
     },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",

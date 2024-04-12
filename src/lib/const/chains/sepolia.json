@@ -1,0 +1,13 @@
+{
+  "chainId": 11155111,
+  "name": "Sepolia",
+  "icon": "eth",
+  "currency": "ETH",
+  "rpcUrl": "https://eth-sepolia.public.blastapi.io",
+  "explorerUrl": "https://sepolia.etherscan.io",
+  "tokens": {
+    "0x6f3193f3eBa58f73c69fCF055B4182933faee517": "USDC",
+    "0xd53e9530107a8d8856099d7d80126478d48e06dA": "USDT"
+  },
+  "atomicId": 240
+}

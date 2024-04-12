@@ -1,0 +1,14 @@
+{
+  "chainId": 4200,
+  "name": "Merlin",
+  "icon": "merlin",
+  "currency": "BTC",
+  "rpcUrl": "https://rpc.merlinchain.io",
+  "explorerUrl": "https://scan.merlinchain.io",
+  "tokens": {
+    "0xB880fd278198bd590252621d4CD071b1842E9Bcd": "M-BTC",
+    "0x1": "USDC",
+    "0x2": "USDT"
+  },
+  "atomicId": 16
+}

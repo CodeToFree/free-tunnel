@@ -3,46 +3,43 @@ import { Button } from 'flowbite-react'
 import { useChain } from '@/lib/hooks'
 import { TokenIcon } from '@/components/ui'
 
-export default function TokenSelector({ onChange, extraTokens }) {
+export default function TokenSelector({ tokens, noSelect, onChange }) {
   const chain = useChain()
-
-  const tokens = React.useMemo(() => {
-    if (!chain) {
-      return [{ symbol: 'USDC' }, { symbol: 'USDT' }]
-    }
-    return Object.entries({ ...chain?.tokens, ...extraTokens })
-      .map(([symbol, addr]) => ({ symbol, addr }))
-      .filter(t => t.addr)
-  }, [chain, extraTokens])
 
   const [selected, setSelected] = React.useState()
 
   const onChangeToken = React.useCallback(token => {
-    setSelected(token)
-    onChange?.(token)
-  }, [onChange])
+    if (!noSelect) {
+      setSelected(token?.addr)
+      onChange?.(token)
+    }
+  }, [noSelect, onChange])
 
   React.useEffect(() => {
-    if (!tokens.length) {
+    if (!tokens.length || noSelect) {
       onChangeToken()
-    } else if (!tokens.find(t => t.symbol === selected)) {
-      onChangeToken(tokens[0].symbol)
+    } else if (!tokens.find(t => t.addr === selected)) {
+      onChangeToken(tokens[0])
     }
-  }, [tokens, selected, onChangeToken])
+  }, [tokens, noSelect, selected, onChangeToken])
+
+  if (!tokens.length) {
+    return <div className='h-[38px] text-gray-500'>(No Supported Tokens)</div>
+  }
 
   return (
     <div className='flex flex-wrap gap-2'>
     {
       tokens.map(t => (
         <Button
-          key={t.symbol}
+          key={t.addr}
           pill
           size='sm'
-          color={selected === t.symbol ? 'purple' : 'light'}
+          color={selected === t.addr ? 'purple' : 'light'}
           className='pr-2'
-          onClick={() => onChangeToken(t.symbol)}
+          onClick={() => onChangeToken(t)}
         >
-          <TokenIcon token={t.symbol.toLowerCase()} />{t.symbol}
+          <TokenIcon token={t.icon || chain?.tokens[t.addr]?.toLowerCase()} />{t.name || chain?.tokens[t.addr]}
         </Button>
       ))
     }

@@ -1,0 +1,13 @@
+{
+  "chainId": 686868,
+  "name": "Merlin Testnet",
+  "icon": "merlin",
+  "currency": "BTC",
+  "rpcUrl": "https://testnet-rpc.merlinchain.io",
+  "explorerUrl": "https://testnet-scan.merlinchain.io",
+  "tokens": {
+    "0x04F3996BF11D7b8E36DE37f8797D7E0eaa285A45": "USDC",
+    "0x56e2744F698ba4058aAb0B79cE41D5057572E904": "USDT"
+  },
+  "atomicId": 241
+}

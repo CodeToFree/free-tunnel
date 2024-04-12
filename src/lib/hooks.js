@@ -2,10 +2,12 @@ import React from 'react'
 import { ethers } from 'ethers'
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-import { CHAINS } from '@/lib/const'
+import { CHAINS_FROM, CHAINS_TO } from '@/lib/const'
 import ERC20 from '@/lib/abis/ERC20.json'
 import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
+
+const CHAINS = [...CHAINS_FROM, ...CHAINS_TO]
 
 export function toValue(input, decimals = 18) {
   if (ethers.BigNumber.isBigNumber(input)) {
@@ -44,22 +46,27 @@ export function useAddress(_address) {
   }
 }
 
-export function useProvider() {
+export function useProvider(chain) {
+  const _chain = useChain()
   const { walletProvider } = useWeb3ModalProvider()
   const { tronlink } = useAppHooks()
 
+  const validWalletProvider = _chain && walletProvider
   return React.useMemo(() => {
     if (tronlink.account) {
       return window.tronLink.tronWeb
-    } else if (!walletProvider) {
+    } else if (chain) {
+      return new ethers.providers.StaticJsonRpcProvider(chain.rpcUrl)
+    } else if (!validWalletProvider) {
       return
+    } else {
+      return new ethers.providers.Web3Provider(validWalletProvider, 'any')
     }
-    return new ethers.providers.Web3Provider(walletProvider, 'any')
-  }, [walletProvider, tronlink])
+  }, [chain, validWalletProvider, tronlink])
 }
 
-export function useContract(address, abi) {
-  const provider = useProvider()
+export function useContract(address, abi, chain) {
+  const provider = useProvider(chain)
   const { tronlink } = useAppHooks()
 
   return React.useMemo(() => {
@@ -67,9 +74,14 @@ export function useContract(address, abi) {
       return
     } else if (tronlink.account) {
       return provider.contract(abi, address)
+    } else if (!ethers.utils.isAddress(address)) {
+      return
+    } else if (chain) {
+      return new ethers.Contract(address, abi, provider)
+    } else {
+      return new ethers.Contract(address, abi, provider.getSigner())
     }
-    return new ethers.Contract(address, abi, provider.getSigner())
-  }, [tronlink, provider, address, abi])
+  }, [tronlink, provider, chain, address, abi])
 }
 
 export function useERC20(tokenAddress) {
@@ -169,9 +181,8 @@ export function useERC20Allowance(tokenAddress, spender) {
   return { approved, refresh }
 }
 
-export function useContractQuery(address, abi, method, args = [], refreshTrigger = true) {
-  const chain = useChain()
-  const contractInstance = useContract(address, abi)
+export function useContractQuery(address, abi, method, args, chain, refreshTrigger = true) {
+  const contractInstance = useContract(address, abi, chain)
 
   const [pending, setPending] = React.useState(false)
   const [result, setResult] = React.useState()
@@ -179,16 +190,16 @@ export function useContractQuery(address, abi, method, args = [], refreshTrigger
   const refresh = React.useCallback(() => {
     setPending(false)
     setResult()
-    if (!chain || !contractInstance) {
+    if (!contractInstance) {
       return
     }
 
     setPending(true)
-    contractInstance[method](...args).then(result => {
+    contractInstance[method](...(args || [])).then(result => {
       setPending(false)
       setResult(result)
     })
-  }, [chain, contractInstance, method, args])
+  }, [contractInstance, method, args])
 
   React.useEffect(() => {
     if (refreshTrigger) {
@@ -199,14 +210,18 @@ export function useContractQuery(address, abi, method, args = [], refreshTrigger
   return { pending, result }
 }
 
-export function useContractCall(address, abi, method, args = []) {
+export function useERC20Query(address, method, args, chain) {
+  return useContractQuery(address, ERC20, method, args, chain)
+}
+
+export function useContractCall(address, abi, method, args) {
   const chain = useChain()
   const contractInstance = useContract(address, abi)
   const { addToast, removeToast } = useAppHooks()
 
   const [pending, setPending] = React.useState(false)
 
-  const call = React.useCallback(async () => {
+  const call = React.useCallback(async (_args) => {
     if (!chain || !contractInstance) {
       return
     }
@@ -215,9 +230,9 @@ export function useContractCall(address, abi, method, args = []) {
     let tx
     try {
       if (chain.chainId === 'tron') {
-        tx = { hash: await contractInstance[method](...args).send() }
+        tx = { hash: await contractInstance[method](...(_args || args || [])).send() }
       } else {
-        tx = await contractInstance[method](...args)
+        tx = await contractInstance[method](...(_args || args || []))
       }
     } catch (e) {
       setPending(false)
@@ -250,7 +265,7 @@ export function useContractCall(address, abi, method, args = []) {
       }]
     })
     setPending(false)
-    return true
+    return tx.hash
   }, [chain, contractInstance, method, args, addToast, removeToast])
 
   return { pending, call }

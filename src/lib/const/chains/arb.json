@@ -1,11 +1,14 @@
 {
   "chainId": 42161,
   "name": "Arbitrum",
+  "icon": "arb",
   "currency": "ETH",
   "rpcUrl": "https://arbitrum.llamarpc.com",
   "explorerUrl": "https://arbiscan.io",
   "tokens": {
-    "USDC": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
-  }
+    "0x0000000000000000000000000000000000000001": "ETH",
+    "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": "USDC",
+    "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9": "USDT"
+  },
+  "atomicId": 1
 }
