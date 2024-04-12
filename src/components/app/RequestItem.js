@@ -11,7 +11,8 @@ import ButtonExecute from './ButtonExecute'
 
 const tokenByIndex = {
   1: 'USDC',
-  2: 'USDT'
+  2: 'USDT',
+  64: 'BTC'
 }
 
 export default function RequestItem ({ role, action, exes, ...req }) {
