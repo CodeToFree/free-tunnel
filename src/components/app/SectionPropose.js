@@ -39,7 +39,7 @@ export default function SectionPropose ({ action = 'lock-mint', token }) {
     setVault(false)
   }, [token])
   React.useEffect(() => {
-    if (Number(amount) >= VAULT_LIMIT) {
+    if (VAULT_LIMIT && Number(amount) >= VAULT_LIMIT) {
       setVault(true)
     }
   }, [amount])

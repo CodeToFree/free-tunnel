@@ -9,7 +9,7 @@ import Permissions from '@/lib/abis/Permissions.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 
 import { AppContainer } from '@/components/ui'
-import { ConnectedAddress, TokenSelector, ConnectButton } from '@/components/web3'
+import { ConnectedAddress, TokenSelector } from '@/components/web3'
 import {
   SectionAdmin,
   SectionPropose,
