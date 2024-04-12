@@ -1,6 +1,8 @@
 import React from 'react'
 import { ethers } from 'ethers'
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
 import { CHAINS_FROM, CHAINS_TO } from '@/lib/const'
 import ERC20 from '@/lib/abis/ERC20.json'
@@ -25,22 +27,26 @@ export function useChain() {
   React.useEffect(() => setReady(true), [])
 
   const { isConnected, chainId } = useWeb3ModalAccount()
+  const { connected, safe } = useSafeAppsSDK()
   const { tronlink } = useAppHooks()
 
-  return React.useMemo(
-    () => CHAINS.find(c => c.chainId === (tronlink.account ? 'tron' : (ready && isConnected && chainId))),
-    [ready, isConnected, chainId, tronlink.account]
-  )
+  const match = tronlink.account
+    ? 'tron'
+    : connected ? safe.chainId : (ready && isConnected && chainId)
+  return React.useMemo(() => CHAINS.find(c => c.chainId === match), [match])
 }
 
 export function useAddress(_address) {
   const { isConnected, address } = useWeb3ModalAccount()
+  const { connected, safe } = useSafeAppsSDK()
   const { tronlink } = useAppHooks()
 
   if (_address) {
     return _address
   } else if (tronlink.account) {
     return tronlink.account.base58
+  } else if (connected) {
+    return safe.safeAddress
   } else if (isConnected) {
     return address
   }
@@ -49,6 +55,7 @@ export function useAddress(_address) {
 export function useProvider(chain) {
   const _chain = useChain()
   const { walletProvider } = useWeb3ModalProvider()
+  const { connected, sdk, safe } = useSafeAppsSDK()
   const { tronlink } = useAppHooks()
 
   const validWalletProvider = _chain && walletProvider
@@ -57,12 +64,14 @@ export function useProvider(chain) {
       return window.tronLink.tronWeb
     } else if (chain) {
       return new ethers.providers.StaticJsonRpcProvider(chain.rpcUrl)
+    } else if (connected) {
+      return new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk))
     } else if (!validWalletProvider) {
       return
     } else {
       return new ethers.providers.Web3Provider(validWalletProvider, 'any')
     }
-  }, [chain, validWalletProvider, tronlink])
+  }, [chain, tronlink, connected, sdk, safe, validWalletProvider])
 }
 
 export function useContract(address, abi, chain) {

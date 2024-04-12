@@ -16,6 +16,8 @@
     ".next/cache"
   ],
   "dependencies": {
+    "@safe-global/safe-apps-provider": "^0.18.2",
+    "@safe-global/safe-apps-react-sdk": "^4.7.1",
     "@web3modal/ethers5": "^4.0.10",
     "ethers": "5",
     "flowbite": "^2.3.0",

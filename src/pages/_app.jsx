@@ -1,5 +1,6 @@
 import classnames from 'classnames'
 import { Manrope } from 'next/font/google'
+import SafeProvider from '@safe-global/safe-apps-react-sdk'
 
 import '@/styles/globals.css'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
@@ -44,10 +45,12 @@ createWeb3Modal({
 
 export default function App({ Component, pageProps }) {
   return (
-    <AppProvider>
-      <div className={classnames('app-container h-full', DARK_MODE && 'dark', manrope.className)}>
-        <Component {...pageProps} />
-      </div>
-    </AppProvider>
+    <SafeProvider>
+      <AppProvider>
+        <div className={classnames('app-container h-full', DARK_MODE && 'dark', manrope.className)}>
+          <Component {...pageProps} />
+        </div>
+      </AppProvider>
+    </SafeProvider>
   )
 }
