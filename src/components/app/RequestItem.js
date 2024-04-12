@@ -9,6 +9,13 @@ import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
 import ButtonExecute from './ButtonExecute'
 
+const defaultTokens = {
+  1: 'USDC',
+  2: 'USDT',
+  64: 'BTC',
+  65: 'ETH',
+}
+
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
@@ -18,7 +25,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const chain2 = action === 'lock-mint' ? toChain : fromChain
 
   const token = tokens?.find(t => t.index === tokenIndex)
-  const tokenSymbol = fromChain.tokens[token?.addr] || toChain.tokens[token?.addr]
+  const tokenSymbol = fromChain.tokens[token?.addr] || toChain.tokens[token?.addr] || defaultTokens[tokenIndex]
 
   return (
     <Card className='mt-2'>
