@@ -32,7 +32,7 @@ export default function RequestItem ({ role, action, exes, ...req }) {
           <div className='text-xs'>{new Date(created * 1000).toLocaleString()}</div>
         </div>
         <div className='mt-1.5 mb-1 flex items-center text-sm whitespace-nowrap overflow-hidden'>
-          <TokenIcon token={token.toLowerCase()} className='mr-1.5' />
+          <TokenIcon token={token?.toLowerCase()} className='mr-1.5' />
           <div className='flex items-end text-gray-400 overflow-hidden'>
             <div className='text-white text-xl'>{value}</div>
             <div className='mb-[2.5px] overflow-hidden text-ellipsis'>
