@@ -18,6 +18,7 @@ contract ReqHelpers {
     // This value should be different for different bridge deployments
     string constant BRIDGE_CHANNEL = "Merlin ERC20 Bridge";
 
+    uint256 constant PROPOSE_PERIOD = 2 hours;
     uint256 constant EXPIRE_PERIOD = 24 hours;
     uint256 constant EXPIRE_EXTRA_PERIOD = 36 hours;
 
@@ -115,7 +116,7 @@ contract ReqHelpers {
     function _createdTimeFrom(bytes32 reqId, bool check) internal view returns (uint256 createdTime) {
         createdTime = uint40(uint256(reqId) >> 208);
         if (check) {
-            require(createdTime > block.timestamp - 30 minutes, "createdTime too early");
+            require(createdTime > block.timestamp - PROPOSE_PERIOD, "createdTime too early");
             require(createdTime < block.timestamp + 1 minutes, "createdTime too late");
         }
     }

@@ -33,6 +33,7 @@ const chains = Object.fromEntries(Object.entries({ eth, arb, mode, merlin, b2, b
 export const CHAINS_FROM = process.env.NEXT_PUBLIC_CHAINS_FROM.split(',').map(c => chains[c])
 export const CHAINS_TO = process.env.NEXT_PUBLIC_CHAINS_TO.split(',').map(c => chains[c])
 export const BRIDGE_CHANNEL = process.env.NEXT_PUBLIC_BRIDGE_CHANNEL
+export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 1800)
 
 export const PROJECT_ICON = process.env.NEXT_PUBLIC_PROJECT_ICON
 export const PROJECT_HOMEPAGE = process.env.NEXT_PUBLIC_PROJECT_HOMEPAGE

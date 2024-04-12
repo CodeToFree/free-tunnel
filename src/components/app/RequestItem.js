@@ -3,7 +3,7 @@ import { Card, Badge } from 'flowbite-react'
 
 import { TokenIcon } from '@/components/ui'
 
-import { ROLES } from '@/lib/const'
+import { ROLES, PROPOSE_PERIOD } from '@/lib/const'
 
 import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
@@ -93,9 +93,9 @@ export default function RequestItem ({ role, action, exes, ...req }) {
               </>
             : role === ROLES.Executor
               ? <Badge color='red'>Not Proposed</Badge>
-              : Date.now() > (created + 60 * 30) * 1000
-                ? <Badge color='red'>Expired at {new Date((created + 60 * 30) * 1000).toLocaleString()}</Badge>
-                : <Badge color='warning'>Before {new Date((created + 60 * 30) * 1000).toLocaleString()}</Badge>
+              : Date.now() > (created + PROPOSE_PERIOD) * 1000
+                ? <Badge color='red'>Expired at {new Date((created + PROPOSE_PERIOD) * 1000).toLocaleString()}</Badge>
+                : <Badge color='warning'>Before {new Date((created + PROPOSE_PERIOD) * 1000).toLocaleString()}</Badge>
           }
           {
             hash?.e2
