@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Card, Label, Button, Badge } from 'flowbite-react'
 
-import { ROLES } from '@/lib/const'
+import { ROLES, BRIDGE_CHANNEL } from '@/lib/const'
 import { useChain, useAddress, useContractQuery } from '@/lib/hooks'
 import Permissions from '@/lib/abis/Permissions.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
@@ -62,7 +62,7 @@ export default function PageUnlock() {
   return (
     <AppContainer>
       <Head>
-        <title>Atomic Lock-Mint</title>
+        <title>{BRIDGE_CHANNEL}</title>
       </Head>
 
       <div className='w-[480px] max-w-full'>

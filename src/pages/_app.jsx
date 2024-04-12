@@ -4,7 +4,7 @@ import { Manrope } from 'next/font/google'
 import '@/styles/globals.css'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import '@/lib/theme'
-import { DARK_MODE, CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { DARK_MODE, CHAINS_FROM, CHAINS_TO, BRIDGE_CHANNEL } from '@/lib/const'
 
 import { AppProvider } from '@/components/AppProvider'
 
@@ -13,7 +13,7 @@ const manrope = Manrope({ subsets: ['latin'] })
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID || '';
 
 const metadata = {
-  name: 'Atomic Lock-Mint',
+  name: BRIDGE_CHANNEL,
   description: '',
   url: '',
   icons: ['/logo.png'],
