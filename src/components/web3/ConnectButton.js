@@ -1,6 +1,7 @@
 import React from 'react'
 import { Dropdown, Button, Spinner } from 'flowbite-react'
 import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { TRONLINK } from '@/lib/const'
 import { useChain, useAddress } from '@/lib/hooks'
@@ -13,6 +14,7 @@ export default function ConnectButton ({ pill, size, color, forceChains, disable
 
   const { open } = useWeb3Modal()
   const { open: isOpen } = useWeb3ModalState()
+  const { connected } = useSafeAppsSDK()
   const chain = useChain()
   const address = useAddress()
 
@@ -35,8 +37,8 @@ export default function ConnectButton ({ pill, size, color, forceChains, disable
     }
   } else if (forceChains && !forceChains.find(c => c.chainId === chain?.chainId)) {
     return (
-      <Button pill={pill} size={size} color={color} onClick={() => open({ view: 'Networks' })}>
-        Switch to {forceChains.map(c => c.name).join('/')}
+      <Button pill={pill} size={size} color={color} onClick={() => !connected && open({ view: 'Networks' })}>
+        Switch to {forceChains.map(c => c.name).join('/')} {connected && ' in Safe Wallet'}
       </Button>
     )
   } else if (!chain) {
@@ -56,6 +58,12 @@ export default function ConnectButton ({ pill, size, color, forceChains, disable
       >
         <Dropdown.Item onClick={() => tronlink.disconnect()}>Disconnect</Dropdown.Item>
       </Dropdown>
+    )
+  } else if (connected) {
+    return (
+      <Button pill={pill} size={size} color={color}>
+        {address.substring(0, 6)}...{address.substring(address.length - 4)}
+      </Button>
     )
   } else {
     return (

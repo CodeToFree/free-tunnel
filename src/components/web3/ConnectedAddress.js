@@ -2,6 +2,7 @@ import React from 'react'
 import { Dropdown, Button, Spinner } from 'flowbite-react'
 
 import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { TRONLINK } from '@/lib/const'
 import { useChain, useAddress } from '@/lib/hooks'
@@ -14,6 +15,7 @@ export default function ConnectedAddress() {
 
   const { open } = useWeb3Modal()
   const { open: isOpen } = useWeb3ModalState()
+  const { connected } = useSafeAppsSDK()
   const chain = useChain()
   const address = useAddress()
   const { tronlink } = useAppHooks()
@@ -22,7 +24,7 @@ export default function ConnectedAddress() {
   if (!ready) {
     return <Button pill size='md' color='light'>Unknown</Button>
   } else if (tronlink.account) {
-    btn = <Button pill color='light'><TokenIcon token='tron' />Tron</Button>
+    btn = <Button pill size='md' color='light'><TokenIcon token='tron' />Tron</Button>
   } else if (!address) {
     let label = isOpen ? <><Spinner size='sm' className='mr-2' />Connecting...</> : 'Disconnected'
     if (TRONLINK) {
@@ -40,6 +42,8 @@ export default function ConnectedAddress() {
     } else {
       btn = <Button pill size='md' color='light' onClick={() => open()}>{label}</Button>
     }
+  } else if (connected) {
+    btn = <Button pill size='md' color='light'><TokenIcon token={chain?.icon} />{chain?.name}</Button>
   } else if (chain) {
     btn = <w3m-network-button />
   } else {
