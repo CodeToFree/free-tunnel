@@ -9,8 +9,10 @@ export default function TokenIcon ({ size, token, className }) {
 
   if (token === 'eth') {
     return <img src='/tokens/eth.png' className={_className} />
-  } else if (token === 'btc' || token === 'm-btc') {
+  } else if (token === 'btc') {
     return <img src='/tokens/btc.png' className={_className} />
+  } else if (token === 'm-btc') {
+    return <img src='/tokens/mbtc.png' className={_className} />
   } else if (token === 'usdc') {
     return <img src='/tokens/usdc.png' className={_className} />
   } else if (token === 'usdt') {
