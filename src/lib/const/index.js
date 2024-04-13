@@ -40,3 +40,9 @@ export const PROJECT_HOMEPAGE = process.env.NEXT_PUBLIC_PROJECT_HOMEPAGE
 
 export const VAULT_LIMIT = Number(process.env.NEXT_PUBLIC_VAULT_LIMIT || 0)
 
+let min = {}
+try {
+  min = JSON.parse(process.env.NEXT_PUBLIC_MIN_AMOUNTS)
+} catch {}
+
+export const MIN_AMOUNTS = min

@@ -10,7 +10,7 @@ import {
   ApprovalGuard,
 } from '@/components/web3'
 
-import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT } from '@/lib/const'
+import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, MIN_AMOUNTS } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId } from '@/lib/request'
 import { getAllRequests, getRequests, postRequest } from '@/lib/api'
@@ -72,6 +72,9 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     return <ConnectButton color='purple' forceChains={forceChains} />
   }
 
+  const min = MIN_AMOUNTS[token?.index] || 0
+  const belowAmount = amount && (Number(amount) < min)
+
   return (
     <>
       <div>
@@ -90,6 +93,10 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           />
           <MaxButton className='absolute top-2 right-2.5' balance={balance} onMax={setAmount} />
         </div>
+        {
+          belowAmount &&
+          <div className='mt-1 text-sm text-red-400'>At least {min} required</div>
+        }
       </div>
 
       {
@@ -104,7 +111,6 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
               {action === 'lock-mint' ? 'Lock fund to vault ' : 'Unlock from vault'}{Number(amount) >= VAULT_LIMIT && '(required for large amount)'}
             </div>
           </div>
-          
         </div>
       }
 
@@ -152,6 +158,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           decimals={balance?.decimals}
           spender={contract}
           pending={pending}
+          disabled={belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
               const hash = await call()
