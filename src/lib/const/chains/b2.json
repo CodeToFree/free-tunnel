@@ -6,9 +6,8 @@
   "rpcUrl": "https://rpc.bsquared.network",
   "explorerUrl": "https://explorer.bsquared.network",
   "tokens": {
-    "0x1": "ETH",
-    "0x2": "USDC",
-    "0x3": "USDT"
+    "0xE544e8a38aDD9B1ABF21922090445Ba93f74B9E5": "USDC",
+    "0x681202351a488040Fa4FdCc24188AfB582c9DD62": "USDT"
   },
   "atomicId": 17
 }
