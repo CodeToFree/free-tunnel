@@ -14,6 +14,7 @@ const defaultTokens = {
   2: 'USDT',
   64: 'BTC',
   65: 'ETH',
+  66: 'MERL',
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {

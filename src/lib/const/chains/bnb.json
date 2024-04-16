@@ -1,0 +1,12 @@
+{
+  "chainId": 56,
+  "name": "BNB Smart Chain",
+  "icon": "bnb",
+  "currency": "BNB",
+  "rpcUrl": "https://bsc-dataseed1.bnbchain.org",
+  "explorerUrl": "https://bscscan.com",
+  "tokens": {
+    "0x4239e0e03d41e385d171d00c623eb6b9af483cd9": "MERL"
+  },
+  "atomicId": 2
+}

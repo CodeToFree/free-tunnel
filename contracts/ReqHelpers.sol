@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 contract ReqHelpers {
     // 0x00: ethereum
     // 0x01: arbitrum
+    // 0x02: bnb smart chain
     // 0x0a: mode
     // 0x10: merlin
     // 0x11: b2

@@ -1,5 +1,6 @@
 import eth from './chains/eth.json'
 import arb from './chains/arb.json'
+import bnb from './chains/bnb.json'
 import mode from './chains/mode.json'
 import merlin from './chains/merlin.json'
 import b2 from './chains/b2.json'
@@ -26,7 +27,7 @@ try {
   CONTRACT_ADDRS = JSON.parse(process.env.NEXT_PUBLIC_CONTRACT_ADDRS)
 } catch {}
 
-const chains = Object.fromEntries(Object.entries({ eth, arb, mode, merlin, b2, bitlayer, sepolia, merlin_testnet, b2_testnet })
+const chains = Object.fromEntries(Object.entries({ eth, arb, bnb, mode, merlin, b2, bitlayer, sepolia, merlin_testnet, b2_testnet })
   .map(([id, c]) => [id, ({ ...c, AtomicContract: CONTRACT_ADDRS[id] })])
 )
 

@@ -21,7 +21,7 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/arb.png' className={_className} />
   } else if (token === 'mode') {
     return <img src='/tokens/mode.png' className={_className} />
-  } else if (token === 'merlin') {
+  } else if (token === 'merl' || token === 'merlin') {
     return <img src='/tokens/merlin.png' className={_className} />
   } else if (token === 'b2') {
     return <img src='/tokens/b2.png' className={_className} />

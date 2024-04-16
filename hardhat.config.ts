@@ -46,6 +46,9 @@ const hardhatConfig = {
     arbitrum: {
       url: "https://1rpc.io/arb",
     },
+    bnb: {
+      url: "https://bsc-dataseed1.bnbchain.org",
+    },
     mode: {
       url: "https://mainnet.mode.network",
     },
