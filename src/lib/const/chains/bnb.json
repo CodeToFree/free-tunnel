@@ -6,7 +6,7 @@
   "rpcUrl": "https://bsc-dataseed1.bnbchain.org",
   "explorerUrl": "https://bscscan.com",
   "tokens": {
-    "0x4239e0e03d41e385d171d00c623eb6b9af483cd9": "MERL"
+    "0x4239E0E03d41E385D171D00c623Eb6b9AF483cd9": "MERL"
   },
   "atomicId": 2
 }
