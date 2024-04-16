@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract MintableERC20 is ERC20 {
-    uint8 private _decimals;
+    uint8 immutable private _decimals;
 
     address public minter;
     address public vault;

@@ -169,7 +169,7 @@ contract Permissions {
     // When a new set of `executors` is updated, the index will increase by 1. 
     // When updating `executors`, an `activeSince` timestamp must be provided, 
     // indicating the time from which this set of `executors` will become effective. 
-    // The `activeSince` must be between 3 and 7 days after the current time, and also 
+    // The `activeSince` must be between 1.5 and 5 days after the current time, and also 
     // at least 1 day after the `activeSince` of the previous set of `executors`. 
     // Note that when the new set of `executors` becomes effective, the previous 
     // set of `executors` will become invalid.
@@ -283,9 +283,7 @@ contract Permissions {
                     break;
                 }
             }
-            if (!isExecutor) {
-                require(isExecutor, "Non-executor");
-            }
+            require(isExecutor, "Non-executor");
         }
     }
 
