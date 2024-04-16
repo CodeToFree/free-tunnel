@@ -67,11 +67,15 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         <div className='mt-1 flex items-center'>
           <TokenIcon size='sm' token={chain1?.icon} className='mr-1.5' />
           <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
-          <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash?.p1}`, '_blank')}>
-            Proposed
-          </Badge>
           {
-            hash?.p2 &&
+            hash?.p1
+            ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1}`, '_blank')}>
+                Proposed
+              </Badge>
+            : <Badge color='gray'>Not Proposed</Badge>
+          }
+          {
+            hash?.p1 && hash?.p2 &&
             <>
               <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
               {
