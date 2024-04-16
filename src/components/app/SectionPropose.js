@@ -1,5 +1,6 @@
 import React from 'react'
 import { Label, TextInput, Checkbox } from 'flowbite-react'
+import { ethers } from 'ethers'
 
 import { TokenIcon } from '@/components/ui'
 import {
@@ -10,9 +11,9 @@ import {
   ApprovalGuard,
 } from '@/components/web3'
 
-import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, MIN_AMOUNTS } from '@/lib/const'
+import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, MIN_AMOUNTS, ADDR_ONE } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
-import { newRequestId } from '@/lib/request'
+import { newRequestId, parseRequest } from '@/lib/request'
 import { getAllRequests, getRequests, postRequest } from '@/lib/api'
 import AtomicLock from '@/lib/abis/AtomicLock.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
@@ -64,7 +65,10 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const contract = chain?.AtomicContract
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
   const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'
-  const { pending, call } = useContractCall(contract, abi, method, [reqId.padEnd(66, '0')])
+  const value = reqId && token?.addr === ADDR_ONE
+    ? ethers.utils.parseEther(parseRequest(reqId).value)
+    : 0
+  const { pending, call } = useContractCall(contract, abi, method, [reqId.padEnd(66, '0'), { value }])
 
   const forceChains = action === 'lock-mint' ? CHAINS_FROM : CHAINS_TO
 

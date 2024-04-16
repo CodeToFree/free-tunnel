@@ -5,7 +5,7 @@ import { toValue } from '@/lib/hooks'
 
 export function newRequestId(action, amount, tokenIndex, from, to, vault) {
   const value = toValue(amount, 6)
-  if (value.lte(0) || !tokenIndex || !from || !to) {
+  if (value.lte(0) || !tokenIndex || typeof from !== 'number' || !to) {
     return ''
   }
 

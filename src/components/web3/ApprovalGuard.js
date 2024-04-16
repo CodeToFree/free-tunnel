@@ -1,5 +1,6 @@
 import React from 'react'
 import { Spinner } from 'flowbite-react'
+import { ADDR_ONE } from '@/lib/const'
 import { toValue, useERC20Allowance, useERC20Call } from '@/lib/hooks'
 
 export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, spender, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
@@ -29,7 +30,7 @@ export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, sp
     return <Wrapper disabled>Amount Over Balance</Wrapper>
   }
 
-  if (tokenAddr) {
+  if (tokenAddr && tokenAddr !== ADDR_ONE) {
     if (!approved) {
       return <Wrapper disabled><Spinner size='sm' className='mr-2' />Loading...</Wrapper>
     }

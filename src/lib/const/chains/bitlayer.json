@@ -6,9 +6,9 @@
   "rpcUrl": "https://mainnet-rpc.bitlayer.org",
   "explorerUrl": "https://www.btrscan.com",
   "tokens": {
-    "0xef63d4e178b3180beec9b0e143e0f37f4c93f4c2": "ETH",
-    "0x9827431e8b77e87c9894bd50b055d6be56be0030": "USDC",
-    "0xfe9f969faf8ad72a83b761138bf25de87eff9dd2": "USDT"
+    "0xEf63d4E178b3180BeEc9B0E143e0f37F4c93f4C2": "ETH",
+    "0x9827431e8b77E87C9894BD50B055D6BE56bE0030": "USDC",
+    "0xfe9f969faf8Ad72a83b761138bF25dE87eFF9DD2": "USDT"
   },
   "atomicId": 18
 }
