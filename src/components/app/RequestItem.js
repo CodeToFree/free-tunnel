@@ -3,7 +3,7 @@ import { Card, Badge } from 'flowbite-react'
 
 import { TokenIcon } from '@/components/ui'
 
-import { ROLES, PROPOSE_PERIOD } from '@/lib/const'
+import { ROLES, PROPOSE_PERIOD, EXECUTE_PERIOD } from '@/lib/const'
 
 import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
@@ -83,7 +83,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
                 ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1}`, '_blank')}>
                     Executed
                   </Badge>
-                : <Badge color='gray'>Execute before {new Date((created + 3600 * 24) * 1000).toLocaleString()}</Badge>
+                : <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
               }
             </>
           }
@@ -110,7 +110,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2}`, '_blank')}>
                 Executed
               </Badge>
-            : hash?.p2 && <Badge color='gray'>Execute before {new Date((created + 3600 * 24) * 1000).toLocaleString()}</Badge>
+            : hash?.p2 && <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
           }
         </div>
         <RequestActionButton role={role} action={action} exes={exes} {...req} />
