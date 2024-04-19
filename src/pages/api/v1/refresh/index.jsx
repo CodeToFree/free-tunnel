@@ -71,7 +71,7 @@ async function refresh(chain) {
     } else {
       continue
     }
-    await Requests.findByIdAndUpdate(req.reqId, update)
+    await Requests.findByIdAndUpdate(req.reqId, update, { upsert: true })
   }
 
   return true
