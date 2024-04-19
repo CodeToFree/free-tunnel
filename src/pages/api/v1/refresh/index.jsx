@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 
 import { Requests } from '@/lib/db'
-import { CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { BRIDGE_CHANNEL, CHAINS_FROM, CHAINS_TO } from '@/lib/const'
 
 const events = {
   '0xc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2': 'Initialized',
@@ -51,8 +51,9 @@ async function refresh(chain) {
       const [sig, param1, param2] = log.topics
       const event = events[sig] || sig
       const reqId = param1?.substring(0, 38)
+      const { fromChain, toChain } = parseRequest(reqId)
       const addr = param2 && ethers.utils.hexZeroPad(BigInt(param2), 20)
-      return { event, hash: log.transactionHash, reqId, addr }
+      return { event, hash: log.transactionHash, reqId, fromChain, toChain, addr }
     }))
 
     toBlock -= 1000
@@ -62,6 +63,10 @@ async function refresh(chain) {
     const update = {}
     if (['TokenLockProposed', 'TokenBurnProposed'].includes(req.event)) {
       update['hash.p1'] = req.hash
+      update.channel = BRIDGE_CHANNEL
+      update.from = req.fromChain.chainId.toString()
+      update.to = req.toChain.chainId.toString()
+      update.proposer = addr
     } else if (['TokenMintProposed', 'TokenUnlockProposed'].includes(req.event)) {
       update['hash.p2'] = req.hash
     } else if (['TokenLockExecuted', 'TokenBurnExecuted'].includes(req.event)) {

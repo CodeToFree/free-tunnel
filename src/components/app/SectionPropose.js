@@ -165,6 +165,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           disabled={belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
+              await postRequest(proposer, reqId, recipient || proposer)
               const hash = await call()
               if (hash) {
                 addRequest(proposer, reqId, recipient || proposer, hash)

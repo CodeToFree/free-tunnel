@@ -33,13 +33,16 @@ async function get(req, res) {
 async function post(req, res) {
   const { proposer, reqId, recipient, hash } = req.body
   const { fromChain, toChain } = parseRequest(reqId)
-  await Requests.findByIdAndUpdate(reqId, {
+  const update = {
     proposer,
     recipient,
-    channel: BRIDGE_CHANNEL,
-    from: fromChain.chainId.toString(),
-    to: toChain.chainId.toString(),
-    'hash.p1': hash,
-  }, { upsert: true })
+  }
+  if (hash) {
+    update['hash.p1'] = hash
+    update.channel = BRIDGE_CHANNEL
+    update.from = fromChain.chainId.toString()
+    update.to = toChain.chainId.toString()
+  }
+  await Requests.findByIdAndUpdate(reqId, update, { upsert: true })
   res.json({ result: true })
 }
