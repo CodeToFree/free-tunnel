@@ -8,8 +8,8 @@
   "tokens": {
     "0xB880fd278198bd590252621d4CD071b1842E9Bcd": "M-BTC",
     "0x5c46bFF4B38dc1EAE09C5BAc65872a1D8bc87378": "MERL",
-    "0x1": "USDC",
-    "0x2": "USDT"
+    "0x6b4eCAdA640F1B30dBdB68f77821A03A5f282EbE": "M-USDC",
+    "0x967aEC3276b63c5E2262da9641DB9dbeBB07dC0d": "M-USDT"
   },
   "atomicId": 16
 }
