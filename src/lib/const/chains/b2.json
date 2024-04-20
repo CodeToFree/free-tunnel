@@ -7,7 +7,8 @@
   "explorerUrl": "https://explorer.bsquared.network",
   "tokens": {
     "0xE544e8a38aDD9B1ABF21922090445Ba93f74B9E5": "USDC",
-    "0x681202351a488040Fa4FdCc24188AfB582c9DD62": "USDT"
+    "0x681202351a488040Fa4FdCc24188AfB582c9DD62": "USDT",
+    "0xD48d3A551757ac47655fCe25BDE1B0B6b1Cb2a5A": "ETH"
   },
   "atomicId": 17
 }
