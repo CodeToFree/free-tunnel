@@ -12,6 +12,11 @@ const CONTRACT_NAME = 'AtomicLockContract' // AtomicLockContract, AtomicMintCont
 module.exports = async function upgrade() {
   await hre.run('compile')
 
+  const proxyAddress = JSON.parse(NEXT_PUBLIC_CONTRACT_ADDRS)[hre.network.name]
+  if (!proxyAddress) {
+    throw new Error('No proxy address')
+  }
+
   const wallet = new ethers.Wallet(PRIVATE_KEY, ethers.provider)
   const admin = wallet.address
   console.log('admin:', admin)
@@ -23,7 +28,6 @@ module.exports = async function upgrade() {
 
   console.log('Upgrading...')
   const abi = JSON.parse(impl.interface.format('json'))
-  const proxyAddress = JSON.parse(NEXT_PUBLIC_CONTRACT_ADDRS)[hre.network.name]
   const proxy = new ethers.Contract(proxyAddress, abi, wallet)
   await proxy.upgradeToAndCall(impl.address, '0x')
   console.log(`${CONTRACT_NAME} Upgraded.`)
