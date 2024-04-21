@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 async function put(req, res) {
   const { proposer, reqId } = req.query
   const { hash = {}, signature = {} } = req.body
-  const { p2, e1, e2 } = hash
+  const { p2, e1, e2, c1, c2 } = hash
   const update = {}
   if (p2) {
     update['hash.p2'] = p2
@@ -21,6 +21,12 @@ async function put(req, res) {
   }
   if (e2) {
     update['hash.e2'] = e2
+  }
+  if (c1) {
+    update['hash.c1'] = c1
+  }
+  if (c2) {
+    update['hash.c2'] = c2
   }
   const { sig, exe } = signature
   if (sig && exe) {

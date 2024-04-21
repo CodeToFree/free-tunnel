@@ -17,6 +17,8 @@ export const RequestSchema = mongoose.Schema({
     p2: String,
     e1: String,
     e2: String,
+    c1: String,
+    c2: String,
   },
   signatures: [SignatureSchema]
 })

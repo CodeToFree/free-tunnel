@@ -8,6 +8,7 @@ import { ROLES, PROPOSE_PERIOD, EXECUTE_PERIOD } from '@/lib/const'
 import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
 import ButtonExecute from './ButtonExecute'
+import ButtonCancel from './ButtonCancel'
 
 const defaultTokens = {
   1: 'USDC',
@@ -75,7 +76,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             : <Badge color='gray'>Not Proposed</Badge>
           }
           {
-            hash?.p1 && hash?.p2 &&
+            hash?.p1 && hash?.p2 && !hash?.c1 &&
             <>
               <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
               {
@@ -85,6 +86,15 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
                   </Badge>
                 : <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
               }
+            </>
+          }
+          {
+            hash?.p1 && hash?.c1 &&
+            <>
+              <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
+              <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.c1}`, '_blank')}>
+                Cancelled
+              </Badge>
             </>
           }
         </div>
@@ -110,7 +120,11 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2}`, '_blank')}>
                 Executed
               </Badge>
-            : hash?.p2 && <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
+            : hash?.c2
+              ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2}`, '_blank')}>
+                  Cancelled
+                </Badge>
+              : hash?.p2 && <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
           }
         </div>
         <RequestActionButton role={role} action={action} exes={exes} {...req} />
@@ -120,10 +134,12 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
 }
 
 function RequestActionButton ({ role, action, exes, ...req }) {
-  if (req.hash?.e2) {
+  if (req.hash?.e2 || req.hash?.c2 || (req.hash?.c1 && !req.hash?.p2)) {
     return
   }
-  if (req.hash?.p2) {
+  if (Date.now() / 1000 > req.created + EXECUTE_PERIOD) {
+    return <div className='mt-2'><ButtonCancel action={action} {...req} /></div>
+  } else if (req.hash?.p2) {
     return <div className='mt-2'><ButtonExecute role={role} action={action} exes={exes} {...req} /></div>
   } else if (role === ROLES.Proposer) {
     return <div className='mt-2'><ButtonPropose action={action} {...req} /></div>
