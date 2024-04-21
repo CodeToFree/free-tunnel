@@ -97,7 +97,6 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        lockedBalanceOf[tokenAddr] -= amount;
 
         if (tokenAddr == address(1)) {
             (bool success, ) = proposer.call{value: amount}("");
