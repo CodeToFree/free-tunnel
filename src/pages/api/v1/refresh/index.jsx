@@ -71,7 +71,7 @@ async function refresh(chain) {
       update.channel = BRIDGE_CHANNEL
       update.from = req.fromChain.chainId.toString()
       update.to = req.toChain.chainId.toString()
-      update.proposer = addr
+      update.proposer = ethers.utils.getAddress(req.addr)
     } else if (['TokenMintProposed', 'TokenUnlockProposed'].includes(req.event)) {
       update['hash.p2'] = req.hash
     } else if (['TokenLockExecuted', 'TokenBurnExecuted'].includes(req.event)) {

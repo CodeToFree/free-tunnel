@@ -59,7 +59,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             <span className='text-white'>Proposer:{' '}</span>
             <a
               className='cursor-pointer hover:text-cyan-500 hover:underline'
-              href={`${chain1.explorerUrl}/hash/${proposer}`}
+              href={`${chain1.explorerUrl}/address/${proposer}`}
               target='_blank'
             >{proposer}</a>
           </div>
