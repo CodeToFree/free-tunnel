@@ -42,8 +42,6 @@ export default function ButtonCancel ({ action, id: reqId, created, proposer, ha
 
   const disabled = Date.now() / 1000 < created + EXECUTE_PERIOD
 
-  console.log(contract, method, reqId.padEnd(66, '0'))
-
   return (
     <ConnectButton color='info' size='xs' forceChains={[chain]} disabled={disabled}>
       <ContractCallButton
