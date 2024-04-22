@@ -28,6 +28,7 @@ createWeb3Modal({
     5: '/tokens/eth.png', // goerli
     11155111: '/tokens/eth.png', // sepolia
     34443: '/tokens/mode.png',
+    169: '/tokens/manta.png',
     4200: '/tokens/merlin.png',
     686868: '/tokens/merlin.png',
     223: '/tokens/b2.png',
