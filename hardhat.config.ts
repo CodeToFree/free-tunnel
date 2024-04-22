@@ -43,7 +43,7 @@ const hardhatConfig = {
     eth: {
       url: "https://rpc.ankr.com/eth",
     },
-    arbitrum: {
+    arb: {
       url: "https://1rpc.io/arb",
     },
     bnb: {
@@ -51,6 +51,9 @@ const hardhatConfig = {
     },
     mode: {
       url: "https://mainnet.mode.network",
+    },
+    manta: {
+      url: "https://pacific-rpc.manta.network/http",
     },
     merlin: {
       url: "https://rpc.merlinchain.io",
