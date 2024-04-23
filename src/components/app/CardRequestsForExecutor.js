@@ -13,7 +13,7 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
-  const requests = useRequests()
+  const requests = useRequests('executor')
   const actionId = action === 'lock-mint' ? 1 : 2
   const reqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))

@@ -40,10 +40,16 @@ const useStoreRequests = create(persist(
 export function useRequests (proposer) {
   const requests = useStoreRequests(state => state.requests)
   return React.useMemo(() => {
-    if (proposer) {
+    if (proposer && proposer !== 'executor') {
       return requests[proposer] || []
     }
-    return Object.entries(requests).map(([proposer, reqs]) => reqs.map(req => ({ ...req, proposer }))).flat()
+    const reqs = Object.entries(requests)
+      .map(([proposer, reqs]) => reqs.map(req => ({ ...req, proposer })))
+      .flat()
+    if (proposer === 'executor') {
+      return reqs.filter(req => !!req.hash?.p2)
+    }
+    return reqs
   }, [proposer, requests])
 }
 
