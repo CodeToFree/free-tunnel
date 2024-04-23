@@ -42,6 +42,7 @@ export const PROJECT_ICON = process.env.NEXT_PUBLIC_PROJECT_ICON
 export const PROJECT_HOMEPAGE = process.env.NEXT_PUBLIC_PROJECT_HOMEPAGE
 
 export const VAULT_LIMIT = Number(process.env.NEXT_PUBLIC_VAULT_LIMIT || 0)
+export const BURN_GAS = process.env.NEXT_PUBLIC_BURN_GAS || '0'
 
 let min = {}
 try {

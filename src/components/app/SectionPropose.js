@@ -11,7 +11,7 @@ import {
   ApprovalGuard,
 } from '@/components/web3'
 
-import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, MIN_AMOUNTS, ADDR_ONE } from '@/lib/const'
+import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, BURN_GAS, MIN_AMOUNTS, ADDR_ONE } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
 import { getAllRequests, getRequests, postRequest } from '@/lib/api'
@@ -67,7 +67,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'
   const value = reqId && token?.addr === ADDR_ONE
     ? ethers.utils.parseEther(parseRequest(reqId).value)
-    : 0
+    : ethers.utils.parseEther(method === 'proposeBurn' ? BURN_GAS : '0')
   const { pending, call } = useContractCall(contract, abi, method, [reqId.padEnd(66, '0'), { value }])
 
   const forceChains = action === 'lock-mint' ? CHAINS_FROM : CHAINS_TO
