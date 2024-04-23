@@ -39,7 +39,7 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], ha
 
   const { addRequestSignature, updateRequestHash } = useRequestsMethods()
 
-  const step = (hash.e1 || !hash.p1) ? 1 : 0
+  const step = (hash.e1 || !hash.p1 || toChain.atomicId === 16) ? 1 : 0
   const chain = EXECUTE_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
   const contract = chain?.AtomicContract
   const { abi, method } = EXECUTE_INFO[action][step]
