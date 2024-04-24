@@ -135,7 +135,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
 }
 
 function RequestActionButton ({ role, action, exes, ...req }) {
-  if (req.hash?.e2 || req.hash?.c2 || (req.hash?.c1 && !req.hash?.p2)) {
+  if ((req.hash?.e1 && req.hash?.e2) || req.hash?.c2 || (req.hash?.c1 && !req.hash?.p2)) {
     return
   }
   if (Date.now() / 1000 > req.created + EXECUTE_PERIOD) {
