@@ -6,6 +6,8 @@ import { parseRequest } from '@/lib/request'
 import { getAllRequests } from '@/lib/api'
 import { useRequests, useRequestsMethods } from '@/stores'
 
+import { PaginationButtons } from '@/components/ui'
+
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
@@ -26,14 +28,30 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
     getAllRequests().then(reqs => updateAllRequests(reqs))
   }, [updateAllRequests])
 
+  const size = 10
+  const [page, setPage] = React.useState(0)
+
   return (
     <Card className='w-full'>
       <div>
-        <div className='mb-1 flex'>
+        <div className='mb-1 flex justify-between'>
           <Label value={`${fromActionName}-${toActionName} Requests`} />
+          <Label value={`Total: ${reqs.length}`} />
         </div>
         {!reqs.length && <div className='text-gray-500'>(None)</div>}
-        {reqs.map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={tokens} role={ROLES.Executor} action={action} exes={exes} />)}
+        {
+          reqs.slice(page * size, (page + 1) * size)
+            .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={tokens} role={ROLES.Executor} action={action} exes={exes} />)
+        }
+        {
+          reqs?.length > 10 &&
+          <PaginationButtons
+            page={page}
+            pages={Math.ceil(reqs.length / 10)}
+            total={reqs.length}
+            onPageChange={setPage}
+          />
+        }
       </div>
     </Card>
   )
