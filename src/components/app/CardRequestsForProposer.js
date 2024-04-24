@@ -35,7 +35,7 @@ export default function CardRequestsForProposer ({ action = 'lock-mint', tokens,
         {!reqs.length && <div className='text-gray-500'>(None)</div>}
         {
           reqs.slice(page * size, (page + 1) * size)
-            .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={tokens} role={ROLES.Proposer} action={action} proposer={proposer} exes={exes} />)
+            .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={tokens} role={role} action={action} proposer={proposer} exes={exes} />)
         }
         {
           reqs?.length > 10 &&
