@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Label } from 'flowbite-react'
+import { Card, Button, Label } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
 import { parseRequest } from '@/lib/request'
@@ -17,11 +17,13 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
 
   const requests = useRequests('executor')
   const actionId = action === 'lock-mint' ? 1 : 2
+  const [finished, setFinished] = React.useState(false)
   const reqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))
       .filter(req => (req.actionId & 0x0f) === actionId)
+      .filter(req => !!(req.hash?.e2 && req.hash?.e1) === finished)
       .sort((x, y) => y.created - x.created) || []
-  }, [requests, actionId])
+  }, [requests, actionId, finished])
 
   const { updateAllRequests } = useRequestsMethods()
   React.useEffect(() => {
@@ -34,8 +36,13 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
   return (
     <Card className='w-full'>
       <div>
-        <div className='mb-1 flex justify-between'>
-          <Label value={`${fromActionName}-${toActionName} Requests`} />
+        <div className='mb-1 flex items-center justify-between'>
+          <div className='flex items-center'>
+            <Label value={`${fromActionName}-${toActionName} Requests`} />
+            <Button size='xs' className='ml-2' color={finished ? 'info' : 'gray'} onClick={() => setFinished(x => !x)}>
+              Finished
+            </Button>
+          </div>
           <Label value={`Total: ${reqs.length}`} />
         </div>
         {!reqs.length && <div className='text-gray-500'>(None)</div>}
