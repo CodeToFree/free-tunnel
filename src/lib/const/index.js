@@ -50,3 +50,10 @@ try {
 } catch {}
 
 export const MIN_AMOUNTS = min
+
+let tokenPaths = {}
+try {
+  tokenPaths = JSON.parse(process.env.NEXT_PUBLIC_TOKEN_PATHS)
+} catch {}
+
+export const TOKEN_PATHS = tokenPaths

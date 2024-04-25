@@ -11,7 +11,7 @@ import {
   ApprovalGuard,
 } from '@/components/web3'
 
-import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, BURN_GAS, MIN_AMOUNTS, ADDR_ONE } from '@/lib/const'
+import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, BURN_GAS, MIN_AMOUNTS, ADDR_ONE, TOKEN_PATHS } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
 import { getAllRequests, getRequests, postRequest } from '@/lib/api'
@@ -32,7 +32,16 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const [vault, setVault] = React.useState(false)
   const [recipient, setRecipient] = React.useState('')
 
-  const targets = action === 'lock-mint' ? CHAINS_TO : CHAINS_FROM
+  const targets = React.useMemo(() => {
+    return (action === 'lock-mint' ? CHAINS_TO : CHAINS_FROM).filter(c => {
+      if (!TOKEN_PATHS[token?.index]) {
+        return true
+      } else {
+        return TOKEN_PATHS[token?.index].includes(c.atomicId)
+      }
+    })
+  }, [action, token?.index])
+  
   const [target, setTarget] = React.useState(targets[0])
 
   React.useEffect(() => {
