@@ -39,9 +39,12 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
         <div className='mb-1 flex items-center justify-between'>
           <div className='flex items-center'>
             <Label value={`${fromActionName}-${toActionName} Requests`} />
-            <Button size='xs' className='ml-2' color={finished ? 'info' : 'gray'} onClick={() => setFinished(x => !x)}>
-              Finished
-            </Button>
+            {
+              requests?.length > 0 &&
+              <Button size='xs' className='ml-2' color={finished ? 'info' : 'gray'} onClick={() => setFinished(x => !x)}>
+                Finished
+              </Button>
+            }
           </div>
           <Label value={`Total: ${reqs.length}`} />
         </div>
