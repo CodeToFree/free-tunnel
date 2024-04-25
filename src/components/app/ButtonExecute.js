@@ -27,7 +27,7 @@ const EXECUTE_INFO = {
 
 export default function ButtonExecuteWrapper ({ role, action, exes, ...req }) {
   const underThreshold = (req.signatures || []).length < (exes?.threshold.toNumber() || Infinity)
-  if (role === ROLES.Proposer && underThreshold) {
+  if (role !== ROLES.Executor && underThreshold) {
     return
   }
   return <ButtonExecute action={action} exes={exes} {...req} />
