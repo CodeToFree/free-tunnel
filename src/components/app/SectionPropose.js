@@ -11,7 +11,7 @@ import {
   ApprovalGuard,
 } from '@/components/web3'
 
-import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, BURN_GAS, MIN_AMOUNTS, ADDR_ONE, TOKEN_PATHS } from '@/lib/const'
+import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, BRIDGE_FEE, MIN_AMOUNTS, ADDR_ONE, TOKEN_PATHS } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
 import { getAllRequests, getRequests, postRequest } from '@/lib/api'
@@ -74,9 +74,11 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const contract = chain?.AtomicContract
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
   const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'
+
+  const bridgeFee = BRIDGE_FEE[target?.atomicId] || '0'
   const value = reqId && token?.addr === ADDR_ONE
     ? ethers.utils.parseEther(parseRequest(reqId).value)
-    : ethers.utils.parseEther(method === 'proposeBurn' ? BURN_GAS : '0')
+    : ethers.utils.parseEther(method === 'proposeBurn' ? bridgeFee : '0')
   const { pending, call } = useContractCall(contract, abi, method, [reqId.padEnd(66, '0'), { value }])
 
   const forceChains = action === 'lock-mint' ? CHAINS_FROM : CHAINS_TO
@@ -162,6 +164,11 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           />
         </div>
       </div>
+
+      {
+        bridgeFee !== '0' &&
+        <div className='text-white text-sm'>Bridge Fee: {bridgeFee} {chain?.currency}</div>
+      }
 
       <ConnectButton color='purple' forceChains={forceChains}>
         <ApprovalGuard
