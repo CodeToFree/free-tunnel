@@ -41,7 +41,11 @@ export const EXECUTE_PERIOD = Number(process.env.NEXT_PUBLIC_EXECUTE_PERIOD || 8
 export const PROJECT_ICON = process.env.NEXT_PUBLIC_PROJECT_ICON
 export const PROJECT_HOMEPAGE = process.env.NEXT_PUBLIC_PROJECT_HOMEPAGE
 
-export const VAULT_LIMIT = Number(process.env.NEXT_PUBLIC_VAULT_LIMIT || 0)
+let vaultLimit = {}
+try {
+  vaultLimit = JSON.parse(process.env.NEXT_PUBLIC_VAULT_LIMIT)
+} catch {}
+export const VAULT_LIMIT = vaultLimit
 
 let bridgeFee = {}
 try {

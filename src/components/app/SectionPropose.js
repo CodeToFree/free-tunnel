@@ -48,11 +48,13 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     setAmount('')
     setVault(false)
   }, [token])
+
+  const vaultLimit = VAULT_LIMIT[token?.index] || 0
   React.useEffect(() => {
-    if (VAULT_LIMIT && Number(amount) >= VAULT_LIMIT) {
+    if (vaultLimit && Number(amount) >= vaultLimit) {
       setVault(true)
     }
-  }, [amount])
+  }, [amount, vaultLimit])
 
   const from = action === 'lock-mint' ? chain?.atomicId : target?.atomicId // TODO to other from
   const to = action === 'lock-mint' ? target?.atomicId : chain?.atomicId
@@ -115,15 +117,15 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
       </div>
 
       {
-        VAULT_LIMIT > 0 &&
+        vaultLimit > 0 &&
         <div>
           <div className='mb-2 flex'>
             <Label value='Vault' />
           </div>
           <div className='flex items-center gap-2 text-white'>
-            <Checkbox checked={vault} onChange={evt => setVault(evt.target.checked)} disabled={Number(amount) >= VAULT_LIMIT} />
+            <Checkbox checked={vault} onChange={evt => setVault(evt.target.checked)} disabled={Number(amount) >= vaultLimit} />
             <div>
-              {action === 'lock-mint' ? 'Lock fund to vault ' : 'Unlock from vault'}{Number(amount) >= VAULT_LIMIT && '(required for large amount)'}
+              {action === 'lock-mint' ? 'Lock fund to vault ' : 'Unlock from vault'}{Number(amount) >= vaultLimit && '(required for large amount)'}
             </div>
           </div>
         </div>
