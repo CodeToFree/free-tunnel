@@ -47,7 +47,7 @@ const hardhatConfig = {
       url: "https://1rpc.io/arb",
     },
     bnb: {
-      url: "https://bsc-dataseed1.bnbchain.org",
+      url: "https://rpc.ankr.com/bsc",
     },
     mode: {
       url: "https://mainnet.mode.network",
