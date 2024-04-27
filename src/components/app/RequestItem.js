@@ -32,7 +32,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const tokenSymbol = fromChain.tokens[token?.addr] || toChain.tokens[token?.addr] || defaultTokens[tokenIndex]
 
   return (
-    <Card className='mt-2'>
+    <Card className='mt-2 overflow-hidden'>
       <div className='-m-2 flex flex-col'>
         <div className='flex justify-between text-gray-500'>
           <div className='text-xs'>{id}</div>
@@ -86,7 +86,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
                 ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1.replace('^', '')}`, '_blank')}>
                     {hash.e1.startsWith('^') && '🟢 '}Executed
                   </Badge>
-                : <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
+                : <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
               }
             </>
           }
@@ -126,7 +126,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
               ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2.replace('^', '')}`, '_blank')}>
                   {hash.c2.startsWith('^') && '🟢 '}Cancelled
                 </Badge>
-              : hash?.p2 && <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
+              : hash?.p2 && <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
           }
         </div>
         <RequestActionButton role={role} action={action} exes={exes} {...req} />

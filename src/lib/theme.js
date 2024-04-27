@@ -1,7 +1,7 @@
-import { Card, Dropdown, Button, TextInput, Label, Spinner } from 'flowbite-react'
+import { Card, Dropdown, Button, TextInput, Label, Badge, Spinner } from 'flowbite-react'
 
 Card.defaultProps = {
-  ...Dropdown.defaultProps,
+  ...Card.defaultProps,
   theme: {
     root: {
       base: 'bg-white/80 dark:bg-gray-900/50 backdrop-blur border border-white dark:border-gray-700 rounded-2xl shadow-2xl overflow-y-auto'
@@ -64,6 +64,15 @@ Label.defaultProps = {
   theme: {
     root: {
       base: 'text-xs text-primary-400 dark:text-gray-400'
+    }
+  }
+}
+
+Badge.defaultProps = {
+  ...Badge.defaultProps,
+  theme: {
+    root: {
+      base: 'flex h-fit items-center gap-1 font-semibold whitespace-nowrap'
     }
   }
 }
