@@ -42,7 +42,7 @@ async function refresh(chain) {
   const provider = new ethers.providers.StaticJsonRpcProvider(chain.rpcUrl)
   const latest = await provider.getBlockNumber('latest')
 
-  let toBlock = latest
+  let toBlock = latest - 50
   let reqs = []
   while (toBlock > latest - 5000) {
     const logs = await provider.getLogs({
