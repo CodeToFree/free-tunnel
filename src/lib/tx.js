@@ -1,8 +1,8 @@
 export function openInExplorer(tx, chain) {
   if (chain.chainId === 'tron') {
-    window.open(`${chain.explorerUrl}/#/transaction/${tx.hash}`, '_blank')
+    window.open(`${chain.explorerUrl}/#/transaction/${tx.hash.replace('^', '')}`, '_blank')
   } else {
-    window.open(`${chain.explorerUrl}/tx/${tx.hash}`, '_blank')
+    window.open(`${chain.explorerUrl}/tx/${tx.hash.replace('^', '')}`, '_blank')
   }
 }
 

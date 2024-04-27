@@ -70,21 +70,21 @@ async function refresh(chain) {
   for (let req of reqs) {
     const update = {}
     if (['TokenLockProposed', 'TokenBurnProposed'].includes(req.event)) {
-      update['hash.p1'] = req.hash
+      update['hash.p1'] = '^' + req.hash
       update.channel = BRIDGE_CHANNEL
       update.from = req.fromChain.chainId.toString()
       update.to = req.toChain.chainId.toString()
       update.proposer = ethers.utils.getAddress(req.addr)
     } else if (['TokenMintProposed', 'TokenUnlockProposed'].includes(req.event)) {
-      update['hash.p2'] = req.hash
+      update['hash.p2'] = '^' + req.hash
     } else if (['TokenLockExecuted', 'TokenBurnExecuted'].includes(req.event)) {
-      update['hash.e1'] = req.hash
+      update['hash.e1'] = '^' + req.hash
     } else if (['TokenMintExecuted', 'TokenUnlockExecuted'].includes(req.event)) {
-      update['hash.e2'] = req.hash
+      update['hash.e2'] = '^' + req.hash
     } else if (['TokenLockCancelled', 'TokenBurnCancelled'].includes(req.event)) {
-      update['hash.c1'] = req.hash
+      update['hash.c1'] = '^' + req.hash
     } else if (['TokenMintCancelled', 'TokenUnlockCancelled'].includes(req.event)) {
-      update['hash.c2'] = req.hash
+      update['hash.c2'] = '^' + req.hash
     } else {
       continue
     }

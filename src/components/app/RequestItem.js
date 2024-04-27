@@ -72,8 +72,8 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
           <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
           {
             hash?.p1
-            ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1}`, '_blank')}>
-                Proposed
+            ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1.replace('^', '')}`, '_blank')}>
+                {hash.p1.startsWith('^') && '🟢 '}Proposed
               </Badge>
             : <Badge color='gray'>Not Proposed</Badge>
           }
@@ -83,8 +83,8 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
               <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
               {
                 hash.e1
-                ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1}`, '_blank')}>
-                    Executed
+                ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1.replace('^', '')}`, '_blank')}>
+                    {hash.e1.startsWith('^') && '🟢 '}Executed
                   </Badge>
                 : <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
               }
@@ -94,8 +94,8 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             hash?.p1 && hash?.c1 &&
             <>
               <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
-              <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.c1}`, '_blank')}>
-                Cancelled
+              <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.c1.replace('^', '')}`, '_blank')}>
+                {hash.c1.startsWith('^') && '🟢 '}Cancelled
               </Badge>
             </>
           }
@@ -106,8 +106,8 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
           {
             hash?.p2
             ? <>
-                <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.p2}`, '_blank')}>
-                  Proposed
+                <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.p2.replace('^', '')}`, '_blank')}>
+                  {hash.p2.startsWith('^') && '🟢 '}Proposed
                 </Badge>
                 <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
               </>
@@ -119,12 +119,12 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
           }
           {
             hash?.e2
-            ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2}`, '_blank')}>
-                Executed
+            ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2.replace('^', '')}`, '_blank')}>
+                {hash.e2.startsWith('^') && '🟢 '}Executed
               </Badge>
             : hash?.c2
-              ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2}`, '_blank')}>
-                  Cancelled
+              ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2.replace('^', '')}`, '_blank')}>
+                  {hash.c2.startsWith('^') && '🟢 '}Cancelled
                 </Badge>
               : hash?.p2 && <Badge color='gray'>Execute before {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
           }
