@@ -41,6 +41,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/stone_merlin.png' className={_className} />
   } else if (token === 'bstone') {
     return <img src='/tokens/stone_b2.png' className={_className} />
+  } else if (token === 'bdgm') {
+    return <img src='/tokens/bdgm.png' className={_className} />
   }
   return <div className={_className} />
 }

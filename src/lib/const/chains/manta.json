@@ -6,7 +6,8 @@
   "rpcUrl": "https://pacific-rpc.manta.network/http",
   "explorerUrl": "https://pacific-explorer.manta.network",
   "tokens": {
-    "0xEc901DA9c68E90798BbBb74c11406A32A70652C3": "STONE"
+    "0xEc901DA9c68E90798BbBb74c11406A32A70652C3": "STONE",
+    "0xae7087ac64237C3b945cB5654957Ff77266ABEB1": "BDGM"
   },
   "atomicId": 11
 }
