@@ -23,7 +23,7 @@ const metadata = {
 createWeb3Modal({
   projectId,
   themeMode: DARK_MODE ? 'dark' : 'light',
-  chains: [...CHAINS_FROM, ...CHAINS_TO].filter(c => c.chainId !== 'tron'),
+  chains: [...CHAINS_TO, ...CHAINS_FROM].filter(c => c.chainId !== 'tron'),
   chainImages: {
     5: '/tokens/eth.png', // goerli
     11155111: '/tokens/eth.png', // sepolia
