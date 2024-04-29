@@ -18,11 +18,11 @@ contract ReqHelpers {
     uint8 constant CHAIN = 0x00;
 
     // This value should be different for different bridge deployments
-    string constant BRIDGE_CHANNEL = "Merlin ERC20 Bridge";
+    string constant BRIDGE_CHANNEL = "B2 Network EVM Bridge";
 
-    uint256 constant PROPOSE_PERIOD = 2 hours;
-    uint256 constant EXPIRE_PERIOD = 24 hours;
-    uint256 constant EXPIRE_EXTRA_PERIOD = 36 hours;
+    uint256 constant PROPOSE_PERIOD = 48 hours;
+    uint256 constant EXPIRE_PERIOD = 72 hours;
+    uint256 constant EXPIRE_EXTRA_PERIOD = 96 hours;
 
     struct ReqHelpersStorage {
         mapping(uint8 => address) _tokens;

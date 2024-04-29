@@ -5,9 +5,13 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "./MintableERC20.sol";
 import "../Permissions.sol";
 import "../ReqHelpers.sol";
+
+interface MintableERC20 is IERC20 {
+    function mint(address to, uint256 amount) external returns (bool);
+    function burn(uint256 amount) external;
+}
 
 contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     using SafeERC20 for MintableERC20;
@@ -26,11 +30,6 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
     function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
         _addToken(tokenIndex, tokenAddr);
-    }
-
-    function createToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
-        MintableERC20 tokenAddr = new MintableERC20(address(this), getVault(), name, symbol, decimals);
-        _addToken(tokenIndex, address(tokenAddr));
     }
 
     function removeToken(uint8 tokenIndex) external onlyAdmin {
@@ -124,7 +123,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        MintableERC20(tokenAddr).burn(address(this), amount);
+        MintableERC20(tokenAddr).burn(amount);
 
         emit TokenBurnExecuted(reqId, proposer);
     }

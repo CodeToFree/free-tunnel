@@ -172,4 +172,8 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         emit TokenUnlockCancelled(reqId, recipient);
     }
+
+    function updateLockedBalanceOf(address tokenAddr, uint256 amount) external onlyAdmin {
+        lockedBalanceOf[tokenAddr] = amount;
+    }
 }
