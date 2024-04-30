@@ -24,6 +24,14 @@ export default function CardRequestsForProposer ({ action = 'lock-mint', tokens,
 
   const threshold = exes?.threshold.toNumber()
   const [tab, setTab] = React.useState(role === ROLES.Proposer ? 'propose' : 'pending')
+  React.useEffect(() => {
+    if (role === ROLES.Proposer) {
+      setTab('propose')
+    } else {
+      setTab('pending')
+    }
+  }, [role])
+
   const { reqs, nPending, nPropose, nSign, nExecute, nFinished, nCancelled } = React.useMemo(() => {
     const pending = allReqs.filter(req => (!req.hash?.e2 && !req.hash?.c2 && req.hash?.p2) || (!req.hash?.e1 && !req.hash?.c1 && req.hash?.p1))
     const propose = allReqs.filter(req => !req.hash?.p2 && !req.hash?.c1)
