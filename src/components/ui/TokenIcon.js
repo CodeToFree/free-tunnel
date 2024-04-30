@@ -4,7 +4,7 @@ export default function TokenIcon ({ size, token, className }) {
   const _className = classnames(
     size === 'sm' ? 'w-4 h-4' : 'w-6 h-6',
     className || 'mr-2',
-    'rounded-full bg-gray-500',
+    'rounded-full',
   )
 
   if (token === 'eth') {
