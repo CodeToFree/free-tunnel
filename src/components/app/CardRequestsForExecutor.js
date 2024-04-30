@@ -65,7 +65,7 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
               Execute {nExecute > 0 && <Badge color='warning' className='ml-1 -mr-0.5 px-1 py-0 rounded-xl text-[10px]'>{nExecute}</Badge>}
             </Button>
             <Button size='xs' color={tab === 'finished' ? 'info' : 'gray'} className='pr-0' onClick={() => onChangeTab('finished')}>
-              Done {nFinished > 0 && <Badge color='success' className='ml-1 -mr-0.5 px-1 py-0 rounded-xl text-[10px]'>{nFinished}</Badge>}
+              Finished {nFinished > 0 && <Badge color='success' className='ml-1 -mr-0.5 px-1 py-0 rounded-xl text-[10px]'>{nFinished}</Badge>}
             </Button>
             <Button size='xs' color={tab === 'cancelled' ? 'info' : 'gray'} onClick={() => onChangeTab('cancelled')}>
               Cancelled {nCancelled > 0 && <Badge color='gray' className='ml-1 -mr-0.5 px-1 py-0 rounded-xl text-[10px]'>{nCancelled}</Badge>}
