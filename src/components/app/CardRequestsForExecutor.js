@@ -28,10 +28,10 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
   const [tab, setTab] = React.useState('propose')
   const { reqs, nFinished, nCancelled, nExecute, nSign, nPropose } = React.useMemo(() => {
     const finished = allReqs.filter(req => req.hash?.e2 && req.hash?.e1)
-    const cancelled = allReqs.filter(req => req.hash?.c2 && req.hash?.c1)
-    const execute = allReqs.filter(req => !(req.hash?.c2 && req.hash?.c1) && !(req.hash?.e2 && req.hash?.e1) && req.signatures?.length >= threshold)
-    const sign = allReqs.filter(req => !(req.hash?.c2 && req.hash?.c1) && req.hash?.p2 && req.signatures?.length < threshold)
-    const propose = allReqs.filter(req => !req.hash?.p2)
+    const cancelled = allReqs.filter(req => (req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1))
+    const execute = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && !(req.hash?.e2 && req.hash?.e1) && req.signatures?.length >= threshold)
+    const sign = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && req.hash?.p2 && req.signatures?.length < threshold)
+    const propose = allReqs.filter(req => !req.hash?.p2 && !req.hash?.c1)
 
     const reqsByTab = { finished, cancelled, execute, sign, propose }
     return { reqs: reqsByTab[tab], nFinished: finished.length, nCancelled: cancelled.length, nExecute: execute.length, nSign: sign.length, nPropose: propose.length }
@@ -57,7 +57,7 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
           <Label value={`${fromActionName}-${toActionName} Requests`} />
         </div>
         <div className='mb-3'>
-          <Button.Group>
+          <Button.Group className='w-auto'>
             <Button size='xs' color={tab === 'propose' ? 'info' : 'gray'} className='pr-0' onClick={() => onChangeTab('propose')}>
               Propose {nPropose > 0 && <Badge color='warning' className='ml-1 -mr-0.5 px-1 py-0 rounded-xl text-[10px]'>{nPropose}</Badge>}
             </Button>

@@ -46,9 +46,6 @@ export function useRequests (proposer) {
     const reqs = Object.entries(requests)
       .map(([proposer, reqs]) => reqs.map(req => ({ ...req, proposer })))
       .flat()
-    if (proposer === 'executor') {
-      return reqs.filter(req => !!req.hash?.p2)
-    }
     return reqs
   }, [proposer, requests])
 }
