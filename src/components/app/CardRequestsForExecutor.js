@@ -23,7 +23,6 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
       .sort((x, y) => y.created - x.created) || []
   }, [requests, actionId])
 
-
   const threshold = exes?.threshold.toNumber()
   const [tab, setTab] = React.useState('sign')
   const { reqs, nSign, nExecute, nFinished, nCancelled } = React.useMemo(() => {
