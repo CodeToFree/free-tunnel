@@ -92,7 +92,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId) external toChainOnly(reqId) {
+    function proposeBurn(bytes32 reqId) payable external toChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
         require(proposedBurn[reqId] == address(0), "Invalid reqId");
