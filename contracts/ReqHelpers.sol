@@ -7,6 +7,7 @@ contract ReqHelpers {
     // 0x00: ethereum
     // 0x01: arbitrum
     // 0x02: bnb smart chain
+    // 0x03: polygon
     // 0x0a: mode
     // 0x0b: manta
     // 0x10: merlin

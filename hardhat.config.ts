@@ -49,6 +49,9 @@ const hardhatConfig = {
     bnb: {
       url: "https://rpc.ankr.com/bsc",
     },
+    polygon: {
+      url: "https://polygon-rpc.com",
+    },
     mode: {
       url: "https://mainnet.mode.network",
     },
