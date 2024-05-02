@@ -27,7 +27,6 @@ createWeb3Modal({
   chainImages: {
     5: '/tokens/eth.png', // goerli
     11155111: '/tokens/eth.png', // sepolia
-    966: '/tokens/polygon.png',
     34443: '/tokens/mode.png',
     169: '/tokens/manta.png',
     4200: '/tokens/merlin.png',
