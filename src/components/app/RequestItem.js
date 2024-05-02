@@ -19,6 +19,8 @@ const defaultTokens = {
   67: 'STONE',
   68: 'FDUSD',
   69: 'BDGM',
+  70: 'M-BTC',
+  71: 'MATIC',
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
