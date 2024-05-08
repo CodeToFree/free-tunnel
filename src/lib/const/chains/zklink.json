@@ -1,0 +1,11 @@
+{
+  "chainId": 810180,
+  "name": "zkLink Nova",
+  "icon": "zklink",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.zklink.io",
+  "explorerUrl": "https://explorer.zklink.io",
+  "tokens": {
+  },
+  "atomicId": 12
+}

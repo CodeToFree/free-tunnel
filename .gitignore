@@ -37,4 +37,7 @@ next-env.d.ts
 
 .vscode
 cache
+cache-zk
 artifacts
+artifacts-zk
+deployments-zk

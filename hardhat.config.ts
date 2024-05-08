@@ -1,5 +1,8 @@
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
+import '@matterlabs/hardhat-zksync-deploy'
+import '@matterlabs/hardhat-zksync-solc'
+import "@matterlabs/hardhat-zksync-verify"
 
 import { task } from 'hardhat/config'
 
@@ -38,6 +41,11 @@ const hardhatConfig = {
       },
     },
   },
+  zksolc: {
+    version: '1.3.22',
+    compilerSource: 'binary',
+    settings: {},
+  },
   defaultNetwork: 'eth',
   networks: {
     eth: {
@@ -52,11 +60,20 @@ const hardhatConfig = {
     polygon: {
       url: "https://polygon-rpc.com",
     },
+    linea: {
+      url: "https://rpc.linea.build",
+    },
     mode: {
       url: "https://mainnet.mode.network",
     },
     manta: {
       url: "https://pacific-rpc.manta.network/http",
+    },
+    zklink: {
+      url: "https://rpc.zklink.io",
+      zksync: true,
+      ethNetwork: 'eth',
+      verifyURL: 'https://explorer.zklink.io/contract_verification',
     },
     merlin: {
       url: "https://rpc.merlinchain.io",

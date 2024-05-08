@@ -1,0 +1,11 @@
+{
+  "chainId": 59144,
+  "name": "Linea",
+  "icon": "linea",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.linea.build",
+  "explorerUrl": "https://lineascan.build",
+  "tokens": {
+  },
+  "atomicId": 7
+}
