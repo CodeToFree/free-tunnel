@@ -7,7 +7,7 @@ export default function MaxButton ({ className, balance, onMax = () => {} }) {
     if (!balance) {
       onMax('')
     } else {
-      onMax(ethers.utils.formatUnits(balance.value, balance.decimals))
+      onMax(Number(ethers.utils.formatUnits(balance.value, balance.decimals)).toFixed(6))
     }
   }, [onMax, balance])
 
