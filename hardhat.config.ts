@@ -82,7 +82,7 @@ const hardhatConfig = {
       url: "https://rpc.bsquared.network",
     },
     bitlayer: {
-      url: "https://mainnet-rpc.bitlayer.org",
+      url: "https://rpc.bitlayer.org",
     },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",

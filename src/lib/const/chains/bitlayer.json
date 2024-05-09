@@ -1,9 +1,9 @@
 {
   "chainId": 200901,
-  "name": "BitLayer",
+  "name": "Bitlayer",
   "icon": "bitlayer",
   "currency": "BTC",
-  "rpcUrl": "https://mainnet-rpc.bitlayer.org",
+  "rpcUrl": "https://rpc.bitlayer.org",
   "explorerUrl": "https://www.btrscan.com",
   "tokens": {
     "0xEf63d4E178b3180BeEc9B0E143e0f37F4c93f4C2": "ETH",
