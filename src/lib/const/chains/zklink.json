@@ -6,6 +6,7 @@
   "rpcUrl": "https://rpc.zklink.io",
   "explorerUrl": "https://explorer.zklink.io",
   "tokens": {
+    "0xbEAf16cFD8eFe0FC97C2a07E349B9411F5dC272C": "SolvBTC"
   },
   "atomicId": 12
 }
