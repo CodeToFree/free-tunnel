@@ -6,6 +6,7 @@
   "rpcUrl": "https://rpc.linea.build",
   "explorerUrl": "https://lineascan.build",
   "tokens": {
+    "0xe4D584ae9b753e549cAE66200A6475d2f00705f7": "M-BTC",
     "0x5FFcE65A40f6d3de5332766ffF6A28BF491C868c": "SolvBTC"
   },
   "atomicId": 7
