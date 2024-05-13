@@ -44,7 +44,7 @@ async function refresh(chain) {
 
   let toBlock = latest - 50
   let reqs = []
-  while (toBlock > latest - 10000) {
+  while (toBlock > latest - 2000) {
     const logs = await provider.getLogs({
       fromBlock: toBlock - 999,
       toBlock,
