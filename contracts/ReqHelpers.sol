@@ -20,6 +20,7 @@ contract ReqHelpers {
     // 0x10: merlin
     // 0x11: b2
     // 0x12: bitlayer
+    // 0x13: bevm
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet

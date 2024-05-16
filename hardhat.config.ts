@@ -84,6 +84,9 @@ const hardhatConfig = {
     bitlayer: {
       url: "https://rpc.bitlayer.org",
     },
+    bevm: {
+      url: "https://rpc-mainnet-1.bevm.io",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

@@ -1,0 +1,14 @@
+{
+  "chainId": 11501,
+  "name": "BEVM",
+  "icon": "bevm",
+  "currency": "BTC",
+  "rpcUrl": "https://rpc-mainnet-1.bevm.io",
+  "explorerUrl": "https://scan-mainnet.bevm.io",
+  "tokens": {
+    "0xCc4E6DEDf27e991B69Ad5752CB807768196bf560": "ETH",
+    "0x2f5ee356fAeBE9C51f5996f09ce807AaeCF14dDF": "USDC",
+    "0x48CfbeC43a29dD3bfb8933e4A183678826494ac7": "USDT"
+  },
+  "atomicId": 19
+}

@@ -36,6 +36,7 @@ createWeb3Modal({
     223: '/tokens/b2.png',
     1102: '/tokens/b2.png',
     200901: '/tokens/bitlayer.png',
+    11501: '/tokens/bevm.png',
   },
   ethersConfig: defaultConfig({ metadata }),
   excludeWalletIds: [
