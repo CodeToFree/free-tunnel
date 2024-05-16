@@ -13,7 +13,7 @@ import ButtonCancel from './ButtonCancel'
 const defaultTokens = {
   1: 'USDC',
   2: 'USDT',
-  64: 'BTC',
+  64: 'M-BTC',
   65: 'ETH',
   66: 'MERL',
   67: 'STONE',
