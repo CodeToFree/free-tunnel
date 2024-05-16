@@ -7,7 +7,7 @@ export default function TokenIcon ({ size, token, className }) {
     'rounded-full',
   )
 
-  if (token === 'eth') {
+  if (token === 'eth' || token === 'beth') {
     return <img src='/tokens/eth.png' className={_className} />
   } else if (token === 'btc' || token === 'btcb' || token === 'fbtc') {
     return <img src='/tokens/btc.png' className={_className} />
@@ -15,9 +15,9 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/mbtc.png' className={_className} />
   } else if (token === 'solvbtc') {
     return <img src='/tokens/solv_btc.png' className={_className} />
-  } else if (token === 'usdc' || token === 'm-usdc') {
+  } else if (token === 'usdc' || token === 'm-usdc' || token === 'busdc') {
     return <img src='/tokens/usdc.png' className={_className} />
-  } else if (token === 'usdt' || token === 'm-usdt') {
+  } else if (token === 'usdt' || token === 'm-usdt' || token === 'busdt') {
     return <img src='/tokens/usdt.png' className={_className} />
   } else if (token === 'fdusd') {
     return <img src='/tokens/fdusd.png' className={_className} />
