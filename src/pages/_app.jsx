@@ -31,6 +31,7 @@ createWeb3Modal({
     34443: '/tokens/mode.png',
     169: '/tokens/manta.png',
     810180: '/tokens/zklink.png',
+    1116: '/tokens/core.png',
     4200: '/tokens/merlin.png',
     686868: '/tokens/merlin.png',
     223: '/tokens/b2.png',

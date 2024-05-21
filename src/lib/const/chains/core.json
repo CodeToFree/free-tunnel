@@ -1,0 +1,11 @@
+{
+  "chainId": 1116,
+  "name": " Core",
+  "icon": "core",
+  "currency": "CORE",
+  "rpcUrl": "https://rpc.coredao.org",
+  "explorerUrl": "https://scan.coredao.org",
+  "tokens": {
+  },
+  "atomicId": 13
+}

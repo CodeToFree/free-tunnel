@@ -75,6 +75,9 @@ const hardhatConfig = {
       ethNetwork: 'eth',
       verifyURL: 'https://explorer.zklink.io/contract_verification',
     },
+    core: {
+      url: "https://rpc.coredao.org",
+    },
     merlin: {
       url: "https://rpc.merlinchain.io",
     },
