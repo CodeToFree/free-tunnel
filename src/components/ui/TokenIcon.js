@@ -43,12 +43,12 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/bitlayer.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
-  } else if (token === 'stone') {
-    return <img src='/tokens/stone.png' className={_className} />
   } else if (token === 'm-stone') {
     return <img src='/tokens/stone_merlin.png' className={_className} />
   } else if (token === 'bstone') {
     return <img src='/tokens/stone_b2.png' className={_className} />
+  } else if (token?.includes('stone')) {
+    return <img src='/tokens/stone.png' className={_className} />
   } else if (token === 'bdgm') {
     return <img src='/tokens/bdgm.png' className={_className} />
   }
