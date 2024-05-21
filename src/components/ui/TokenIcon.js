@@ -15,12 +15,16 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/mbtc.png' className={_className} />
   } else if (token?.includes('solvbtc')) {
     return <img src='/tokens/solv_btc.png' className={_className} />
+  } else if (token === 'bbtc') {
+    return <img src='/tokens/bbtc.png' className={_className} />
   } else if (token === 'usdc' || token === 'm-usdc' || token === 'busdc') {
     return <img src='/tokens/usdc.png' className={_className} />
   } else if (token === 'usdt' || token === 'm-usdt' || token === 'busdt') {
     return <img src='/tokens/usdt.png' className={_className} />
   } else if (token === 'fdusd') {
     return <img src='/tokens/fdusd.png' className={_className} />
+  } else if (token === 'bbusd') {
+    return <img src='/tokens/bbusd.png' className={_className} />
   } else if (token === 'arb') {
     return <img src='/tokens/arb.png' className={_className} />
   } else if (token === 'bnb') {
@@ -43,6 +47,10 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/b2.png' className={_className} />
   } else if (token === 'bitlayer') {
     return <img src='/tokens/bitlayer.png' className={_className} />
+  } else if (token === 'bevm') {
+    return <img src='/tokens/bevm.png' className={_className} />
+  } else if (token === 'bb') {
+    return <img src='/tokens/bb.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'm-stone') {

@@ -90,6 +90,9 @@ const hardhatConfig = {
     bevm: {
       url: "https://rpc-mainnet-1.bevm.io",
     },
+    bb: {
+      url: "https://fullnode-mainnet.bouncebitapi.com",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

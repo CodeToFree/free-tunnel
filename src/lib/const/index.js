@@ -11,6 +11,7 @@ import merlin from './chains/merlin.json'
 import b2 from './chains/b2.json'
 import bitlayer from './chains/bitlayer.json'
 import bevm from './chains/bevm.json'
+import bb from './chains/bb.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
 import b2_testnet from './chains/b2_testnet.json'
@@ -33,7 +34,7 @@ try {
   CONTRACT_ADDRS = JSON.parse(process.env.NEXT_PUBLIC_CONTRACT_ADDRS)
 } catch {}
 
-const chains = Object.fromEntries(Object.entries({ eth, arb, bnb, polygon, linea, mode, manta, zklink, core, merlin, b2, bitlayer, bevm, sepolia, merlin_testnet, b2_testnet })
+const chains = Object.fromEntries(Object.entries({ eth, arb, bnb, polygon, linea, mode, manta, zklink, core, merlin, b2, bitlayer, bevm, bb, sepolia, merlin_testnet, b2_testnet })
   .map(([id, c]) => [id, ({ ...c, AtomicContract: CONTRACT_ADDRS[id] })])
 )
 
