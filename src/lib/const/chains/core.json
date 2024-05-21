@@ -6,6 +6,7 @@
   "rpcUrl": "https://rpc.coredao.org",
   "explorerUrl": "https://scan.coredao.org",
   "tokens": {
+    "0x5B1Fb849f1F76217246B8AAAC053b5C7b15b7dc3": "SolvBTC.b"
   },
   "atomicId": 13
 }

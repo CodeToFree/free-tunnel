@@ -7,7 +7,8 @@
   "explorerUrl": "https://explorer.zklink.io",
   "tokens": {
     "0x85D431A3a56FDf2d2970635fF627f386b4ae49CC": "M-BTC",
-    "0xbEAf16cFD8eFe0FC97C2a07E349B9411F5dC272C": "SolvBTC.m"
+    "0xbEAf16cFD8eFe0FC97C2a07E349B9411F5dC272C": "SolvBTC.m",
+    "0x586E593Ffa60c15Ed722342f3C08cc90410e4fEA": "SolvBTC.b"
   },
   "atomicId": 12
 }
