@@ -22,6 +22,8 @@ const defaultTokens = {
   71: 'MATIC',
   72: 'SolvBTC.m',
   73: 'SolvBTC.b',
+  75: 'BBTC',
+  76: 'BBUSD',
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
