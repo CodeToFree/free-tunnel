@@ -13,7 +13,7 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/btc.png' className={_className} />
   } else if (token === 'm-btc') {
     return <img src='/tokens/mbtc.png' className={_className} />
-  } else if (token === 'solvbtc') {
+  } else if (token?.includes('solvbtc')) {
     return <img src='/tokens/solv_btc.png' className={_className} />
   } else if (token === 'usdc' || token === 'm-usdc' || token === 'busdc') {
     return <img src='/tokens/usdc.png' className={_className} />
