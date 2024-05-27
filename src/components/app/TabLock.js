@@ -11,6 +11,7 @@ import { useFreeChannel } from '@/components/AppProvider'
 import { AppContainer } from '@/components/ui'
 import { ConnectedAddress, TokenSelector } from '@/components/web3'
 import {
+  FreeHeader,
   SectionAdmin,
   SectionPropose,
   CardRequestsForProposer,
@@ -63,7 +64,7 @@ export default function TabLock() {
   const [token, setToken] = React.useState()
 
   return (
-    <AppContainer>
+    <AppContainer Header={FreeHeader}>
       <div className='w-[480px] max-w-full'>
         <Button.Group>
           <Button

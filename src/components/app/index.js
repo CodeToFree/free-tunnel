@@ -1,3 +1,4 @@
+export { default as FreeHeader } from './FreeHeader'
 export { default as TabLock } from './TabLock'
 export { default as TabUnlock } from './TabUnlock'
 

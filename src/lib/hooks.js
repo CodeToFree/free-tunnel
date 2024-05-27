@@ -1,13 +1,56 @@
 import React from 'react'
 import { ethers } from 'ethers'
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { createWeb3Modal, defaultConfig, useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
-import { CHAINS } from '@/lib/const'
+import { DARK_MODE, CHAINS } from '@/lib/const'
 import ERC20 from '@/lib/abis/ERC20.json'
 import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
+
+export function useWeb3ModalFromChannel(channel) {
+  const channelId = channel?.id
+  const [ready, setReady] = React.useState(false)
+
+  const chains = React.useMemo(() => {
+    if (!channelId) {
+      return CHAINS
+    }
+    return [...channel.from, ...channel.to].map(id => CHAINS.find(c => c.id === id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channelId])
+
+  React.useEffect(() => {
+    const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID || '';
+
+    const metadata = {
+      name: 'Free Atomic Lock-Mint',
+      description: '',
+      url: '',
+      icons: ['/logo.png'],
+    }
+
+    createWeb3Modal({
+      projectId,
+      themeMode: DARK_MODE ? 'dark' : 'light',
+      chains: chains.filter(c => c.chainId !== 'tron'),
+      chainImages: Object.fromEntries(chains.map(c => [c.chainId, `/tokens/${c.icon}.png`])),
+      ethersConfig: defaultConfig({ metadata }),
+      excludeWalletIds: [
+        'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
+      ],
+      themeVariables: {
+        '--w3m-accent': '#6335FF',
+      }
+    })
+
+    setReady(true)
+  }, [chains])
+
+  return ready
+}
 
 export function toValue(input, decimals = 18) {
   if (ethers.BigNumber.isBigNumber(input)) {
