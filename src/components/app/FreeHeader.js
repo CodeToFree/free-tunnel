@@ -50,7 +50,7 @@ export default function FreeHeader () {
 
 export function ChannelDetail ({ channel }) {
   return (
-    <div className='mt-5 grid gap-y-4'>
+    <div className='mt-5 grid gap-y-4 text-black'>
     {
       channel.from.map(id => {
         const chain = typeof id === 'string' ? CHAINS.find(c => c.id === id) : id
