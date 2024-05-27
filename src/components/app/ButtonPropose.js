@@ -20,14 +20,14 @@ export default function ButtonPropose ({ action, proposer, id: reqId, recipient,
   const { channel, contractAddr } = useFreeChannel(chain)
   const toActionName = capitalize(action.split('-')[1])
 
-  const { updateRequestHash } = useRequestsMethods()
+  const { storeRequestAddHash } = useRequestsMethods()
 
   const abi = action === 'lock-mint' ? AtomicMint : AtomicLock
   const method = action === 'lock-mint' ? 'proposeMint' : 'proposeUnlock'
   const callback = React.useCallback(async hash => {
-    updateRequestHash(proposer, reqId, { p2: hash })
+    storeRequestAddHash(channel.id, proposer, reqId, { p2: hash })
     await updateRequest(channel.id, proposer, reqId, { hash: { p2: hash } })
-  }, [channel.id, proposer, reqId, updateRequestHash])
+  }, [channel.id, proposer, reqId, storeRequestAddHash])
 
   return (
     <ConnectButton color='info' size='xs' forceChains={action === 'lock-mint' ? [toChain] : [fromChain]}>

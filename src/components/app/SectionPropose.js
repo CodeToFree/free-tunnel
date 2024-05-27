@@ -65,16 +65,16 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     () => newRequestId(action, amount, token?.index, from, to, vault),
     [action, amount, token?.index, from, to, vault]
   )
-  const { addRequest, updateProposerRequests, updateAllRequests } = useRequestsMethods()
+  const { storeRequestAdd, storeRequestUpdateForProposer, storeRequestUpdateAll } = useRequestsMethods()
   React.useEffect(() => {
     if (proposer) {
       if (role) {
-        getAllRequests(channel.id).then(reqs => updateAllRequests(reqs))
+        getAllRequests(channel.id).then(reqs => storeRequestUpdateAll(channel.id, reqs))
       } else {
-        getRequests(channel.id, proposer).then(reqs => updateProposerRequests(proposer, reqs))
+        getRequests(channel.id, proposer).then(reqs => storeRequestUpdateForProposer(channel.id, proposer, reqs))
       }
     }
-  }, [channel.id, proposer, role, updateProposerRequests, updateAllRequests])
+  }, [channel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateAll])
 
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
   const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'
@@ -186,7 +186,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
               await postRequest(channel.id, proposer, reqId, recipient || proposer)
               const hash = await call()
               if (hash) {
-                addRequest(proposer, reqId, recipient || proposer, hash)
+                storeRequestAdd(channel.id, proposer, reqId, recipient || proposer, hash)
                 await postRequest(channel.id, proposer, reqId, recipient || proposer, hash)
               }
             }

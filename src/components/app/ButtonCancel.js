@@ -27,7 +27,7 @@ const CANCEL_INFO = {
 }
 
 export default function ButtonCancel ({ action, id: reqId, created, proposer, hash, fromChain, toChain }) {
-  const { updateRequestHash } = useRequestsMethods()
+  const { storeRequestAddHash } = useRequestsMethods()
 
   const step = (hash.c1 && hash.p2) ? 1 : 0
   const actionName = capitalize(action.split('-')[step])
@@ -37,9 +37,9 @@ export default function ButtonCancel ({ action, id: reqId, created, proposer, ha
   const { abi, method } = CANCEL_INFO[action][step]
 
   const callback = React.useCallback(async hash => {
-    updateRequestHash(proposer, reqId, { [step ? 'c2' : 'c1']: hash })
+    storeRequestAddHash(channel.id, proposer, reqId, { [step ? 'c2' : 'c1']: hash })
     await updateRequest(channel.id, proposer, reqId, { hash: { [step ? 'c2' : 'c1']: hash } })
-  }, [channel.id, proposer, reqId, updateRequestHash, step])
+  }, [channel.id, proposer, reqId, storeRequestAddHash, step])
 
   const disabled = Date.now() / 1000 < created + EXECUTE_PERIOD
 

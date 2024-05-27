@@ -38,7 +38,7 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], ha
   const executor = useAddress()
   const provider = useProvider()
 
-  const { addRequestSignature, updateRequestHash } = useRequestsMethods()
+  const { storeRequestAddSignature, storeRequestAddHash } = useRequestsMethods()
 
   const step = (hash.e1 || !hash.p1) ? 1 : 0
   const chain = EXECUTE_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
@@ -50,9 +50,9 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], ha
     const fullReqId = reqId.padEnd(66, '0')
     const sig = await provider.getSigner().signMessage(`[${channel.name}]\nSign to execute a ${action}:\n${fullReqId}`)
     const { compact } = ethers.utils.splitSignature(sig)
-    addRequestSignature(proposer, reqId, { sig: compact, exe: executor })
+    storeRequestAddSignature(channel.id, proposer, reqId, { sig: compact, exe: executor })
     await updateRequest(channel.id, proposer, reqId, { signature: { sig: compact, exe: executor } })
-  }, [channel.id, channel.name, reqId, action, provider, addRequestSignature, proposer, executor])
+  }, [channel.id, channel.name, reqId, action, provider, storeRequestAddSignature, proposer, executor])
 
   const exeIndex = exes?.exeIndex.toNumber()
   const execute = React.useCallback(async () => {
@@ -65,14 +65,14 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], ha
     const hash = await call([fullReqId, sigs.map(s => s.r), sigs.map(s => s.s), sigs.map(s => s.exe), exeIndex])
     if (hash) {
       if (!step) {
-        updateRequestHash(proposer, reqId, { e1: hash })
+        storeRequestAddHash(channel.id, proposer, reqId, { e1: hash })
         await updateRequest(channel.id, proposer, reqId, { hash: { e1: hash } })
       } else {
-        updateRequestHash(proposer, reqId, { e2: hash })
+        storeRequestAddHash(channel.id, proposer, reqId, { e2: hash })
         await updateRequest(channel.id, proposer, reqId, { hash: { e2: hash } })
       }
     }
-  }, [channel.id, reqId, proposer, signatures, exeIndex, call, step, updateRequestHash])
+  }, [channel.id, reqId, proposer, signatures, exeIndex, call, step, storeRequestAddHash])
 
   const signed = signatures.find(({ exe }) => exe === executor)
   const threshold = exes?.threshold.toNumber()
