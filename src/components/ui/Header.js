@@ -1,13 +1,11 @@
 import React from 'react'
 import useSWR from 'swr'
-import { useRouter } from 'next/router'
 import { Navbar, Button, Modal, Dropdown } from 'flowbite-react'
-import { HiCheckCircle, HiOutlineMinusCircle } from 'react-icons/hi'
+import { HiCheckCircle } from 'react-icons/hi'
 
 import { fetcher } from '@/lib/api'
 
 import { useFreeChannel } from '@/components/AppProvider'
-import { TokenIcon } from '@/components/ui'
 import { ConnectButton } from '@/components/web3'
 
 const channels = [
@@ -15,7 +13,6 @@ const channels = [
 ]
 
 export default function Header () {
-  const router = useRouter()
   const { channel } = useFreeChannel()
   const [openModal, setOpenModal] = React.useState(false)
   const [selected, setSelected] = React.useState(channel)
@@ -48,9 +45,7 @@ export default function Header () {
           </Dropdown>
         </Modal.Body>
         <Modal.Footer className='flex justify-end'>
-          <Button onClick={() => {
-            window.location.href = `/${selected.id}`
-          }}>Confirm</Button>
+          <Button onClick={() => window.location.href = `/${selected.id}`}>Confirm</Button>
         </Modal.Footer>
       </Modal>
     </Navbar>
