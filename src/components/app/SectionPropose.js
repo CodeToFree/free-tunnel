@@ -142,7 +142,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
       </div>
 
       {
-        bridgeFee !== '0' && forceChains.map(c => c.id).includes(chain.id) &&
+        bridgeFee !== '0' && forceChains.map(c => c.id).includes(chain?.id) &&
         <div className='text-white text-sm'>Bridge Fee: {bridgeFee} {chain?.currency}</div>
       }
 
