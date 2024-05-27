@@ -46,7 +46,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   }, [token])
 
   const vaultLimit = channel.vault?.[token?.index] || 0
-  const useVault = Number(amount) >= vaultLimit
+  const useVault = Boolean(vaultLimit) && (Number(amount) >= vaultLimit)
 
   const from = action === 'lock-mint' ? chain?.atomicId : target?.atomicId // TODO to other from
   const to = action === 'lock-mint' ? target?.atomicId : chain?.atomicId
