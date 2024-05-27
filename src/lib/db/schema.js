@@ -9,6 +9,9 @@ export const ChannelSchema = mongoose.Schema({
   from: [String],
   to: [String],
   contracts: Object,
+  min: Object,
+  vault: Object,
+  fee: Object,
 })
 
 const SignatureSchema = new mongoose.Schema({

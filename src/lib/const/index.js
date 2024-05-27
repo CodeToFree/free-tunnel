@@ -34,27 +34,3 @@ const chains = { eth, arb, bnb, polygon, linea, mode, manta, zklink, core, merli
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)
 export const EXECUTE_PERIOD = Number(process.env.NEXT_PUBLIC_EXECUTE_PERIOD || 86400 * 3)
-
-let vaultLimit = {}
-try {
-  vaultLimit = JSON.parse(process.env.NEXT_PUBLIC_VAULT_LIMIT)
-} catch {}
-export const VAULT_LIMIT = vaultLimit
-
-let bridgeFee = {}
-try {
-  bridgeFee = JSON.parse(process.env.NEXT_PUBLIC_BRIDGE_FEE)
-} catch {}
-export const BRIDGE_FEE = bridgeFee
-
-let min = {}
-try {
-  min = JSON.parse(process.env.NEXT_PUBLIC_MIN_AMOUNTS)
-} catch {}
-export const MIN_AMOUNTS = min
-
-let tokenPaths = {}
-try {
-  tokenPaths = JSON.parse(process.env.NEXT_PUBLIC_TOKEN_PATHS)
-} catch {}
-export const TOKEN_PATHS = tokenPaths
