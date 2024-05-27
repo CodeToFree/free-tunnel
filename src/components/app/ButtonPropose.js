@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -16,22 +17,22 @@ import { capitalize } from './lib'
 
 export default function ButtonPropose ({ action, proposer, id: reqId, recipient, fromChain, toChain }) {
   const chain = useChain()
+  const { channel, contractAddr } = useFreeChannel(chain)
   const toActionName = capitalize(action.split('-')[1])
 
   const { updateRequestHash } = useRequestsMethods()
 
-  const contract = chain?.AtomicContract
   const abi = action === 'lock-mint' ? AtomicMint : AtomicLock
   const method = action === 'lock-mint' ? 'proposeMint' : 'proposeUnlock'
   const callback = React.useCallback(async hash => {
     updateRequestHash(proposer, reqId, { p2: hash })
-    await updateRequest(proposer, reqId, { hash: { p2: hash } })
-  }, [proposer, reqId, updateRequestHash])
+    await updateRequest(channel.id, proposer, reqId, { hash: { p2: hash } })
+  }, [channel.id, proposer, reqId, updateRequestHash])
 
   return (
     <ConnectButton color='info' size='xs' forceChains={action === 'lock-mint' ? [toChain] : [fromChain]}>
       <ContractCallButton
-        address={contract}
+        address={contractAddr}
         abi={abi}
         method={method}
         args={[reqId.padEnd(66, '0'), recipient]}

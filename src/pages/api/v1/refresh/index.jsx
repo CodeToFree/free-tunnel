@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 
-import { Requests } from '@/lib/db'
-import { BRIDGE_CHANNEL, CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { Channels, Requests } from '@/lib/db'
+import { CHAINS } from '@/lib/const'
 import { parseRequest } from '@/lib/request'
 
 const events = {
@@ -33,12 +33,23 @@ export default async function handler(req, res) {
 }
 
 async function post(req, res) {
-  await Promise.all([...CHAINS_FROM, ...CHAINS_TO].map(refresh))
+  const channel = await Channels.findById(req.query.channelId)
+  if (!channel) {
+    return res.status(404).send()
+  }
+
+  await Promise.all([...channel.from, ...channel.to].map(id => refresh(id, channel)))
 
   res.json({ result: true  })
 }
 
-async function refresh(chain) {
+async function refresh(id, channel) {
+  const chain = CHAINS.find(c => c.id === id)
+  const contractAddr = channel.contracts[id]
+  if (!chain || !contractAddr) {
+    return
+  }
+
   const provider = new ethers.providers.StaticJsonRpcProvider(chain.rpcUrl)
   const latest = await provider.getBlockNumber('latest')
 
@@ -48,7 +59,7 @@ async function refresh(chain) {
     const logs = await provider.getLogs({
       fromBlock: toBlock - 999,
       toBlock,
-      address: chain.AtomicContract,
+      address: contractAddr,
       topics: [],
     })
 
@@ -71,7 +82,7 @@ async function refresh(chain) {
     const update = {}
     if (['TokenLockProposed', 'TokenBurnProposed'].includes(req.event)) {
       update['hash.p1'] = '^' + req.hash
-      update.channel = BRIDGE_CHANNEL
+      update.channel = channel.name
       update.from = req.fromChain.chainId.toString()
       update.to = req.toChain.chainId.toString()
       update.proposer = ethers.utils.getAddress(req.addr)

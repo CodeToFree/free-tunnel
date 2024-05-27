@@ -3,11 +3,12 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Card, Label, Button, Badge } from 'flowbite-react'
 
-import { ROLES, BRIDGE_CHANNEL } from '@/lib/const'
+import { ROLES } from '@/lib/const'
 import { useChain, useAddress, useContractQuery } from '@/lib/hooks'
 import Permissions from '@/lib/abis/Permissions.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { AppContainer } from '@/components/ui'
 import { ConnectedAddress, TokenSelector } from '@/components/web3'
 import {
@@ -24,8 +25,7 @@ export default function PageUnlock() {
   const router = useRouter()
   const chain = useChain()
   const address = useAddress()
-
-  const contractAddr = chain?.AtomicContract
+  const { contractAddr } = useFreeChannel(chain)
 
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
@@ -62,7 +62,7 @@ export default function PageUnlock() {
   return (
     <AppContainer>
       <Head>
-        <title>{BRIDGE_CHANNEL}</title>
+        <title>Free Atomic-Lock-Mint</title>
       </Head>
 
       <div className='w-[480px] max-w-full'>

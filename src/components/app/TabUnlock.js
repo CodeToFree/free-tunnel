@@ -1,5 +1,4 @@
 import React from 'react'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Card, Label, Button, Badge } from 'flowbite-react'
 
@@ -19,17 +18,13 @@ import {
   capitalize,
 } from '@/components/app'
 
-export const ROLE_COLORS = {
-  [ROLES.Admin]: 'red', 
-  [ROLES.Proposer]: 'info', 
-  [ROLES.Executor]: 'success', 
-}
+import { ROLE_COLORS } from './TabLock'
 
-export default function Home() {
+export default function TabUnlock() {
   const router = useRouter()
   const chain = useChain()
   const address = useAddress()
-  const { contractAddr } = useFreeChannel(chain)
+  const { channel, contractAddr } = useFreeChannel(chain)
 
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
@@ -65,24 +60,20 @@ export default function Home() {
 
   return (
     <AppContainer>
-      <Head>
-        <title>Free Atomic-Lock-Mint</title>
-      </Head>
-
       <div className='w-[480px] max-w-full'>
         <Button.Group>
-          <Button
-            color='purple'
-            size='sm'
-            className='flex-1'
-          >
-            Lock-Mint
-          </Button>
           <Button
             color='gray'
             size='sm'
             className='flex-1'
-            onClick={() => router.push('/unlock')}
+            onClick={() => router.push(`/${channel.id}`)}
+          >
+            Lock-Mint
+          </Button>
+          <Button
+            color='purple'
+            size='sm'
+            className='flex-1'
           >
             Burn-Unlock
           </Button>
@@ -105,19 +96,19 @@ export default function Home() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer) && <SectionPropose action='lock-mint' role={role} token={token} />}
+          {(!role || role === ROLES.Proposer) && <SectionPropose action='burn-unlock' role={role} token={token} />}
         </Card>
       </div>
       {
         (!role || role === ROLES.Proposer) &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='lock-mint' tokens={tokens} proposer={address} role={role} exes={exes} />
+          <CardRequestsForProposer action='burn-unlock' tokens={tokens} proposer={address} role={role} exes={exes} />
         </div>
       }
       {
         role === ROLES.Executor &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForExecutor action='lock-mint' tokens={tokens} exes={exes} />
+          <CardRequestsForExecutor action='burn-unlock' tokens={tokens} exes={exes} />
         </div>
       }
     </AppContainer>

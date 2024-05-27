@@ -1,5 +1,4 @@
 import React from 'react'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Card, Label, Button, Badge } from 'flowbite-react'
 
@@ -25,11 +24,11 @@ export const ROLE_COLORS = {
   [ROLES.Executor]: 'success', 
 }
 
-export default function Home() {
+export default function TabLock() {
   const router = useRouter()
   const chain = useChain()
   const address = useAddress()
-  const { contractAddr } = useFreeChannel(chain)
+  const { channel, contractAddr } = useFreeChannel(chain)
 
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
@@ -65,10 +64,6 @@ export default function Home() {
 
   return (
     <AppContainer>
-      <Head>
-        <title>Free Atomic-Lock-Mint</title>
-      </Head>
-
       <div className='w-[480px] max-w-full'>
         <Button.Group>
           <Button
@@ -82,7 +77,7 @@ export default function Home() {
             color='gray'
             size='sm'
             className='flex-1'
-            onClick={() => router.push('/unlock')}
+            onClick={() => router.push(`/${channel.id}/unlock`)}
           >
             Burn-Unlock
           </Button>

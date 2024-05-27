@@ -1,5 +1,5 @@
-import { Requests } from '@/lib/db'
-import { BRIDGE_CHANNEL, CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { Channels, Requests } from '@/lib/db'
+import { CHAINS } from '@/lib/const'
 import { parseRequest } from '@/lib/request'
 
 export default async function handler(req, res) {
@@ -12,12 +12,17 @@ export default async function handler(req, res) {
 }
 
 async function get(req, res) {
+  const channel = await Channels.findById(req.query.channelId)
+  if (!channel) {
+    return res.status(404).send()
+  }
+
   const result = await Requests.aggregate([
     {
       $match: {
-        channel: BRIDGE_CHANNEL,
-        from: { $in: CHAINS_FROM.map(c => c.chainId.toString()) },
-        to: { $in: CHAINS_TO.map(c => c.chainId.toString()) },
+        channel: channel.name,
+        from: { $in: channel.from.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
+        to: { $in: channel.to.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
       },
     },
     {
@@ -31,6 +36,11 @@ async function get(req, res) {
 }
 
 async function post(req, res) {
+  const channel = await Channels.findById(req.query.channelId)
+  if (!channel) {
+    return res.status(404).send()
+  }
+
   const { proposer, reqId, recipient, hash } = req.body
   const { fromChain, toChain } = parseRequest(reqId)
   const update = {
@@ -39,7 +49,7 @@ async function post(req, res) {
   }
   if (hash) {
     update['hash.p1'] = hash
-    update.channel = BRIDGE_CHANNEL
+    update.channel = channel.name
     update.from = fromChain.chainId.toString()
     update.to = toChain.chainId.toString()
   }

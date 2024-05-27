@@ -6,12 +6,15 @@ import { parseRequest } from '@/lib/request'
 import { getAllRequests } from '@/lib/api'
 import { useRequests, useRequestsMethods } from '@/stores'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { PaginationButtons } from '@/components/ui'
 
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
 export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens, exes }) {
+  const { channel } = useFreeChannel()
+
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
@@ -38,8 +41,8 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
 
   const { updateAllRequests } = useRequestsMethods()
   React.useEffect(() => {
-    getAllRequests().then(reqs => updateAllRequests(reqs))
-  }, [updateAllRequests])
+    getAllRequests(channel.id).then(reqs => updateAllRequests(reqs))
+  }, [channel.id, updateAllRequests])
 
   const size = 10
   const [page, setPage] = React.useState(0)

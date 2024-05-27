@@ -4,12 +4,10 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
-import { CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { CHAINS } from '@/lib/const'
 import ERC20 from '@/lib/abis/ERC20.json'
 import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
-
-const CHAINS = [...CHAINS_FROM, ...CHAINS_TO]
 
 export function toValue(input, decimals = 18) {
   if (ethers.BigNumber.isBigNumber(input)) {

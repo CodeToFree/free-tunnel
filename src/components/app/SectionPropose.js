@@ -2,6 +2,7 @@ import React from 'react'
 import { Label, TextInput, Checkbox } from 'flowbite-react'
 import { ethers } from 'ethers'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -11,7 +12,7 @@ import {
   ApprovalGuard,
 } from '@/components/web3'
 
-import { CHAINS_FROM, CHAINS_TO, VAULT_LIMIT, BRIDGE_FEE, MIN_AMOUNTS, ADDR_ONE, TOKEN_PATHS } from '@/lib/const'
+import { VAULT_LIMIT, BRIDGE_FEE, MIN_AMOUNTS, ADDR_ONE, TOKEN_PATHS } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
 import { getAllRequests, getRequests, postRequest } from '@/lib/api'
@@ -23,6 +24,7 @@ import { capitalize } from './lib'
 
 export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const chain = useChain()
+  const { channel, contractAddr } = useFreeChannel(chain)
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
@@ -32,16 +34,17 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const [vault, setVault] = React.useState(false)
   const [recipient, setRecipient] = React.useState('')
 
+  const forceChains = action === 'lock-mint' ? channel.from : channel.to
+  const targetChains = action === 'lock-mint' ? channel.to : channel.from
   const targets = React.useMemo(() => {
-    return (action === 'lock-mint' ? CHAINS_TO : CHAINS_FROM).filter(c => {
+    return targetChains.filter(c => {
       if (!TOKEN_PATHS[token?.index]) {
         return true
       } else {
         return TOKEN_PATHS[token?.index].includes(c.atomicId)
       }
     })
-  }, [action, token?.index])
-  
+  }, [targetChains, token?.index])
   const [target, setTarget] = React.useState(targets[0])
 
   React.useEffect(() => {
@@ -66,14 +69,13 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   React.useEffect(() => {
     if (proposer) {
       if (role) {
-        getAllRequests().then(reqs => updateAllRequests(reqs))
+        getAllRequests(channel.id).then(reqs => updateAllRequests(reqs))
       } else {
-        getRequests(proposer).then(reqs => updateProposerRequests(proposer, reqs))
+        getRequests(channel.id, proposer).then(reqs => updateProposerRequests(proposer, reqs))
       }
     }
-  }, [proposer, role, updateProposerRequests, updateAllRequests])
+  }, [channel.id, proposer, role, updateProposerRequests, updateAllRequests])
 
-  const contract = chain?.AtomicContract
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
   const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'
 
@@ -81,9 +83,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const value = reqId && token?.addr === ADDR_ONE
     ? ethers.utils.parseEther(parseRequest(reqId).value)
     : ethers.utils.parseEther(method === 'proposeBurn' ? bridgeFee : '0')
-  const { pending, call } = useContractCall(contract, abi, method, [reqId.padEnd(66, '0'), { value }])
-
-  const forceChains = action === 'lock-mint' ? CHAINS_FROM : CHAINS_TO
+  const { pending, call } = useContractCall(contractAddr, abi, method, [reqId.padEnd(66, '0'), { value }])
 
   if (!proposer) {
     return <ConnectButton color='purple' forceChains={forceChains} />
@@ -178,16 +178,16 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           input={amount}
           balance={balance?.value}
           decimals={balance?.decimals}
-          spender={contract}
+          spender={contractAddr}
           pending={pending}
           disabled={belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
-              await postRequest(proposer, reqId, recipient || proposer)
+              await postRequest(channel.id, proposer, reqId, recipient || proposer)
               const hash = await call()
               if (hash) {
                 addRequest(proposer, reqId, recipient || proposer, hash)
-                await postRequest(proposer, reqId, recipient || proposer, hash)
+                await postRequest(channel.id, proposer, reqId, recipient || proposer, hash)
               }
             }
           }}
