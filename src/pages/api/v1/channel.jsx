@@ -8,6 +8,6 @@ export default async function handler(req, res) {
 }
 
 async function get(req, res) {
-  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo')
-  res.json({ result: result.map(({ _id, name, logo }) => ({ id: _id, name, logo })) })
+  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo from to contracts')
+  res.json({ result: result.map(({ _id, name, logo, from, to, contracts }) => ({ id: _id, name, logo, from, to, contracts })) })
 }
