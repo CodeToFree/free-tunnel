@@ -4,42 +4,44 @@ import { persist } from 'zustand/middleware'
 
 const useStoreRequests = create(persist(
   set => ({
-    requests: {},
-    addRequest: (proposer, reqId, recipient, hash) => (
-      set(state => ({ ...state, requests: {
-        ...state.requests,
-        [proposer]: [...(state.requests[proposer] || []), { id: reqId, recipient, hash: { p1: hash } }],
+    storeRequestAdd: (channelId, proposer, reqId, recipient, hash) => (
+      set(state => ({ ...state, [channelId]: {
+        ...state[channelId],
+        [proposer]: [...(state[channelId]?.[proposer] || []), { id: reqId, recipient, hash: { p1: hash } }],
       } }))
     ),
-    updateProposerRequests: (proposer, reqs) => (
-      set(state => ({ ...state, requests: {
-        ...state.requests,
+    storeRequestUpdateForProposer: (channelId, proposer, reqs) => (
+      set(state => ({ ...state, [channelId]: {
+        ...state[channelId],
         [proposer]: reqs,
       } }))
     ),
-    updateAllRequests: requests => set(state => ({ ...state, requests })),
-    addRequestSignature: (proposer, reqId, { sig, exe }) => (
-      set(state => ({ ...state, requests: {
-        ...state.requests,
-        [proposer]: state.requests[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, signatures: [...(req.signatures || []), { sig, exe }] })),
+    storeRequestUpdateAll: (channelId, requests) => set(state => ({ ...state, [channelId]: requests })),
+    storeRequestAddSignature: (channelId, proposer, reqId, { sig, exe }) => (
+      set(state => ({ ...state, [channelId]: {
+        ...state[channelId],
+        [proposer]: state[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, signatures: [...(req.signatures || []), { sig, exe }] })),
       } }))
     ),
-    updateRequestHash: (proposer, reqId, hash) => (
-      set(state => ({ ...state, requests: {
-        ...state.requests,
-        [proposer]: state.requests[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, hash: { ...req.hash, ...hash } })),
+    storeRequestAddHash: (channelId, proposer, reqId, hash) => (
+      set(state => ({ ...state, [channelId]: {
+        ...state[channelId],
+        [proposer]: state[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, hash: { ...req.hash, ...hash } })),
       } }))
     ),
   }),
   {
-    name: 'req' // store-requests
+    name: 'free_requests'
   }
 ))
 
 
-export function useRequests (proposer) {
-  const requests = useStoreRequests(state => state.requests)
+export function useRequests (channelId, proposer) {
+  const requests = useStoreRequests(state => state[channelId])
   return React.useMemo(() => {
+    if (!requests) {
+      return []
+    }
     if (proposer && proposer !== 'executor') {
       return requests[proposer] || []
     }
@@ -51,17 +53,17 @@ export function useRequests (proposer) {
 }
 
 export function useRequestsMethods () {
-  const addRequest = useStoreRequests(state => state.addRequest)
-  const updateProposerRequests = useStoreRequests(state => state.updateProposerRequests)
-  const updateAllRequests = useStoreRequests(state => state.updateAllRequests)
-  const addRequestSignature = useStoreRequests(state => state.addRequestSignature)
-  const updateRequestHash = useStoreRequests(state => state.updateRequestHash)
+  const storeRequestAdd = useStoreRequests(state => state.storeRequestAdd)
+  const storeRequestUpdateForProposer = useStoreRequests(state => state.storeRequestUpdateForProposer)
+  const storeRequestUpdateAll = useStoreRequests(state => state.storeRequestUpdateAll)
+  const storeRequestAddSignature = useStoreRequests(state => state.storeRequestAddSignature)
+  const storeRequestAddHash = useStoreRequests(state => state.storeRequestAddHash)
 
   return {
-    addRequest,
-    updateProposerRequests,
-    updateAllRequests,
-    addRequestSignature,
-    updateRequestHash,
+    storeRequestAdd,
+    storeRequestUpdateForProposer,
+    storeRequestUpdateAll,
+    storeRequestAddSignature,
+    storeRequestAddHash,
   }
 }

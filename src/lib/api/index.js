@@ -4,7 +4,7 @@ const headers = {
   'Content-Type': 'application/json',
 }
 
-async function _fetch(apiPath, method = 'GET', data) {
+export async function fetcher(apiPath, method = 'GET', data) {
   const option = {
     method,
     headers,
@@ -23,20 +23,20 @@ async function _fetch(apiPath, method = 'GET', data) {
   }
 }
 
-export async function getRequests(proposer) {
-  const reqs = await _fetch(`api/v1/request/${proposer}`)
+export async function getRequests(channelId, proposer) {
+  const reqs = await fetcher(`api/v1/request/${channelId}/${proposer}`)
   return reqs.map(({ _id, ...rest }) => ({ id: _id, ...rest }))
 }
 
-export async function getAllRequests() {
-  const result = await _fetch(`api/v1/request`)
+export async function getAllRequests(channelId) {
+  const result = await fetcher(`api/v1/request/${channelId}`)
   return Object.fromEntries(result.map(({ _id, reqs }) => [_id, reqs]))
 }
 
-export async function postRequest(proposer, reqId, recipient, hash) {
-  await _fetch(`api/v1/request`, 'POST', { proposer, reqId, recipient, hash })
+export async function postRequest(channelId, proposer, reqId, recipient, hash) {
+  await fetcher(`api/v1/request/${channelId}`, 'POST', { proposer, reqId, recipient, hash })
 }
 
-export async function updateRequest(proposer, reqId, { signature, hash }) {
-  await _fetch(`api/v1/request/${proposer}/${reqId}`, 'PUT', { signature, hash })
+export async function updateRequest(channelId, proposer, reqId, { signature, hash }) {
+  await fetcher(`api/v1/request/${channelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
 }

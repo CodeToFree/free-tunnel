@@ -1,7 +1,7 @@
 import React from 'react'
-import { Header } from '@/components/ui'
+import { Header as _Header } from '@/components/ui'
 
-export default function AppContainer({ children, left }) {
+export default function AppContainer({ Header = _Header, children, left }) {
   return (
     <div className='flex flex-col min-h-full'>
       <Header />

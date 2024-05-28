@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-import { CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { CHAINS } from '@/lib/const'
 import { toValue } from '@/lib/hooks'
 
 export function newRequestId(action, amount, tokenIndex, from, to, vault) {
@@ -26,8 +26,8 @@ export function parseRequest(id) {
   const actionId = parseInt('0x' + id.substring(14, 16))
   const tokenIndex = parseInt('0x' + id.substring(16, 18))
   const value = ethers.utils.formatUnits('0x' + id.substring(18, 34), 6)
-  const fromChain = CHAINS_FROM.find(c => c.atomicId === parseInt('0x' + id.substring(34, 36))) || CHAINS_FROM[0]
-  const toChain = CHAINS_TO.find(c => c.atomicId === parseInt('0x' + id.substring(36, 38))) || CHAINS_TO[0]
+  const fromChain = CHAINS.find(c => c.atomicId === parseInt('0x' + id.substring(34, 36)))
+  const toChain = CHAINS.find(c => c.atomicId === parseInt('0x' + id.substring(36, 38)))
   const vault = (actionId & 0x10) > 0
 
   return { id, v, created, actionId, tokenIndex, value, fromChain, toChain, vault }

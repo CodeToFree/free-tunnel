@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
-import { Requests } from '@/lib/db'
-import { BRIDGE_CHANNEL, CHAINS_FROM, CHAINS_TO } from '@/lib/const'
+import { Channels, Requests } from '@/lib/db'
+import { CHAINS } from '@/lib/const'
 
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
@@ -10,6 +10,11 @@ export default async function handler(req, res) {
 }
 
 async function put(req, res) {
+  const channel = await Channels.findById(req.query.channelId)
+  if (!channel) {
+    return res.status(404).send()
+  }
+
   const { proposer, reqId } = req.query
   const { hash = {}, signature = {} } = req.body
   const { p2, e1, e2, c1, c2 } = hash
@@ -37,9 +42,9 @@ async function put(req, res) {
   await Requests.findOneAndUpdate({
     _id: reqId,
     proposer,
-    channel: BRIDGE_CHANNEL,
-    from: { $in: CHAINS_FROM.map(c => c.chainId.toString()) },
-    to: { $in: CHAINS_TO.map(c => c.chainId.toString()) },
+    channel: channel.name,
+    from: { $in: channel.from.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
+    to: { $in: channel.to.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
   }, update, { new: true })
   res.json({ result: true })
 }

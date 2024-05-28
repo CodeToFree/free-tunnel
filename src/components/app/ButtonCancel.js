@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -26,26 +27,26 @@ const CANCEL_INFO = {
 }
 
 export default function ButtonCancel ({ action, id: reqId, created, proposer, hash, fromChain, toChain }) {
-  const { updateRequestHash } = useRequestsMethods()
+  const { storeRequestAddHash } = useRequestsMethods()
 
   const step = (hash.c1 && hash.p2) ? 1 : 0
   const actionName = capitalize(action.split('-')[step])
 
   const chain = CANCEL_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
-  const contract = chain?.AtomicContract
+  const { channel, contractAddr } = useFreeChannel(chain)
   const { abi, method } = CANCEL_INFO[action][step]
 
   const callback = React.useCallback(async hash => {
-    updateRequestHash(proposer, reqId, { [step ? 'c2' : 'c1']: hash })
-    await updateRequest(proposer, reqId, { hash: { [step ? 'c2' : 'c1']: hash } })
-  }, [proposer, reqId, updateRequestHash, step])
+    storeRequestAddHash(channel.id, proposer, reqId, { [step ? 'c2' : 'c1']: hash })
+    await updateRequest(channel.id, proposer, reqId, { hash: { [step ? 'c2' : 'c1']: hash } })
+  }, [channel.id, proposer, reqId, storeRequestAddHash, step])
 
   const disabled = Date.now() / 1000 < created + EXECUTE_PERIOD
 
   return (
     <ConnectButton color='info' size='xs' forceChains={[chain]} disabled={disabled}>
       <ContractCallButton
-        address={contract}
+        address={contractAddr}
         abi={abi}
         method={method}
         args={[reqId.padEnd(66, '0')]}

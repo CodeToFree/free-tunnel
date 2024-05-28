@@ -1,5 +1,19 @@
 import mongoose from 'mongoose'
 
+export const ChannelSchema = mongoose.Schema({
+  _id: String,
+  priority: Number,
+  name: String,
+  homepage: String,
+  logo: String,
+  from: [String],
+  to: [String],
+  contracts: Object,
+  min: Object,
+  vault: Object,
+  fee: Object,
+})
+
 const SignatureSchema = new mongoose.Schema({
   sig: String,
   exe: String,

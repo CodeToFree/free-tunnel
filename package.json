@@ -1,5 +1,5 @@
 {
-  "name": "atomic-lock-mint",
+  "name": "free-tunnel",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -29,6 +29,7 @@
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "swr": "^2.2.5",
     "zksync-ethers": "5",
     "zustand": "^4.5.2"
   },

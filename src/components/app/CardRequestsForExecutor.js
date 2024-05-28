@@ -6,16 +6,19 @@ import { parseRequest } from '@/lib/request'
 import { getAllRequests } from '@/lib/api'
 import { useRequests, useRequestsMethods } from '@/stores'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { PaginationButtons } from '@/components/ui'
 
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
 export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens, exes }) {
+  const { channel } = useFreeChannel()
+
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
-  const requests = useRequests('executor')
+  const requests = useRequests(channel.id, 'executor')
   const actionId = action === 'lock-mint' ? 1 : 2
   const allReqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))
@@ -36,10 +39,10 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
     return { reqs: reqsByTab[tab], nSign: sign.length, nExecute: execute.length, nFinished: finished.length, nCancelled: cancelled.length }
   }, [allReqs, tab, threshold])
 
-  const { updateAllRequests } = useRequestsMethods()
+  const { storeRequestUpdateAll } = useRequestsMethods()
   React.useEffect(() => {
-    getAllRequests().then(reqs => updateAllRequests(reqs))
-  }, [updateAllRequests])
+    getAllRequests(channel.id).then(reqs => storeRequestUpdateAll(channel.id, reqs))
+  }, [channel.id, storeRequestUpdateAll])
 
   const size = 10
   const [page, setPage] = React.useState(0)

@@ -63,6 +63,9 @@ const hardhatConfig = {
     linea: {
       url: "https://rpc.linea.build",
     },
+    scroll: {
+      url: "https://rpc.scroll.io",
+    },
     mode: {
       url: "https://mainnet.mode.network",
     },
