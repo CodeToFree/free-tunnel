@@ -17,7 +17,7 @@ export default function Home({ channels }) {
   return (
     <AppProvider>
       <Head>
-        <title>Free Atomic</title>
+        <title>Free Tunnel</title>
         <link rel='icon' href='/free.png' />
       </Head>
       <AppContainer>

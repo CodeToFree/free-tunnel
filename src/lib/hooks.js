@@ -26,7 +26,7 @@ export function useWeb3ModalFromChannel(channel) {
     const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID || '';
 
     const metadata = {
-      name: 'Free Atomic Lock-Mint',
+      name: 'Free Tunnel',
       description: '',
       url: '',
       icons: ['/logo.png'],
