@@ -2,10 +2,10 @@ import React from 'react'
 import Head from 'next/head'
 
 import { Channels } from '@/lib/db'
-import { ListGroup } from 'flowbite-react'
 
 import { AppProvider } from '@/components/AppProvider'
 import { AppContainer } from '@/components/ui'
+import { ChannelList } from '@/components/app'
 import { useWeb3ModalFromChannel } from '@/lib/hooks'
 
 export default function Home({ channels }) {
@@ -22,18 +22,7 @@ export default function Home({ channels }) {
       </Head>
       <AppContainer>
         <div className='mt-20 flex justify-center'>
-          <ListGroup className='w-80'>
-          {
-            channels.map(item => (
-              <ListGroup.Item key={item.id} onClick={() => window.location.href = `/${item.id}`}>
-                <div className='flex items-center py-2'>
-                  <img src={item.logo} className='w-6 h-6 mr-3' />
-                  {item.name}
-                </div>
-              </ListGroup.Item>
-            ))
-          }
-          </ListGroup>
+          <ChannelList channels={channels} className='w-[640px] text-white' />
         </div>
       </AppContainer>
     </AppProvider>
@@ -41,7 +30,7 @@ export default function Home({ channels }) {
 }
 
 export const getServerSideProps = async (req) => {
-  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo')
-  const channels = result.map(({ _id, name, logo }) => ({ id: _id, name, logo }))
+  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo from to contracts')
+  const channels = result.map(({ _id, name, logo, from, to, contracts }) => ({ id: _id, name, logo, from, to, contracts }))
   return { props: { channels } }
 }
