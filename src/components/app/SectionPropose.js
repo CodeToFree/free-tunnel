@@ -71,7 +71,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const bridgeFee = channel.fee?.[target?.atomicId] || '0'
   const value = reqId && token?.addr === ADDR_ONE
     ? ethers.utils.parseEther(parseRequest(reqId).value)
-    : ethers.utils.parseEther(method === 'proposeBurn' ? bridgeFee : '0')
+    : ethers.utils.parseEther(bridgeFee)
   const { pending, call } = useContractCall(contractAddr, abi, method, [reqId.padEnd(66, '0'), { value }])
 
   if (!proposer) {
