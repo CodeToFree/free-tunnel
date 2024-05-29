@@ -26,9 +26,9 @@ const defaultTokens = {
   76: 'BBUSD',
 }
 
-export default function RequestItem ({ tokens, role, action, exes, ...req }) {
-  const fromActionName = capitalize(action.split('-')[0])
-  const toActionName = capitalize(action.split('-')[1])
+export default function RequestItem ({ tokens, role, action = '', exes, ...req }) {
+  const fromActionName = capitalize(action.split('-')[0] || '')
+  const toActionName = capitalize(action.split('-')[1] || '')
   const { id, proposer, value, tokenIndex, created, fromChain, toChain, vault, recipient, hash } = req
 
   const chain1 = action === 'lock-mint' ? fromChain : toChain
@@ -142,7 +142,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
 }
 
 function RequestActionButton ({ role, action, exes, ...req }) {
-  if ((req.hash?.e1 && req.hash?.e2) || req.hash?.c2 || (req.hash?.c1 && !req.hash?.p2)) {
+  if (!action || (req.hash?.e1 && req.hash?.e2) || req.hash?.c2 || (req.hash?.c1 && !req.hash?.p2)) {
     return
   }
   if (Date.now() / 1000 > req.created + EXECUTE_PERIOD) {
