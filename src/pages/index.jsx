@@ -8,8 +8,9 @@ import { ChannelList, RequestItem } from '@/components/app'
 
 import { Channels } from '@/lib/db'
 import { ADMIN_ADDRS } from '@/lib/const'
+import { getAllRequests } from '@/lib/api'
 import { parseRequest } from '@/lib/request'
-import { useAllPendingRequests } from '@/stores'
+import { useAllPendingRequests, useRequestsMethods } from '@/stores'
 import { useWeb3ModalFromChannel, useAddress } from '@/lib/hooks'
 
 export default function PageHome({ channels }) {
@@ -32,6 +33,11 @@ export default function PageHome({ channels }) {
 function Home ({ channels }) {
   const address = useAddress()
   const isAdmin = ADMIN_ADDRS.includes(address)
+  const { storeRequestUpdateAll } = useRequestsMethods()
+
+  React.useEffect(() => {
+    getAllRequests().then(reqs => storeRequestUpdateAll(reqs))
+  }, [storeRequestUpdateAll])
 
   return (
     <AppContainer>

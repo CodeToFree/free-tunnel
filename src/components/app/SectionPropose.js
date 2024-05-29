@@ -15,7 +15,7 @@ import {
 import { ADDR_ONE } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
-import { getAllRequests, getRequests, postRequest } from '@/lib/api'
+import { getChannelRequests, getRequests, postRequest } from '@/lib/api'
 import AtomicLock from '@/lib/abis/AtomicLock.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 import { useRequestsMethods } from '@/stores'
@@ -54,16 +54,16 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     () => newRequestId(action, amount, token?.index, from, to, useVault),
     [action, amount, token?.index, from, to, useVault]
   )
-  const { storeRequestAdd, storeRequestUpdateForProposer, storeRequestUpdateAll } = useRequestsMethods()
+  const { storeRequestAdd, storeRequestUpdateForProposer, storeRequestUpdateForChannel } = useRequestsMethods()
   React.useEffect(() => {
     if (proposer) {
       if (role) {
-        getAllRequests(channel.id).then(reqs => storeRequestUpdateAll(channel.id, reqs))
+        getChannelRequests(channel.id).then(reqs => storeRequestUpdateForChannel(channel.id, reqs))
       } else {
         getRequests(channel.id, proposer).then(reqs => storeRequestUpdateForProposer(channel.id, proposer, reqs))
       }
     }
-  }, [channel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateAll])
+  }, [channel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateForChannel])
 
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
   const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'

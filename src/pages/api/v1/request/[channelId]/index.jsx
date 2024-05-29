@@ -17,7 +17,7 @@ async function get(req, res) {
     return res.status(404).send()
   }
 
-  const result = await Requests.aggregate([
+  const aggregated = await Requests.aggregate([
     {
       $match: {
         channel: channel.name,
@@ -32,6 +32,9 @@ async function get(req, res) {
       }
     }
   ])
+
+  const result = Object.fromEntries(aggregated.map(({ _id, reqs }) => [_id, reqs]))
+
   res.json({ result })
 }
 

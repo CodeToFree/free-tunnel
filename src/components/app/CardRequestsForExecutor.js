@@ -3,7 +3,7 @@ import { Card, Button, Badge, Label } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
 import { parseRequest } from '@/lib/request'
-import { getAllRequests } from '@/lib/api'
+import { getChannelRequests } from '@/lib/api'
 import { useRequests, useRequestsMethods } from '@/stores'
 
 import { useFreeChannel } from '@/components/AppProvider'
@@ -39,10 +39,10 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
     return { reqs: reqsByTab[tab], nSign: sign.length, nExecute: execute.length, nFinished: finished.length, nCancelled: cancelled.length }
   }, [allReqs, tab, threshold])
 
-  const { storeRequestUpdateAll } = useRequestsMethods()
+  const { storeRequestUpdateForChannel } = useRequestsMethods()
   React.useEffect(() => {
-    getAllRequests(channel.id).then(reqs => storeRequestUpdateAll(channel.id, reqs))
-  }, [channel.id, storeRequestUpdateAll])
+    getChannelRequests(channel.id).then(reqs => storeRequestUpdateForChannel(channel.id, reqs))
+  }, [channel.id, storeRequestUpdateForChannel])
 
   const size = 10
   const [page, setPage] = React.useState(0)

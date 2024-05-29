@@ -16,7 +16,8 @@ const useStoreRequests = create(persist(
         [proposer]: reqs,
       } }))
     ),
-    storeRequestUpdateAll: (channelId, requests) => set(state => ({ ...state, [channelId]: requests })),
+    storeRequestUpdateForChannel: (channelId, requests) => set(state => ({ ...state, [channelId]: requests })),
+    storeRequestUpdateAll: requests => set(state => ({ ...state, ...requests })),
     storeRequestAddSignature: (channelId, proposer, reqId, { sig, exe }) => (
       set(state => ({ ...state, [channelId]: {
         ...state[channelId],
@@ -45,11 +46,9 @@ export function useAllPendingRequests (channels) {
     return Object.entries(store)
       .filter(([channelId]) => channels.find(c => c.id === channelId))
       .map(([channelId, reqsByProposer]) => Object.entries(reqsByProposer)
-        .map(([proposer, reqs]) => reqs.map(req => ({ ...req, channelId, proposer })))
-        .flat()
-        .filter(req => !(req.hash?.e2 || req.hash?.c2 || req.hash?.c1) || !(req.hash?.e1 || req.hash?.c1))
-      )
-      .flat()
+        .map(([proposer, reqs]) => reqs.map(req => ({ ...req, channelId, proposer }))).flat()
+        .filter(req => !(req.hash?.e2 || req.hash?.c2) || !(req.hash?.e1 || req.hash?.c1))
+      ).flat()
   }, [channels, store])
 }
 
@@ -72,6 +71,7 @@ export function useRequests (channelId, proposer) {
 export function useRequestsMethods () {
   const storeRequestAdd = useStoreRequests(state => state.storeRequestAdd)
   const storeRequestUpdateForProposer = useStoreRequests(state => state.storeRequestUpdateForProposer)
+  const storeRequestUpdateForChannel = useStoreRequests(state => state.storeRequestUpdateForChannel)
   const storeRequestUpdateAll = useStoreRequests(state => state.storeRequestUpdateAll)
   const storeRequestAddSignature = useStoreRequests(state => state.storeRequestAddSignature)
   const storeRequestAddHash = useStoreRequests(state => state.storeRequestAddHash)
@@ -79,6 +79,7 @@ export function useRequestsMethods () {
   return {
     storeRequestAdd,
     storeRequestUpdateForProposer,
+    storeRequestUpdateForChannel,
     storeRequestUpdateAll,
     storeRequestAddSignature,
     storeRequestAddHash,

@@ -28,9 +28,12 @@ export async function getRequests(channelId, proposer) {
   return reqs.map(({ _id, ...rest }) => ({ id: _id, ...rest }))
 }
 
-export async function getAllRequests(channelId) {
-  const result = await fetcher(`api/v1/request/${channelId}`)
-  return Object.fromEntries(result.map(({ _id, reqs }) => [_id, reqs]))
+export async function getChannelRequests(channelId) {
+  return await fetcher(`api/v1/request/${channelId}`)
+}
+
+export async function getAllRequests() {
+  return await fetcher(`api/v1/request`)
 }
 
 export async function postRequest(channelId, proposer, reqId, recipient, hash) {
