@@ -1,7 +1,7 @@
 import React from 'react'
 import { Accordion, Button } from 'flowbite-react'
 
-import { CHAINS } from '@/lib/const'
+import { CHAINS, DEFAULT_VAULT } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 
@@ -50,6 +50,7 @@ export function ChannelDetail ({ channel }) {
 }
 
 export function ChainDetail ({ chain, contractAddr }) {
+  const { result: vault } = useContractQuery(contractAddr, AtomicMint, 'getVault', null, chain)
   const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens', null, chain)
   const tokens = React.useMemo(() => {
     if (!_tokens) {
@@ -67,14 +68,25 @@ export function ChainDetail ({ chain, contractAddr }) {
           {chain.name}
         </div>
         <a
-          className='ml-2 mb-0.5 overflow-hidden text-ellipsis text-sm text-gray-500 hover:underline hover:text-cyan-600'
+          className='ml-2 mb-0.5 overflow-hidden text-ellipsis text-xs font-mono text-gray-500 hover:underline hover:text-cyan-600'
           href={`${chain.explorerUrl}/address/${contractAddr}`}
           target='_blank'
         >
           {contractAddr}
         </a>
       </div>
-      <div className='mt-0.5 ml-9 flex items-center flex-wrap gap-x-3 gap-y-1'>
+      {
+        vault && vault !== DEFAULT_VAULT &&
+        <div className='ml-9 flex items-center justify-between text-sm'>
+          <div>Vault</div>
+          <a
+            className='text-xs font-mono text-gray-500 cursor-pointer hover:underline hover:text-cyan-600'
+            href={`${chain.explorerUrl}/address/${vault}`}
+            target='_blank'
+          >{vault}</a>
+        </div>
+      }
+      <div className='mt-1 ml-9 flex items-center flex-wrap gap-x-3 gap-y-1'>
       {
         tokens?.map(t => (
           <a

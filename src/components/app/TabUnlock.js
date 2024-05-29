@@ -30,7 +30,6 @@ export default function TabUnlock() {
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
   const { result: exes } = useContractQuery(contractAddr, Permissions, 'getActiveExecutors')
-  const { result: vault } = useContractQuery(contractAddr, Permissions, 'getVault')
 
   const [role, setRole] = React.useState()
   const proposerIndex = _proposerIndex?.toNumber()
