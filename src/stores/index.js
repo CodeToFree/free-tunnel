@@ -2,6 +2,8 @@ import React from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+import { parseRequest } from '@/lib/request'
+
 const useStoreRequests = create(persist(
   set => ({
     storeRequestAdd: (channelId, proposer, reqId, recipient, hash) => (
@@ -43,12 +45,25 @@ export function useAllPendingRequests (channels) {
     if (!channels || !store) {
       return []
     }
-    return Object.entries(store)
-      .filter(([channelId]) => channels.find(c => c.id === channelId))
-      .map(([channelId, reqsByProposer]) => Object.entries(reqsByProposer)
-        .map(([proposer, reqs]) => reqs.map(req => ({ ...req, channelId, proposer }))).flat()
-        .filter(req => !(req.hash?.e2 || req.hash?.c2) || !(req.hash?.e1 || req.hash?.c1))
-      ).flat()
+    return Object.fromEntries(
+      Object.entries(store)
+        .filter(([channelId]) => channels.find(c => c.id === channelId))
+        .map(([channelId, reqsByProposer]) => [
+          channelId,
+          Object.entries(reqsByProposer)
+            .map(([proposer, reqs]) => reqs
+              .filter(req => (!req.hash?.e1 && !req.hash?.c1) || (!(req.hash?.c1 && !req.hash?.p2) && !req.hash?.e2 && !req.hash?.c2))
+              .map(req => {
+                const parsed = parseRequest(req.id)
+                const action =  parsed.actionId & 0x0f === 2 ? 'burn-unlock' : 'lock-mint'
+                return { ...req, ...parsed, action, channelId, proposer }
+              })
+            )
+            .flat()
+            .sort((x, y) => y.created - x.created)
+        ])
+        .filter(([_, reqs]) => reqs.length > 0)
+    )
   }, [channels, store])
 }
 
