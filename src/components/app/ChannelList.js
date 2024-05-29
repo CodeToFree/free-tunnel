@@ -6,7 +6,6 @@ import { useContractQuery } from '@/lib/hooks'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 
 import { TokenIcon } from '@/components/ui'
-import { TokenSelector } from '@/components/web3'
 
 export default function ChannelList ({ channels = [], className, action = 'Launch' }) {
   return (
@@ -77,7 +76,7 @@ export function ChainDetail ({ chain, contractAddr }) {
           <a
             key={t.addr}
             className='flex items-center text-sm cursor-pointer hover:underline hover:text-cyan-600'
-            href={`${chain.explorerUrl}/token/${t.addr}`}
+            href={`${chain.explorerUrl}/${chain.id === 'zklink' ? 'address' : 'token'}/${t.addr}`}
             target='_blank'
           >
             <TokenIcon size='sm' className='mr-1' token={t.icon || chain?.tokens[t.addr]?.toLowerCase()} />
