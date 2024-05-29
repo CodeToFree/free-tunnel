@@ -60,17 +60,21 @@ export function ChainDetail ({ chain, contractAddr }) {
   }, [_tokens])
 
   return (
-    <div>
+    <div className='overflow-hidden'>
       <div className='flex items-end justify-between'>
-        <div className='flex items-center text-lg'>
+        <div className='flex items-center text-lg text-nowrap shrink-0'>
           <TokenIcon token={chain.icon} className='mr-3' />
           {chain.name}
         </div>
-        <a className='text-sm text-gray-500 hover:underline hover:text-cyan-600' href={`${chain.explorerUrl}/address/${contractAddr}`} target='_blank'>
+        <a
+          className='ml-2 mb-0.5 overflow-hidden text-ellipsis text-sm text-gray-500 hover:underline hover:text-cyan-600'
+          href={`${chain.explorerUrl}/address/${contractAddr}`}
+          target='_blank'
+        >
           {contractAddr}
         </a>
       </div>
-      <div className='mt-0.5 ml-9 flex items-center gap-3'>
+      <div className='mt-0.5 ml-9 flex items-center flex-wrap gap-x-3 gap-y-1'>
       {
         tokens?.map(t => (
           <a

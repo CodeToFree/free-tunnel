@@ -22,7 +22,7 @@ export default function Home({ channels }) {
       </Head>
       <AppContainer>
         <div className='mt-20 flex justify-center'>
-          <ChannelList channels={channels} className='w-[640px] text-white' />
+          <ChannelList channels={channels} className='w-[480px] text-white' />
         </div>
       </AppContainer>
     </AppProvider>
