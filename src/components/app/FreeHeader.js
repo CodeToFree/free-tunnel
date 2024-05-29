@@ -27,7 +27,7 @@ export default function FreeHeader () {
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header>Switch Channel</Modal.Header>
         <Modal.Body>
-          <ChannelList channels={data} action='Switch' />
+          <ChannelList channels={data} action='Switch' className='text-black' />
         </Modal.Body>
       </Modal>
     </Header>
