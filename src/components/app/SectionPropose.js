@@ -103,6 +103,10 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           belowAmount &&
           <div className='mt-1 text-sm text-red-400'>At least {min} required</div>
         }
+        {
+          useVault &&
+          <div className='mt-1 text-sm text-white'>Fund will be saved to vault</div>
+        }
       </div>
 
       <div>
