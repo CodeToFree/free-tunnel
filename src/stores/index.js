@@ -55,7 +55,7 @@ export function useAllPendingRequests (channels) {
               .filter(req => (!req.hash?.e1 && !req.hash?.c1) || (!(req.hash?.c1 && !req.hash?.p2) && !req.hash?.e2 && !req.hash?.c2))
               .map(req => {
                 const parsed = parseRequest(req.id)
-                const action =  parsed.actionId & 0x0f === 2 ? 'burn-unlock' : 'lock-mint'
+                const action =  (parsed.actionId & 0x0f) === 2 ? 'burn-unlock' : 'lock-mint'
                 return { ...req, ...parsed, action, channelId, proposer }
               })
             )
