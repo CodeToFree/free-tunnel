@@ -6,11 +6,6 @@ import { toValue, useCoreBalance, useERC20Allowance, useERC20Call } from '@/lib/
 export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, spender, coreCheck, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
   const core = useCoreBalance()
 
-  if (coreCheck) {
-    console.log(toValue(coreCheck.require, core.decimals).toString())
-    console.log(core.balance?.toString())
-  }
-
   const { approved, refresh } = useERC20Allowance(tokenAddr, spender)
 
   const value = toValue(input, decimals)
