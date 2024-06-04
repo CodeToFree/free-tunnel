@@ -1,9 +1,16 @@
 import React from 'react'
 import { Spinner } from 'flowbite-react'
 import { ADDR_ONE } from '@/lib/const'
-import { toValue, useERC20Allowance, useERC20Call } from '@/lib/hooks'
+import { toValue, useCoreBalance, useERC20Allowance, useERC20Call } from '@/lib/hooks'
 
-export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, spender, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
+export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, spender, coreCheck, onClick, disabled, pending, Wrapper = ({ children }) => children, children }) {
+  const core = useCoreBalance()
+
+  if (coreCheck) {
+    console.log(toValue(coreCheck.require, core.decimals).toString())
+    console.log(core.balance?.toString())
+  }
+
   const { approved, refresh } = useERC20Allowance(tokenAddr, spender)
 
   const value = toValue(input, decimals)
@@ -24,10 +31,12 @@ export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, sp
     return <Wrapper disabled>Invalid Amount</Wrapper>
   } else if (value.eq(0)) {
     return <Wrapper disabled>Amount Cannot be Zero</Wrapper>
-  } else if (value.eq(-1)) {
-    return <Wrapper disabled>Decimals Overflow</Wrapper>
+  } else if (toValue(input, 6).eq(-1)) {
+    return <Wrapper disabled>Max 6 Decimals</Wrapper>
   } else if (overBalance) {
     return <Wrapper disabled>Amount Over Balance</Wrapper>
+  } else if (coreCheck && toValue(coreCheck.require, core.decimals).gt(core.balance || 0)) {
+    return <Wrapper disabled>{coreCheck.alert}</Wrapper>
   }
 
   if (tokenAddr && tokenAddr !== ADDR_ONE) {

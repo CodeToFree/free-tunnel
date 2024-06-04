@@ -73,6 +73,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     ? ethers.utils.parseEther(parseRequest(reqId).value)
     : ethers.utils.parseEther(bridgeFee)
   const { pending, call } = useContractCall(contractAddr, abi, method, [reqId.padEnd(66, '0'), { value }])
+  const coreCheck = React.useMemo(() => ({ require: bridgeFee, alert: `Low ${chain?.currency} for Bridge Fee` }), [bridgeFee, chain?.currency])
 
   if (!proposer) {
     return <ConnectButton color='purple' forceChains={forceChains} />
@@ -157,6 +158,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           balance={balance?.value}
           decimals={balance?.decimals}
           spender={contractAddr}
+          coreCheck={coreCheck}
           pending={pending}
           disabled={belowAmount}
           onClick={async () => {
