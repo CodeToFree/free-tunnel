@@ -4,7 +4,6 @@ export default function TokenIcon ({ size, token, className }) {
   const _className = classnames(
     size === 'sm' ? 'w-4 h-4' : 'w-6 h-6',
     className || 'mr-2',
-    'rounded-full',
   )
 
   if (token === 'eth' || token === 'beth') {
@@ -13,8 +12,14 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/btc.png' className={_className} />
   } else if (token === 'm-btc') {
     return <img src='/tokens/mbtc.png' className={_className} />
+  } else if (token?.includes('solvbtc.m')) {
+    return <img src='/tokens/solvbtc_m.png' className={_className} />
+  } else if (token?.includes('solvbtc.b')) {
+    return <img src='/tokens/solvbtc_b.png' className={_className} />
+  } else if (token?.includes('solvbtc.a')) {
+    return <img src='/tokens/solvbtc_a.png' className={_className} />
   } else if (token?.includes('solvbtc')) {
-    return <img src='/tokens/solv_btc.png' className={_className} />
+    return <img src='/tokens/solvbtc.png' className={_className} />
   } else if (token === 'bbtc') {
     return <img src='/tokens/bbtc.png' className={_className} />
   } else if (token === 'usdc' || token === 'm-usdc' || token === 'busdc') {
