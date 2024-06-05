@@ -1,5 +1,6 @@
 import React from 'react'
 import { Accordion, Button } from 'flowbite-react'
+import { HiChevronDoubleDown } from 'react-icons/hi'
 
 import { CHAINS, DEFAULT_VAULT } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
@@ -39,6 +40,9 @@ export function ChannelDetail ({ channel }) {
         return <ChainDetail key={chain.id} chain={chain} contractAddr={channel.contracts[chain.id]} />
       })
     }
+    <div className='mx-auto' >
+      <HiChevronDoubleDown />
+    </div>
     {
       channel.to.map(id => {
         const chain = CHAINS.find(c => c.id === id)
