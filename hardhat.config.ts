@@ -100,7 +100,7 @@ const hardhatConfig = {
       url: "https://fullnode-mainnet.bouncebitapi.com",
     },
     bob: {
-      url: "https://fullnode-mainnet.bouncebitapi.com",
+      url: "https://rpc.gobob.xyz",
     },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
