@@ -17,7 +17,9 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
     function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
         _initAdmin(_admin);
-        _initVault(_vault);
+        if (_vault != address(0)) {
+            _initVault(_vault);
+        }
         _addProposer(proposer);
         _initExecutors(executors, threshold);
     }
@@ -29,7 +31,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     }
 
     function createToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
-        MintableERC20 tokenAddr = new MintableERC20(address(this), getVault(), name, symbol, decimals);
+        MintableERC20 tokenAddr = new MintableERC20(address(this), _getVaultWithAdminFallback(), name, symbol, decimals);
         _addToken(tokenIndex, address(tokenAddr));
     }
 
@@ -69,10 +71,14 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
+        address vault;
         if (_actionFrom(reqId) & 0x10 > 0) {
-            MintableERC20(tokenAddr).mint(getVault(), amount);
-        } else {
+            vault = getVault();
+        }
+        if (vault == address(0)) {
             MintableERC20(tokenAddr).mint(recipient, amount);
+        } else {
+            MintableERC20(tokenAddr).mint(vault, amount);
         }
 
         emit TokenMintExecuted(reqId, recipient);

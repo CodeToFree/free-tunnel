@@ -47,18 +47,18 @@ contract MintableERC20 is ERC20 {
     }
 
 
-    function updateMintQuota(uint256 delta) onlyVault external {
+    function updateMintQuota(uint256 delta) external onlyVault {
         mintQuota += delta;
     }
 
-    function mint(address account, uint256 amount) onlyMinter external {
+    function mint(address account, uint256 amount) external onlyMinter {
         if (account != vault) {
             mintQuota -= amount;
         }
         _mint(account, amount);
     }
 
-    function burn(address account, uint256 amount) onlyMinter external {
+    function burn(address account, uint256 amount) external onlyMinter {
         _burn(account, amount);
     }
 }

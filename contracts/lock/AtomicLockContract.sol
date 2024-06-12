@@ -48,21 +48,23 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
+        if (tokenAddr == address(1)) {
+            require(msg.value >= amount, "Transferred amount (tx.value) insufficient");
+        }
         proposedLock[reqId] = proposer;
 
-        if (tokenAddr == address(1)) {
-            require(amount == msg.value, "msg.value should equal the amount encoded in reqId");
-            if (action & 0x10 > 0) {
-                address vault = getVault();
+        if (action & 0x10 > 0) {
+            address vault = getVault();
+            require(vault != address(0), "Vault not activated");
+
+            if (tokenAddr == address(1)) {
                 (bool success, ) = vault.call{value: amount}("");
                 require(success, "Transfer failed");
-            }
-        } else {
-            if (action & 0x10 > 0) {
-                IERC20(tokenAddr).safeTransferFrom(proposer, getVault(), amount);
             } else {
-                IERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
+                IERC20(tokenAddr).safeTransferFrom(proposer, vault, amount);
             }
+        } else if (tokenAddr != address(1)) {
+            IERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
         }
 
         emit TokenLockProposed(reqId, proposer);
@@ -104,10 +106,14 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
             (bool success, ) = proposer.call{value: amount}("");
             require(success, "Transfer failed");
         } else {
+            address vault;
             if (_actionFrom(reqId) & 0x10 > 0) {
-                IERC20(tokenAddr).safeTransferFrom(getVault(), proposer, amount);
-            } else {
+                vault = getVault();
+            }
+            if (vault == address(0)) {
                 IERC20(tokenAddr).safeTransfer(proposer, amount);
+            } else {
+                IERC20(tokenAddr).safeTransferFrom(vault, proposer, amount);
             }
         }
 
@@ -151,10 +157,14 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
             (bool success, ) = recipient.call{value: amount}("");
             require(success, "Transfer failed");
         } else {
+            address vault;
             if (_actionFrom(reqId) & 0x10 > 0) {
-                IERC20(tokenAddr).safeTransferFrom(getVault(), recipient, amount);
-            } else {
+                vault = getVault();
+            }
+            if (vault == address(0)) {
                 IERC20(tokenAddr).safeTransfer(recipient, amount);
+            } else {
+                IERC20(tokenAddr).safeTransferFrom(vault, recipient, amount);
             }
         }
 
