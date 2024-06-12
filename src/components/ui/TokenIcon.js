@@ -48,6 +48,10 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/zklink.png' className={_className} />
   } else if (token === 'core') {
     return <img src='/tokens/core.png' className={_className} />
+  } else if (token === 'okb') {
+    return <img src='/tokens/okb.png' className={_className} />
+  } else if (token === 'xlayer') {
+    return <img src='/tokens/xlayer.png' className={_className} />
   } else if (token === 'merl' || token === 'merlin') {
     return <img src='/tokens/merlin.png' className={_className} />
   } else if (token === 'b2') {
@@ -58,6 +62,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/bevm.png' className={_className} />
   } else if (token === 'bb') {
     return <img src='/tokens/bb.png' className={_className} />
+  } else if (token === 'bob') {
+    return <img src='/tokens/bob.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'm-stone') {

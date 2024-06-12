@@ -81,6 +81,9 @@ const hardhatConfig = {
     core: {
       url: "https://rpc.coredao.org",
     },
+    xlayer: {
+      url: "https://rpc.xlayer.tech",
+    },
     merlin: {
       url: "https://rpc.merlinchain.io",
     },
@@ -94,6 +97,9 @@ const hardhatConfig = {
       url: "https://rpc-mainnet-1.bevm.io",
     },
     bb: {
+      url: "https://fullnode-mainnet.bouncebitapi.com",
+    },
+    bob: {
       url: "https://fullnode-mainnet.bouncebitapi.com",
     },
     sepolia: {

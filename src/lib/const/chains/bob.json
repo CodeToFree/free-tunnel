@@ -1,0 +1,13 @@
+{
+  "chainId": 60808,
+  "name": "Bob",
+  "icon": "bob",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.gobob.xyz",
+  "explorerUrl": "https://explorer.gobob.xyz",
+  "tokens": {
+    "": "SolvBTC.m",
+    "": "SolvBTC.b"
+  },
+  "atomicId": 21
+}

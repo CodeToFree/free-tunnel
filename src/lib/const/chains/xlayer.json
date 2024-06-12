@@ -1,0 +1,13 @@
+{
+  "chainId": 196,
+  "name": "XLayer",
+  "icon": "xlayer",
+  "currency": "OKB",
+  "rpcUrl": "https://rpc.xlayer.tech",
+  "explorerUrl": "https://www.okx.com/explorer/xlayer",
+  "tokens": {
+    "": "SolvBTC.m",
+    "": "SolvBTC.b"
+  },
+  "atomicId": 14
+}

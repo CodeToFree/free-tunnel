@@ -18,11 +18,13 @@ contract ReqHelpers {
     // 0x0b: manta
     // 0x0c: zklink
     // 0x0d: core
+    // 0x0e: xlayer
     // 0x10: merlin
     // 0x11: b2
     // 0x12: bitlayer
     // 0x13: bevm
     // 0x14: bb
+    // 0x15: bob
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet
