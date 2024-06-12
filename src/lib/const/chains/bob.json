@@ -6,8 +6,8 @@
   "rpcUrl": "https://rpc.gobob.xyz",
   "explorerUrl": "https://explorer.gobob.xyz",
   "tokens": {
-    "": "SolvBTC.m",
-    "": "SolvBTC.b"
+    "0x0fB263c9514EB8d2c577A8e65cB6CAA57c49848f": "SolvBTC.m",
+    "0x59889b7021243dB5B1e065385F918316cD90D46c": "SolvBTC.b"
   },
   "atomicId": 21
 }
