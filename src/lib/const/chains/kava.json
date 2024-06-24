@@ -1,0 +1,12 @@
+{
+  "chainId": 2222,
+  "name": "Kava",
+  "icon": "kava",
+  "currency": "KAVA",
+  "rpcUrl": "https://evm.kava.io",
+  "explorerUrl": "https://kavascan.com",
+  "tokens": {
+    "0x59889b7021243dB5B1e065385F918316cD90D46c": "M-BTC"
+  },
+  "atomicId": 32
+}

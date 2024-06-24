@@ -102,6 +102,12 @@ const hardhatConfig = {
     bob: {
       url: "https://rpc.gobob.xyz",
     },
+    kava: {
+      url: "https://evm.kava.io",
+    },
+    kroma: {
+      url: "https://api.kroma.network",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },
