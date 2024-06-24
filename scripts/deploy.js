@@ -9,6 +9,7 @@ const {
   EXECUTORS,
 } = process.env
 
+const ADDR_ZERO = '0x0000000000000000000000000000000000000000'
 const CONTRACT_NAME = 'AtomicMintContract' // AtomicLockContract, AtomicMintContract
 
 module.exports = async function deploy() {
@@ -18,10 +19,11 @@ module.exports = async function deploy() {
   const admin = wallet.address
   console.log('admin:', admin)
 
-  const vault = ethers.utils.getAddress(VAULT || admin)
+  const vault = ethers.utils.getAddress(VAULT || ADDR_ZERO)
   const proposer = ethers.utils.getAddress(PROPOSER)
   const executors = EXECUTORS.split(',').map(addr => ethers.utils.getAddress(addr))
 
+  console.log('vault:', vault)
   console.log('proposer:', proposer)
   console.log('executors:', executors)
 
