@@ -29,9 +29,10 @@ export const ADDR_ONE = '0x0000000000000000000000000000000000000001'
 export const ADDR_ZERO = '0x0000000000000000000000000000000000000000'
 
 export const ROLES = {
-  Admin: 'admin', 
-  Proposer: 'proposer', 
-  Executor: 'executor', 
+  Admin: 'admin',
+  Proposer: 'proposer',
+  Executor: 'executor',
+  Vault: 'vault',
 }
 
 const chains = TESTNET

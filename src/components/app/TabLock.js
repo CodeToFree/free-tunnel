@@ -20,9 +20,10 @@ import {
 } from '@/components/app'
 
 export const ROLE_COLORS = {
-  [ROLES.Admin]: 'red', 
-  [ROLES.Proposer]: 'info', 
-  [ROLES.Executor]: 'success', 
+  [ROLES.Admin]: 'red',
+  [ROLES.Proposer]: 'info',
+  [ROLES.Executor]: 'success',
+  [ROLES.Vault]: 'indigo',
 }
 
 export default function TabLock() {
@@ -32,6 +33,7 @@ export default function TabLock() {
   const { channel, contractAddr } = useFreeChannel(chain)
 
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
+  const { result: vault } = useContractQuery(contractAddr, Permissions, 'getVault')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
   const { result: exes } = useContractQuery(contractAddr, Permissions, 'getActiveExecutors')
 
@@ -42,6 +44,8 @@ export default function TabLock() {
       setRole()
     } else if (address === admin) {
       setRole(ROLES.Admin)
+    } else if (address === vault) {
+      setRole(ROLES.Vault)
     } else if (proposerIndex > 0) {
       setRole(ROLES.Proposer)
     } else if (exes?.executors.includes(address)) {
@@ -49,7 +53,7 @@ export default function TabLock() {
     } else if (admin && exes && typeof proposerIndex !== 'number') {
       setRole()
     }
-  }, [address, admin, proposerIndex, exes])
+  }, [address, admin, vault, proposerIndex, exes])
 
   const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens')
   const tokens = React.useMemo(() => {
@@ -100,7 +104,7 @@ export default function TabLock() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer) && <SectionPropose action='lock-mint' role={role} token={token} />}
+          {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action='lock-mint' role={role} token={token} />}
         </Card>
       </div>
       {

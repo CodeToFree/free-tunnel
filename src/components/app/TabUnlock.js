@@ -28,6 +28,7 @@ export default function TabUnlock() {
   const { channel, contractAddr } = useFreeChannel(chain)
 
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
+  const { result: vault } = useContractQuery(contractAddr, Permissions, 'getVault')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
   const { result: exes } = useContractQuery(contractAddr, Permissions, 'getActiveExecutors')
 
@@ -38,6 +39,8 @@ export default function TabUnlock() {
       setRole()
     } else if (address === admin) {
       setRole(ROLES.Admin)
+    } else if (address === vault) {
+      setRole(ROLES.Vault)
     } else if (proposerIndex > 0) {
       setRole(ROLES.Proposer)
     } else if (exes?.executors.includes(address)) {
@@ -45,7 +48,7 @@ export default function TabUnlock() {
     } else if (admin && exes && typeof proposerIndex !== 'number') {
       setRole()
     }
-  }, [address, admin, proposerIndex, exes])
+  }, [address, admin, vault, proposerIndex, exes])
 
   const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens')
   const tokens = React.useMemo(() => {
@@ -96,7 +99,7 @@ export default function TabUnlock() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer) && <SectionPropose action='burn-unlock' role={role} token={token} />}
+          {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action='burn-unlock' role={role} token={token} />}
         </Card>
       </div>
       {
