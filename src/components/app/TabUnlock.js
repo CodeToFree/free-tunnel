@@ -39,12 +39,12 @@ export default function TabUnlock() {
       setRole()
     } else if (address === admin) {
       setRole(ROLES.Admin)
-    } else if (address === vault) {
-      setRole(ROLES.Vault)
     } else if (proposerIndex > 0) {
       setRole(ROLES.Proposer)
     } else if (exes?.executors.includes(address)) {
       setRole(ROLES.Executor)
+    } else if (address === vault) {
+      setRole(ROLES.Vault)
     } else if (admin && exes && typeof proposerIndex !== 'number') {
       setRole()
     }
