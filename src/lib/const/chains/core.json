@@ -6,6 +6,7 @@
   "rpcUrl": "https://rpc.coredao.org",
   "explorerUrl": "https://scan.coredao.org",
   "tokens": {
+    "0x985bf15218C2B25d9675D5ac6f1dBE0847Eee759": "M-BTC",
     "0xe04d21d999FaEDf1e72AdE6629e20A11a1ed14FA": "SolvBTC.m",
     "0x5B1Fb849f1F76217246B8AAAC053b5C7b15b7dc3": "SolvBTC.b"
   },
