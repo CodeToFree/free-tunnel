@@ -108,6 +108,9 @@ const hardhatConfig = {
     kroma: {
       url: "https://api.kroma.network",
     },
+    klaytn: {
+      url: "https://public-en-cypress.klaytn.net",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },
