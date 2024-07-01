@@ -26,15 +26,35 @@ const EXECUTE_INFO = {
   ],
 }
 
-export default function ButtonExecuteWrapper ({ role, action, exes, ...req }) {
-  const underThreshold = (req.signatures || []).length < (exes?.threshold.toNumber() || Infinity)
-  if (role !== ROLES.Executor && underThreshold) {
+export default function ButtonExecuteWrapper ({ role, action, exes, signatures = [], ...req }) {
+  const threshold = exes?.threshold.toNumber() || Infinity
+  const underThreshold = signatures.length < threshold
+  if (![ROLES.Proposer, ROLES.Executor].includes(role) && underThreshold) {
     return
   }
-  return <ButtonExecute action={action} exes={exes} {...req} />
+
+  const signInfo = (
+    <div className='text-xs text-white'>
+    {
+      !exes
+        ? `${signatures.length} Signed`
+        : `${signatures.length}/${exes.executors.length} Signed; ${underThreshold ? `${threshold} Required.` : 'Could Execute'}`
+    }
+    </div>
+  )
+
+  if (role !== ROLES.Executor && underThreshold) {
+    return signInfo
+  }
+
+  return (
+    <ButtonExecute action={action} exes={exes} signatures={signatures} underThreshold={underThreshold} {...req}>
+      {signInfo}
+    </ButtonExecute>
+  )
 }
 
-function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], hash, fromChain, toChain }) {
+function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], underThreshold, hash, fromChain, toChain, children }) {
   const executor = useAddress()
   const provider = useProvider()
 
@@ -75,10 +95,8 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], ha
   }, [channel.id, reqId, proposer, signatures, exeIndex, call, step, storeRequestAddHash])
 
   const signed = signatures.find(({ exe }) => exe === executor)
-  const threshold = exes?.threshold.toNumber()
-  const underThreshold = signatures.length < threshold
   return (
-    <div className='flex items-center'>
+    <div className='flex items-center gap-2'>
       <ConnectButton
         color='info'
         size='xs'
@@ -88,13 +106,7 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], ha
       >
         <ExecuteText underThreshold={underThreshold} signed={signed} step={step} action={action} />
       </ConnectButton>
-      <div className='ml-2 text-xs text-white'>
-      {
-        !exes
-          ? 'Loading executor configurations...'
-          : `${signatures.length}/${exes.executors.length} Signed; ${underThreshold ? `${threshold} Required.` : 'Could Execute'}`
-      }
-      </div>
+      {children}
     </div>
   )
 }

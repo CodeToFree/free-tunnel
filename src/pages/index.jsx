@@ -7,7 +7,7 @@ import { AppContainer, PaginationButtons } from '@/components/ui'
 import { ChannelList, RequestItem } from '@/components/app'
 
 import { Channels } from '@/lib/db'
-import { ADMIN_ADDRS } from '@/lib/const'
+import { ADMIN_ADDRS, ROLES } from '@/lib/const'
 import { getAllRequests } from '@/lib/api'
 import { useAllPendingRequests, useRequestsMethods } from '@/stores'
 import { useWeb3ModalFromChannel, useAddress } from '@/lib/hooks'
@@ -89,7 +89,7 @@ function PendingRequests({ channels }) {
           {!nReqs[tab] && <div className='text-gray-500'>(None)</div>}
           {
             requests[tab]?.slice(page * size, (page + 1) * size)
-              .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={[]} role='executor' />)
+              .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={[]} role={ROLES.Proposer} />)
           }
           {
             nReqs[tab] > 10 &&
