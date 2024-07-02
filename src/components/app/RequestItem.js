@@ -149,7 +149,7 @@ function RequestActionButton ({ role, action, exes, ...req }) {
     return <div className='mt-2'><ButtonCancel action={action} {...req} /></div>
   } else if (req.hash?.p2) {
     return <div className='mt-2'><ButtonExecute role={role} action={action} exes={exes} {...req} /></div>
-  } else if (role === ROLES.Proposer) {
+  } else if (role === ROLES.Proposer && !req.channelId) {
     return <div className='mt-2'><ButtonPropose action={action} {...req} /></div>
   }
 }
