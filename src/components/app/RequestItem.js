@@ -25,6 +25,7 @@ const defaultTokens = {
   75: 'BBTC',
   76: 'BBUSD',
   77: 'uBTC',
+  193: 'pumpBTC',
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
