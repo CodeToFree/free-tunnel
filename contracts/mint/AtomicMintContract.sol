@@ -44,8 +44,17 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenMintCancelled(bytes32 indexed reqId, address indexed recipient);
 
     function proposeMint(bytes32 reqId, address recipient) external onlyProposer toChainOnly(reqId) {
-        _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) & 0x0f == 1, "Invalid action; not lock-mint");
+        _proposeMint(reqId, recipient);
+    }
+
+    function proposeMintFromBurn(bytes32 reqId, address recipient) external onlyProposer toChainOnly(reqId) {
+        require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
+        _proposeMint(reqId, recipient);
+    }
+
+    function _proposeMint(bytes32 reqId, address recipient) private {
+        _createdTimeFrom(reqId, true);
         require(proposedMint[reqId] == address(0), "Invalid reqId");
         require(recipient > address(1), "Invalid recipient");
 
@@ -60,11 +69,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
         address recipient = proposedMint[reqId];
         require(recipient > address(1), "Invalid reqId");
 
-        bytes32 digest = keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 29 + 66),
-            "[", BRIDGE_CHANNEL, "]\n",
-            "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
-        ));
+        bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedMint[reqId] = address(1);
@@ -99,8 +104,17 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
     function proposeBurn(bytes32 reqId) payable external toChainOnly(reqId) {
-        _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
+        _proposeBurn(reqId);
+    }
+
+    function proposeBurnForMint(bytes32 reqId) payable external fromChainOnly(reqId) {
+        require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
+        _proposeBurn(reqId);
+    }
+
+    function _proposeBurn(bytes32 reqId) private {
+        _createdTimeFrom(reqId, true);
         require(proposedBurn[reqId] == address(0), "Invalid reqId");
 
         address proposer = msg.sender;
@@ -119,11 +133,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
         address proposer = proposedBurn[reqId];
         require(proposer > address(1), "Invalid reqId");
 
-        bytes32 digest = keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 31 + 66),
-            "[", BRIDGE_CHANNEL, "]\n",
-            "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
-        ));
+        bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedBurn[reqId] = address(1);

@@ -76,11 +76,7 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
         address proposer = proposedLock[reqId];
         require(proposer > address(1), "Invalid reqId");
 
-        bytes32 digest = keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 29 + 66),
-            "[", BRIDGE_CHANNEL, "]\n",
-            "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
-        ));
+        bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedLock[reqId] = address(1);
@@ -142,11 +138,7 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
         address recipient = proposedUnlock[reqId];
         require(recipient > address(1), "Invalid reqId");
 
-        bytes32 digest = keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 31 + 66),
-            "[", BRIDGE_CHANNEL, "]\n",
-            "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
-        ));
+        bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
         proposedUnlock[reqId] = address(1);
