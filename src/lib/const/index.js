@@ -18,6 +18,7 @@ import bob from './chains/bob.json'
 import kava from './chains/kava.json'
 import kroma from './chains/kroma.json'
 import klaytn from './chains/klaytn.json'
+import ailayer from './chains/ailayer.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
 import b2_testnet from './chains/b2_testnet.json'
@@ -38,7 +39,7 @@ export const ROLES = {
 
 const chains = TESTNET
   ? { sepolia, merlin_testnet, b2_testnet }
-  : { eth, arb, bnb, polygon, linea, scroll, mode, manta, zklink, core, xlayer, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn }
+  : { eth, arb, bnb, polygon, linea, scroll, mode, manta, zklink, core, xlayer, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn, ailayer }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)

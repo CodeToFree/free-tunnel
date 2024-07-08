@@ -111,6 +111,9 @@ const hardhatConfig = {
     klaytn: {
       url: "https://public-en-cypress.klaytn.net",
     },
+    ailayer: {
+      url: "https://mainnet-rpc.ailayer.xyz",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

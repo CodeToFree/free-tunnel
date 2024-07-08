@@ -70,6 +70,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/kroma.png' className={_className} />
   } else if (token === 'klaytn') {
     return <img src='/tokens/klaytn.png' className={_className} />
+  } else if (token === 'ailayer') {
+    return <img src='/tokens/ailayer.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'm-stone') {
