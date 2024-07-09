@@ -66,26 +66,34 @@ export default function TabLock() {
 
   const [token, setToken] = React.useState()
 
+  const action = channel.from.length ? 'lock-mint' : 'burn-mint'
+
   return (
     <AppContainer Header={FreeHeader}>
       <div className='w-[480px] max-w-full'>
-        <Button.Group>
-          <Button
-            color='purple'
-            size='sm'
-            className='flex-1'
-          >
-            Lock-Mint
-          </Button>
-          <Button
-            color='gray'
-            size='sm'
-            className='flex-1'
-            onClick={() => router.push(`/${channel.id}/unlock`)}
-          >
-            Burn-Unlock
-          </Button>
-        </Button.Group>
+        {
+          channel.from.length
+          ? <Button.Group>
+              <Button
+                color='purple'
+                size='sm'
+                className='flex-1'
+              >
+                Lock-Mint
+              </Button>
+              <Button
+                color='gray'
+                size='sm'
+                className='flex-1'
+                onClick={() => router.push(`/${channel.id}/unlock`)}
+              >
+                Burn-Unlock
+              </Button>
+            </Button.Group>
+          : <Button color='purple' size='sm' className='w-full'>
+              Burn-Mint
+            </Button>
+        }
 
         <Card className='mt-4'>
           <div>
@@ -104,19 +112,19 @@ export default function TabLock() {
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {role === ROLES.Admin && <SectionAdmin />}
-          {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action='lock-mint' role={role} token={token} />}
+          {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action={action} role={role} token={token} />}
         </Card>
       </div>
       {
         (!role || role === ROLES.Proposer) &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForProposer action='lock-mint' tokens={tokens} proposer={address} role={role} exes={exes} />
+          <CardRequestsForProposer action={action} tokens={tokens} proposer={address} role={role} exes={exes} />
         </div>
       }
       {
         role === ROLES.Executor &&
         <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-          <CardRequestsForExecutor action='lock-mint' tokens={tokens} exes={exes} />
+          <CardRequestsForExecutor action={action} tokens={tokens} exes={exes} />
         </div>
       }
     </AppContainer>

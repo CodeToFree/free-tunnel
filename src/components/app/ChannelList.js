@@ -2,7 +2,7 @@ import React from 'react'
 import { Accordion, Button } from 'flowbite-react'
 import { HiChevronDoubleDown } from 'react-icons/hi'
 
-import { CHAINS, DEFAULT_VAULT } from '@/lib/const'
+import { CHAINS, ADDR_ZERO } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
 
@@ -40,9 +40,12 @@ export function ChannelDetail ({ channel }) {
         return <ChainDetail key={chain.id} chain={chain} contractAddr={channel.contracts[chain.id]} />
       })
     }
-    <div className='mx-auto' >
-      <HiChevronDoubleDown />
-    </div>
+    {
+      channel.from.length > 0 &&
+      <div className='mx-auto' >
+        <HiChevronDoubleDown />
+      </div>
+    }
     {
       channel.to.map(id => {
         const chain = CHAINS.find(c => c.id === id)
@@ -80,7 +83,7 @@ export function ChainDetail ({ chain, contractAddr }) {
         </a>
       </div>
       {
-        vault && vault !== DEFAULT_VAULT &&
+        vault && vault !== ADDR_ZERO &&
         <div className='ml-9 flex items-center justify-between text-sm'>
           <div>Vault</div>
           <a

@@ -33,8 +33,8 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const toActionName = capitalize(action.split('-')[1])
   const { id, proposer, value, tokenIndex, created, fromChain, toChain, vault, recipient, hash } = req
 
-  const chain1 = action === 'lock-mint' ? fromChain : toChain
-  const chain2 = action === 'lock-mint' ? toChain : fromChain
+  const chain1 = action === 'burn-unlock' ? toChain : fromChain
+  const chain2 = action === 'burn-unlock' ? fromChain : toChain
 
   const token = tokens?.find(t => t.index === tokenIndex)
   const tokenSymbol = fromChain.tokens[token?.addr] || toChain.tokens[token?.addr] || defaultTokens[tokenIndex]

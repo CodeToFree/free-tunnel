@@ -22,6 +22,12 @@ import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
 
+const METHODS = {
+  'lock-mint': 'proposeLock',
+  'burn-unlock': 'proposeBurn',
+  'burn-mint': 'proposeBurnForMint'
+}
+
 export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const chain = useChain()
   const { channel, contractAddr } = useFreeChannel(chain)
@@ -34,11 +40,11 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const [recipient, setRecipient] = React.useState('')
 
   const forceChains = action === 'lock-mint' ? channel.from : channel.to
-  const targetChains = action === 'lock-mint' ? channel.to : channel.from
+  const targetChains = action === 'burn-unlock' ? channel.from : channel.to
   const tokenPath = channel?.paths?.[token?.index]
   const targets = React.useMemo(() => {
-    return targetChains.filter(c => tokenPath ? tokenPath.includes(c.atomicId) : true)
-  }, [targetChains, tokenPath])
+    return targetChains.filter(c => c.id !== chain?.id && (tokenPath ? tokenPath.includes(c.atomicId) : true))
+  }, [chain?.id, targetChains, tokenPath])
   const [target, setTarget] = React.useState(targets[0])
 
   React.useEffect(() => {
@@ -48,8 +54,8 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const vaultLimit = channel.vault?.[token?.index] || 0
   const useVault = Boolean(vaultLimit) && (Number(amount) >= vaultLimit)
 
-  const from = action === 'lock-mint' ? chain?.atomicId : target?.atomicId // TODO to other from
-  const to = action === 'lock-mint' ? target?.atomicId : chain?.atomicId
+  const from = action === 'burn-unlock' ? target?.atomicId : chain?.atomicId
+  const to = action === 'burn-unlock' ? chain?.atomicId : target?.atomicId
   const reqId = React.useMemo(
     () => newRequestId(action, amount, token?.index, from, to, useVault),
     [action, amount, token?.index, from, to, useVault]
@@ -66,7 +72,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   }, [channel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateForChannel])
 
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
-  const method = action === 'lock-mint' ? 'proposeLock' : 'proposeBurn'
+  const method = METHODS[action]
 
   const bridgeFee = role ? '0' : channel.fee?.[target?.id] || channel.fee?.default || '0'
   const value = reqId && token?.addr === ADDR_ONE

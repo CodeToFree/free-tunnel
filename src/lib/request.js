@@ -3,14 +3,20 @@ import { ethers } from 'ethers'
 import { CHAINS } from '@/lib/const'
 import { toValue } from '@/lib/hooks'
 
+export const ACTION_IDS = {
+  'lock-mint': 1,
+  'burn-unlock': 2,
+  'burn-mint': 3
+}
+
 export function newRequestId(action, amount, tokenIndex, from, to, vault) {
   const value = toValue(amount, 6)
-  if (value.lte(0) || !tokenIndex || typeof from !== 'number' || !to) {
+  if (value.lte(0) || !tokenIndex || typeof from !== 'number' || to == undefined) {
     return ''
   }
 
   const now = Math.floor(Date.now() / 1000)
-  let actionId = action === 'lock-mint' ? 1 : 2
+  let actionId = ACTION_IDS[action]
   if (vault) {
     actionId |= 0x10
   }

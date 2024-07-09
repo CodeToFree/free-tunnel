@@ -410,6 +410,34 @@
   {
     "inputs": [
       {
+        "internalType": "uint8",
+        "name": "tokenIndex",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "uint8",
+        "name": "decimals",
+        "type": "uint8"
+      }
+    ],
+    "name": "createToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
@@ -659,6 +687,19 @@
         "internalType": "bytes32",
         "name": "reqId",
         "type": "bytes32"
+      }
+    ],
+    "name": "proposeBurnForMint",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "reqId",
+        "type": "bytes32"
       },
       {
         "internalType": "address",
@@ -667,6 +708,24 @@
       }
     ],
     "name": "proposeMint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "reqId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "proposeMintFromBurn",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

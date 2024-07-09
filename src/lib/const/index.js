@@ -46,4 +46,3 @@ export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 8
 export const EXECUTE_PERIOD = Number(process.env.NEXT_PUBLIC_EXECUTE_PERIOD || 86400 * 3)
 
 export const ADMIN_ADDRS = (process.env.NEXT_PUBLIC_ADMIN_ADDRS || '').split(',')
-export const DEFAULT_VAULT = process.env.NEXT_PUBLIC_DEFAULT_VAULT

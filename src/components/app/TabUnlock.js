@@ -27,6 +27,12 @@ export default function TabUnlock() {
   const address = useAddress()
   const { channel, contractAddr } = useFreeChannel(chain)
 
+  React.useEffect(() => {
+    if (!channel.from.length) {
+      router.replace(`/${channel.id}`)
+    }
+  }, [router, channel.id, channel.from.length])
+
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
   const { result: vault } = useContractQuery(contractAddr, Permissions, 'getVault')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
@@ -60,6 +66,10 @@ export default function TabUnlock() {
   }, [_tokens])
 
   const [token, setToken] = React.useState()
+
+  if (!channel.from.length) {
+    return <AppContainer Header={FreeHeader} />
+  }
 
   return (
     <AppContainer Header={FreeHeader}>

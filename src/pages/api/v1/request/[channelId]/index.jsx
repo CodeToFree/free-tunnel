@@ -19,11 +19,7 @@ async function get(req, res) {
 
   const aggregated = await Requests.aggregate([
     {
-      $match: {
-        channel: channel.name,
-        from: { $in: channel.from.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
-        to: { $in: channel.to.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
-      },
+      $match: { channel: channel.name },
     },
     {
       $group: {

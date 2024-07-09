@@ -15,6 +15,12 @@ import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
 
+const METHODS = {
+  'lock-mint': 'proposeMint',
+  'burn-unlock': 'proposeUnlock',
+  'burn-mint': 'proposeMintFromBurn'
+}
+
 export default function ButtonPropose ({ action, proposer, id: reqId, recipient, fromChain, toChain }) {
   const chain = useChain()
   const { channel, contractAddr } = useFreeChannel(chain)
@@ -22,15 +28,15 @@ export default function ButtonPropose ({ action, proposer, id: reqId, recipient,
 
   const { storeRequestAddHash } = useRequestsMethods()
 
-  const abi = action === 'lock-mint' ? AtomicMint : AtomicLock
-  const method = action === 'lock-mint' ? 'proposeMint' : 'proposeUnlock'
+  const abi = action === 'burn-unlock' ? AtomicLock : AtomicMint
+  const method = METHODS[action]
   const callback = React.useCallback(async hash => {
     storeRequestAddHash(channel.id, proposer, reqId, { p2: hash })
     await updateRequest(channel.id, proposer, reqId, { hash: { p2: hash } })
   }, [channel.id, proposer, reqId, storeRequestAddHash])
 
   return (
-    <ConnectButton color='info' size='xs' forceChains={action === 'lock-mint' ? [toChain] : [fromChain]}>
+    <ConnectButton color='info' size='xs' forceChains={action === 'burn-unlock' ? [fromChain] : [toChain]}>
       <ContractCallButton
         address={contractAddr}
         abi={abi}

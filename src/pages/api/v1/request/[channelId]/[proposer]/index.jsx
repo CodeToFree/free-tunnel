@@ -14,11 +14,6 @@ async function get(req, res) {
     return res.status(404).send()
   }
 
-  const reqs = await Requests.find({
-    proposer: req.query.proposer,
-    channel: channel.name,
-    from: { $in: channel.from.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
-    to: { $in: channel.to.map(id => CHAINS.find(c => c.id === id).chainId.toString()) },
-  })
+  const reqs = await Requests.find({ proposer: req.query.proposer, channel: channel.name })
   res.json({ result: reqs })
 }
