@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Button, Badge, Label } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
-import { parseRequest } from '@/lib/request'
+import { parseRequest, ACTION_IDS } from '@/lib/request'
 import { getChannelRequests } from '@/lib/api'
 import { useRequests, useRequestsMethods } from '@/stores'
 
@@ -19,7 +19,7 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
   const toActionName = capitalize(action.split('-')[1])
 
   const requests = useRequests(channel.id, 'executor')
-  const actionId = action === 'lock-mint' ? 1 : 2
+  const actionId = ACTION_IDS[action]
   const allReqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))
       .filter(req => (req.actionId & 0x0f) === actionId)

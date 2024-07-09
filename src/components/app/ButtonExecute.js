@@ -24,6 +24,10 @@ const EXECUTE_INFO = {
     { chain: 'toChain', abi: AtomicMint, method: 'executeBurn' },
     { chain: 'fromChain', abi: AtomicLock, method: 'executeUnlock' },
   ],
+  'burn-mint': [
+    { chain: 'fromChain', abi: AtomicMint, method: 'executeBurn' },
+    { chain: 'toChain', abi: AtomicMint, method: 'executeMint' },
+  ],
 }
 
 export default function ButtonExecuteWrapper ({ role, action, exes, signatures = [], ...req }) {
