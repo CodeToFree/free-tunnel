@@ -9,6 +9,7 @@ import manta from './chains/manta.json'
 import zklink from './chains/zklink.json'
 import core from './chains/core.json'
 import xlayer from './chains/xlayer.json'
+import mantle from './chains/mantle.json'
 import merlin from './chains/merlin.json'
 import b2 from './chains/b2.json'
 import bitlayer from './chains/bitlayer.json'
@@ -39,7 +40,7 @@ export const ROLES = {
 
 const chains = TESTNET
   ? { sepolia, merlin_testnet, b2_testnet }
-  : { eth, arb, bnb, polygon, linea, scroll, mode, manta, zklink, core, xlayer, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn, ailayer }
+  : { eth, arb, bnb, polygon, linea, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn, ailayer }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)

@@ -56,6 +56,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/okb.png' className={_className} />
   } else if (token === 'xlayer') {
     return <img src='/tokens/xlayer.png' className={_className} />
+  } else if (token === 'mantle' || token === 'mnt') {
+    return <img src='/tokens/mantle.png' className={_className} />
   } else if (token === 'merl' || token === 'merlin') {
     return <img src='/tokens/merlin.png' className={_className} />
   } else if (token === 'b2') {

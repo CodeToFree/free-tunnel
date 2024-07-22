@@ -20,6 +20,7 @@ contract ReqHelpers {
     // 0x0c: zklink
     // 0x0d: core
     // 0x0e: xlayer
+    // 0x0f: mantle
     // 0x10: merlin
     // 0x11: b2
     // 0x12: bitlayer

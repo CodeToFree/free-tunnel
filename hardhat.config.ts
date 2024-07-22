@@ -84,6 +84,9 @@ const hardhatConfig = {
     xlayer: {
       url: "https://rpc.xlayer.tech",
     },
+    mantle: {
+      url: "https://rpc.mantle.xyz",
+    },
     merlin: {
       url: "https://rpc.merlinchain.io",
     },
