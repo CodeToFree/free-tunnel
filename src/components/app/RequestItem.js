@@ -25,6 +25,7 @@ const defaultTokens = {
   75: 'BBTC',
   76: 'BBUSD',
   77: 'uBTC',
+  78: 'SolvBTC',
   193: 'pumpBTC',
 }
 
