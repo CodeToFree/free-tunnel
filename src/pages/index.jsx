@@ -95,7 +95,7 @@ function PendingRequests({ channels }) {
             nReqs[tab] > 10 &&
             <PaginationButtons
               page={page}
-              pages={Math.ceil(reqs.length / 10)}
+              pages={Math.ceil(nReqs[tab].length / 10)}
               total={nReqs[tab]}
               onPageChange={setPage}
             />
