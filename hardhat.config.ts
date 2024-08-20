@@ -60,6 +60,9 @@ const hardhatConfig = {
     polygon: {
       url: "https://polygon-rpc.com",
     },
+    avax: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+    },
     linea: {
       url: "https://rpc.linea.build",
     },

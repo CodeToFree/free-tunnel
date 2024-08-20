@@ -14,6 +14,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/mbtc.png' className={_className} />
   } else if (token?.includes('solvbtc.bbn')) {
     return <img src='/tokens/solvbtc_bbn.png' className={_className} />
+  } else if (token?.includes('solvbtc.ena')) {
+    return <img src='/tokens/solvbtc_ena.png' className={_className} />
   } else if (token?.includes('solvbtc.m')) {
     return <img src='/tokens/solvbtc_m.png' className={_className} />
   } else if (token?.includes('solvbtc.b')) {
@@ -42,6 +44,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/bnb.png' className={_className} />
   } else if (token === 'polygon' || token === 'matic') {
     return <img src='/tokens/polygon.png' className={_className} />
+  } else if (token === 'avax') {
+    return <img src='/tokens/avax.png' className={_className} />
   } else if (token === 'linea') {
     return <img src='/tokens/linea.png' className={_className} />
   } else if (token === 'scroll') {

@@ -1,0 +1,12 @@
+{
+  "chainId": 43114,
+  "name": "Avalanche",
+  "icon": "avax",
+  "currency": "AVAX",
+  "rpcUrl": "https://api.avax.network/ext/bc/C/rpc",
+  "explorerUrl": "https://snowtrace.io",
+  "tokens": {
+    "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777": "SolvBTC"
+  },
+  "atomicId": 5
+}
