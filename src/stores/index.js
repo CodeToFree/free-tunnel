@@ -6,31 +6,32 @@ import { parseRequest } from '@/lib/request'
 
 const useStoreRequests = create(persist(
   set => ({
+    data: {},
     storeRequestAdd: (channelId, proposer, reqId, recipient, hash) => (
-      set(state => ({ ...state, [channelId]: {
-        ...state[channelId],
-        [proposer]: [...(state[channelId]?.[proposer] || []), { id: reqId, recipient, hash: { p1: hash } }],
-      } }))
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
+        ...data[channelId],
+        [proposer]: [...(data[channelId]?.[proposer] || []), { id: reqId, recipient, hash: { p1: hash } }],
+      } } }))
     ),
     storeRequestUpdateForProposer: (channelId, proposer, reqs) => (
-      set(state => ({ ...state, [channelId]: {
-        ...state[channelId],
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
+        ...data[channelId],
         [proposer]: reqs,
-      } }))
+      } } }))
     ),
-    storeRequestUpdateForChannel: (channelId, requests) => set(state => ({ ...state, [channelId]: requests })),
-    storeRequestUpdateAll: requests => set(state => ({ ...state, ...requests })),
+    storeRequestUpdateForChannel: (channelId, requests) => set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: requests } })),
+    storeRequestUpdateAll: requests => set(({ data, ...actions }) => ({ ...actions, data: requests })),
     storeRequestAddSignature: (channelId, proposer, reqId, { sig, exe }) => (
-      set(state => ({ ...state, [channelId]: {
-        ...state[channelId],
-        [proposer]: state[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, signatures: [...(req.signatures || []), { sig, exe }] })),
-      } }))
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
+        ...data[channelId],
+        [proposer]: data[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, signatures: [...(req.signatures || []), { sig, exe }] })),
+      } } }))
     ),
     storeRequestAddHash: (channelId, proposer, reqId, hash) => (
-      set(state => ({ ...state, [channelId]: {
-        ...state[channelId],
-        [proposer]: state[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, hash: { ...req.hash, ...hash } })),
-      } }))
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
+        ...data[channelId],
+        [proposer]: data[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, hash: { ...req.hash, ...hash } })),
+      } } }))
     ),
   }),
   {
@@ -40,13 +41,13 @@ const useStoreRequests = create(persist(
 
 
 export function useAllPendingRequests (channels) {
-  const store = useStoreRequests()
+  const state = useStoreRequests()
   return React.useMemo(() => {
-    if (!channels || !store) {
+    if (!channels || !state?.data) {
       return []
     }
     return Object.fromEntries(
-      Object.entries(store)
+      Object.entries(state.data)
         .filter(([channelId]) => channels.find(c => c.id === channelId))
         .map(([channelId, reqsByProposer]) => [
           channelId,
@@ -64,11 +65,11 @@ export function useAllPendingRequests (channels) {
         ])
         .filter(([_, reqs]) => reqs.length > 0)
     )
-  }, [channels, store])
+  }, [channels, state])
 }
 
 export function useRequests (channelId, proposer) {
-  const requests = useStoreRequests(state => state[channelId])
+  const requests = useStoreRequests(state => state.data?.[channelId])
   return React.useMemo(() => {
     if (!requests) {
       return []
