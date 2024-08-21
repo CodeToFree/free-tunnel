@@ -6,7 +6,8 @@
   "rpcUrl": "https://api.avax.network/ext/bc/C/rpc",
   "explorerUrl": "https://snowtrace.io",
   "tokens": {
-    "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777": "SolvBTC"
+    "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777": "SolvBTC",
+    "0xCC0966D8418d412c599A6421b760a847eB169A8c": "SolvBTC.BBN"
   },
   "atomicId": 5
 }
