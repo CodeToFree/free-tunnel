@@ -74,10 +74,8 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
   const method = METHODS[action]
 
-  let bridgeFee
-  if (role) {
-    bridgeFee = '0'
-  } else if (channel.fee) {
+  let bridgeFee = '0'
+  if (!role && channel.fee) {
     const fee = channel.fee
     bridgeFee = fee[`${chain?.id}>${target?.id}`] || fee[`${chain?.id}>`] || fee[`>${target?.id}`] || fee.default || '0'
   }
