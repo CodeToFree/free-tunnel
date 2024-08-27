@@ -6,7 +6,7 @@
   "rpcUrl": "https://zircuit-mainnet.drpc.org",
   "explorerUrl": "https://explorer.zircuit.com",
   "tokens": {
-    "": "pumpBTC"
+    "0xF469fBD2abcd6B9de8E169d128226C0Fc90a012e": "pumpBTC"
   },
   "atomicId": 36
 }
