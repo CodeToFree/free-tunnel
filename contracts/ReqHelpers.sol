@@ -31,6 +31,7 @@ contract ReqHelpers {
     // 0x21: kroma
     // 0x22: klaytn
     // 0x23: ailayer
+    // 0x24: zircuit
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet

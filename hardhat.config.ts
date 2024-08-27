@@ -120,6 +120,9 @@ const hardhatConfig = {
     ailayer: {
       url: "https://mainnet-rpc.ailayer.xyz",
     },
+    zircuit: {
+      url: "https://zircuit-mainnet.drpc.org",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },
