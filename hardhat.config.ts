@@ -123,6 +123,9 @@ const hardhatConfig = {
     zircuit: {
       url: "https://zircuit-mainnet.drpc.org",
     },
+    iotex: {
+      url: "https://babel-api.mainnet.iotex.io",
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

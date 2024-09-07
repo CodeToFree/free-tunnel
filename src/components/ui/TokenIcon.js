@@ -86,6 +86,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/ailayer.png' className={_className} />
   } else if (token === 'zircuit') {
     return <img src='/tokens/zircuit.png' className={_className} />
+  } else if (token === 'iotex' || token === 'iotx') {
+    return <img src='/tokens/iotex.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'm-stone') {
