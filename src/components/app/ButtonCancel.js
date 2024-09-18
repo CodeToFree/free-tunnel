@@ -24,6 +24,10 @@ const CANCEL_INFO = {
     { chain: 'toChain', abi: AtomicMint, method: 'cancelBurn' },
     { chain: 'fromChain', abi: AtomicLock, method: 'cancelUnlock' },
   ],
+  'burn-mint': [
+    { chain: 'fromChain', abi: AtomicMint, method: 'cancelBurn' },
+    { chain: 'toChain', abi: AtomicMint, method: 'cancelMint' },
+  ],
 }
 
 export default function ButtonCancel ({ action, id: reqId, created, proposer, hash, fromChain, toChain }) {
