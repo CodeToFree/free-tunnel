@@ -33,6 +33,7 @@ contract ReqHelpers {
     // 0x23: ailayer
     // 0x24: zircuit
     // 0x25: iotex
+    // 0x26: zeta
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet

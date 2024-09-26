@@ -3,6 +3,7 @@ import arb from './chains/arb.json'
 import bnb from './chains/bnb.json'
 import polygon from './chains/polygon.json'
 import avax from './chains/avax.json'
+import base from './chains/base.json'
 import linea from './chains/linea.json'
 import scroll from './chains/scroll.json'
 import mode from './chains/mode.json'
@@ -23,6 +24,7 @@ import klaytn from './chains/klaytn.json'
 import ailayer from './chains/ailayer.json'
 import zircuit from './chains/zircuit.json'
 import iotex from './chains/iotex.json'
+import zeta from './chains/zeta.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
 import b2_testnet from './chains/b2_testnet.json'
@@ -43,7 +45,7 @@ export const ROLES = {
 
 const chains = TESTNET
   ? { sepolia, merlin_testnet, b2_testnet }
-  : { eth, arb, bnb, polygon, avax, linea, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn, ailayer, zircuit, iotex }
+  : { eth, arb, bnb, polygon, avax, base, linea, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn, ailayer, zircuit, iotex, zeta }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)

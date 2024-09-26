@@ -63,6 +63,9 @@ const hardhatConfig = {
     avax: {
       url: "https://api.avax.network/ext/bc/C/rpc",
     },
+    base: {
+      url: "https://mainnet.base.org",
+    },
     linea: {
       url: "https://rpc.linea.build",
     },
@@ -125,6 +128,9 @@ const hardhatConfig = {
     },
     iotex: {
       url: "https://babel-api.mainnet.iotex.io",
+    },
+    zeta: {
+      url: "https://zetachain-evm.blockpi.network:443/v1/rpc/public"
     },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",

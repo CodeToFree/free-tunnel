@@ -46,6 +46,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/polygon.png' className={_className} />
   } else if (token === 'avax') {
     return <img src='/tokens/avax.png' className={_className} />
+  } else if (token === 'base') {
+    return <img src='/tokens/base.png' className={_className} />
   } else if (token === 'linea') {
     return <img src='/tokens/linea.png' className={_className} />
   } else if (token === 'scroll') {
@@ -88,6 +90,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/zircuit.png' className={_className} />
   } else if (token === 'iotex' || token === 'iotx') {
     return <img src='/tokens/iotex.png' className={_className} />
+  } else if (token === 'zeta') {
+    return <img src='/tokens/zeta.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'm-stone') {
