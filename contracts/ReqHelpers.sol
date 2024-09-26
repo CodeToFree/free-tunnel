@@ -40,7 +40,7 @@ contract ReqHelpers {
     uint8 constant CHAIN = 0x00;
 
     // This value should be different for different bridge deployments
-    string constant BRIDGE_CHANNEL = "Merlin ERC20 Bridge";
+    string constant BRIDGE_CHANNEL = "MERL Bridge";
 
     uint256 constant PROPOSE_PERIOD = 48 hours;
     uint256 constant EXPIRE_PERIOD = 72 hours;
