@@ -9,8 +9,15 @@ import "./MintableERC20.sol";
 import "../Permissions.sol";
 import "../ReqHelpers.sol";
 
+interface IMerlinBridge {
+    function mintERC20Token(bytes32 txHash, address token, address to, uint256 amount) external;
+    function burnERC20Token(address token, uint256 amount, string memory destBtcAddr) external;
+}
+
 contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     using SafeERC20 for MintableERC20;
+
+    IMerlinBridge constant MERLIN_BRIDGE = IMerlinBridge(address(0x28AD6b7dfD79153659cb44C2155cf7C0e1CeEccC));
 
     mapping(bytes32 => address) public proposedMint;
     mapping(bytes32 => address) public proposedBurn;
@@ -81,9 +88,9 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
             vault = getVault();
         }
         if (vault == address(0)) {
-            MintableERC20(tokenAddr).mint(recipient, amount);
+            MERLIN_BRIDGE.mintERC20Token(reqId, tokenAddr, recipient, amount);
         } else {
-            MintableERC20(tokenAddr).mint(vault, amount);
+            MERLIN_BRIDGE.mintERC20Token(reqId, tokenAddr, vault, amount);
         }
 
         emit TokenMintExecuted(reqId, recipient);
@@ -140,7 +147,7 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        MintableERC20(tokenAddr).burn(address(this), amount);
+        MERLIN_BRIDGE.burnERC20Token(tokenAddr, amount, Strings.toHexString(uint256(reqId), 32));
 
         emit TokenBurnExecuted(reqId, proposer);
     }
