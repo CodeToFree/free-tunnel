@@ -3,7 +3,7 @@
   "name": "Arbitrum",
   "icon": "arb",
   "currency": "ETH",
-  "rpcUrl": "https://arbitrum.llamarpc.com",
+  "rpcUrl": "https://arb1.arbitrum.io/rpc",
   "explorerUrl": "https://arbiscan.io",
   "tokens": {
     "0x0000000000000000000000000000000000000001": "ETH",

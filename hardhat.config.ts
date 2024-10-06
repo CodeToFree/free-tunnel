@@ -52,7 +52,7 @@ const hardhatConfig = {
       url: "https://rpc.ankr.com/eth",
     },
     arb: {
-      url: "https://1rpc.io/arb",
+      url: "https://arb1.arbitrum.io/rpc",
     },
     bnb: {
       url: "https://rpc.ankr.com/bsc",
