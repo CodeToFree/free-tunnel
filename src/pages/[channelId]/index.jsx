@@ -1,7 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
 
-import { Channels } from '@/lib/db'
 import { useWeb3ModalFromChannel } from '@/lib/hooks'
 
 import { AppProvider } from '@/components/AppProvider'
@@ -25,10 +24,12 @@ export default function PageChannelIndex({ channel }) {
 }
 
 export const getServerSideProps = async (req) => {
+  const { Channels, Fees } = await import('@/lib/db')
   const channel = await Channels.findById(req.query.channelId)
   if (!channel) {
     return { redirect: { destination: '/' } }
   }
-  const { _id, ...rest } = channel?.toJSON()
-  return { props: { channel: { id: _id, ...rest } } }
+  const { _id, fee: _fee = 'default', ...rest } = channel?.toJSON()
+  const fee = (await Fees.findById(_fee))?.rules || null
+  return { props: { channel: { id: _id, fee, ...rest } } }
 }

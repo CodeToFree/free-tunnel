@@ -42,7 +42,7 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/arb.png' className={_className} />
   } else if (token === 'bnb') {
     return <img src='/tokens/bnb.png' className={_className} />
-  } else if (token === 'polygon' || token === 'matic') {
+  } else if (token === 'polygon' || token === 'pol') {
     return <img src='/tokens/polygon.png' className={_className} />
   } else if (token === 'avax') {
     return <img src='/tokens/avax.png' className={_className} />

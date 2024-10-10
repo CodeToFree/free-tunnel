@@ -19,7 +19,7 @@ const defaultTokens = {
   67: 'STONE',
   68: 'FDUSD',
   69: 'BDGM',
-  71: 'MATIC',
+  71: 'POL',
   72: 'SolvBTC.m',
   73: 'SolvBTC.b',
   75: 'BBTC',
