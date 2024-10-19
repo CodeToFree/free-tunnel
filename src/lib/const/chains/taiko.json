@@ -1,0 +1,13 @@
+{
+  "chainId": 167000,
+  "name": "Taiko",
+  "icon": "taiko",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.mainnet.taiko.xyz",
+  "explorerUrl": "https://taikoscan.network",
+  "tokens": {
+    "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77": "SolvBTC",
+    "0xCC0966D8418d412c599A6421b760a847eB169A8c": "SolvBTC.BBN"
+  },
+  "atomicId": 39
+}

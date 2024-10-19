@@ -34,6 +34,9 @@ contract ReqHelpers {
     // 0x24: zircuit
     // 0x25: iotex
     // 0x26: zeta
+    // 0x27: taiko
+    // 0x28: sei
+    // 0x29: duck
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet

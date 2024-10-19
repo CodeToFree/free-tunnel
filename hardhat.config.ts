@@ -132,6 +132,15 @@ const hardhatConfig = {
     zeta: {
       url: "https://zetachain-evm.blockpi.network:443/v1/rpc/public"
     },
+    taiko: {
+      url: "https://rpc.mainnet.taiko.xyz"
+    },
+    sei: {
+      url: "https://evm-rpc.sei-apis.com"
+    },
+    duck: {
+      url: "https://rpc.duckchain.io"
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

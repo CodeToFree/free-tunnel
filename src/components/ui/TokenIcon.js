@@ -92,6 +92,12 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/iotex.png' className={_className} />
   } else if (token === 'zeta') {
     return <img src='/tokens/zeta.png' className={_className} />
+  } else if (token === 'taiko') {
+    return <img src='/tokens/taiko.png' className={_className} />
+  } else if (token === 'sei') {
+    return <img src='/tokens/sei.png' className={_className} />
+  } else if (token === 'duck') {
+    return <img src='/tokens/duck.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {
     return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'm-stone') {
