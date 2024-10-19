@@ -99,7 +99,7 @@ export function ChainDetail ({ chain, contractAddr }) {
           <a
             key={t.addr}
             className='flex items-center text-sm cursor-pointer hover:underline hover:text-cyan-600'
-            href={`${chain.explorerUrl}/${chain.id === 'zklink' ? 'address' : 'token'}/${t.addr}`}
+            href={`${chain.explorerUrl}/${['zklink', 'duck'].includes(chain.id) ? 'address' : 'token'}/${t.addr}`}
             target='_blank'
           >
             <TokenIcon size='sm' className='mr-1' token={t.icon || chain?.tokens[t.addr]?.toLowerCase()} />
