@@ -6,7 +6,8 @@
   "rpcUrl": "https://babel-api.mainnet.iotex.io",
   "explorerUrl": "https://iotexscan.io",
   "tokens": {
-    "0x0F921c39eFd98809FE6D20a88A4357454578987a": "M-BTC"
+    "0x0F921c39eFd98809FE6D20a88A4357454578987a": "M-BTC",
+    "0x93919784C523f39CACaa98Ee0a9d96c3F32b593e": "uniBTC"
   },
   "atomicId": 37
 }

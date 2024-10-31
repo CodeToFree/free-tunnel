@@ -30,6 +30,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/usdc.png' className={_className} />
   } else if (token === 'usdt' || token === 'm-usdt' || token === 'busdt') {
     return <img src='/tokens/usdt.png' className={_className} />
+  } else if (token === 'unibtc') {
+    return <img src='/tokens/unibtc.png' className={_className} />
   } else if (token === 'pumpbtc') {
     return <img src='/tokens/pumpbtc.png' className={_className} />
   } else if (token === 'ubtc') {
@@ -40,7 +42,7 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/bbusd.png' className={_className} />
   } else if (token === 'arb') {
     return <img src='/tokens/arb.png' className={_className} />
-  } else if (token === 'bnb') {
+  } else if (token === 'bnb' || token === 'opbnb') {
     return <img src='/tokens/bnb.png' className={_className} />
   } else if (token === 'polygon' || token === 'pol') {
     return <img src='/tokens/polygon.png' className={_className} />

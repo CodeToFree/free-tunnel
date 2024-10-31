@@ -111,6 +111,9 @@ const hardhatConfig = {
     bob: {
       url: "https://rpc.gobob.xyz",
     },
+    opbnb: {
+      url: "https://opbnb-mainnet-rpc.bnbchain.org",
+    },
     kava: {
       url: "https://evm.kava.io",
     },

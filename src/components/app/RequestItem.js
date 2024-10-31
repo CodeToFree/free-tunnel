@@ -29,6 +29,7 @@ const defaultTokens = {
   79: 'SolvBTC.BBN',
   80: 'SolvBTC.ENA',
   193: 'pumpBTC',
+  194: 'uniBTC',
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {

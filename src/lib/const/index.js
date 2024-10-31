@@ -18,6 +18,7 @@ import bitlayer from './chains/bitlayer.json'
 import bevm from './chains/bevm.json'
 import bb from './chains/bb.json'
 import bob from './chains/bob.json'
+import opbnb from './chains/opbnb.json'
 import kava from './chains/kava.json'
 import kroma from './chains/kroma.json'
 import klaytn from './chains/klaytn.json'
@@ -48,7 +49,7 @@ export const ROLES = {
 
 const chains = TESTNET
   ? { sepolia, merlin_testnet, b2_testnet }
-  : { eth, arb, bnb, polygon, avax, base, linea, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, kava, kroma, klaytn, ailayer, zircuit, iotex, zeta, taiko, sei, duck }
+  : { eth, arb, bnb, polygon, avax, base, linea, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, opbnb, kava, kroma, klaytn, ailayer, zircuit, iotex, zeta, taiko, sei, duck }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)

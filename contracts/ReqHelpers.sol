@@ -27,6 +27,7 @@ contract ReqHelpers {
     // 0x13: bevm
     // 0x14: bb
     // 0x15: bob
+    // 0x16: opbnb
     // 0x20: kava
     // 0x21: kroma
     // 0x22: klaytn
