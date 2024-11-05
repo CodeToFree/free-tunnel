@@ -1,13 +1,13 @@
 const { ethers } = require('hardhat')
+const { deployContract } = require('./lib')
 
 require('dotenv').config()
 
 const {
-  PRIVATE_KEY,
   NEXT_PUBLIC_CONTRACT_ADDRS,
 } = process.env
 
-const CONTRACT_NAME = 'AtomicLockContract' // AtomicLockContract, AtomicMintContract
+const CONTRACT_NAME = 'AtomicMintContract' // AtomicMintContract or AtomicLockContract
 
 module.exports = async function upgrade() {
   await hre.run('compile')
@@ -17,14 +17,7 @@ module.exports = async function upgrade() {
     throw new Error('No proxy address')
   }
 
-  const wallet = new ethers.Wallet(PRIVATE_KEY, ethers.provider)
-  const admin = wallet.address
-  console.log('admin:', admin)
-
-  const factory = await ethers.getContractFactory(CONTRACT_NAME, wallet)
-  const impl = await factory.deploy()
-  await impl.deployed()
-  console.log(`Implementation deployed at: ${impl.address}`)
+  const impl = await deployContract(CONTRACT_NAME, [])
 
   console.log('Upgrading...')
   const abi = JSON.parse(impl.interface.format('json'))

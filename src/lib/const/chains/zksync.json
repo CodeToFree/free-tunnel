@@ -1,0 +1,13 @@
+{
+  "chainId": 324,
+  "name": "zkSync Era",
+  "icon": "zksync",
+  "currency": "ETH",
+  "rpcUrl": "https://mainnet.era.zksync.io",
+  "explorerUrl": "https://explorer.zksync.io",
+  "tokens": {
+    "0xE757355edba7ced7B8c0271BBA4eFDa184aD75Ab": "M-BTC",
+    "0x074be38e474F17ABC9B66D781CC2249C90F9bF63": "MERL"
+  },
+  "atomicId": 8
+}

@@ -52,6 +52,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/base.png' className={_className} />
   } else if (token === 'linea') {
     return <img src='/tokens/linea.png' className={_className} />
+  } else if (token === 'zksync') {
+    return <img src='/tokens/zksync.png' className={_className} />
   } else if (token === 'scroll') {
     return <img src='/tokens/scroll.png' className={_className} />
   } else if (token === 'mode') {

@@ -42,7 +42,7 @@ const hardhatConfig = {
     },
   },
   zksolc: {
-    version: '1.3.22',
+    version: '1.5.7',
     compilerSource: 'binary',
     settings: {},
   },
@@ -68,6 +68,12 @@ const hardhatConfig = {
     },
     linea: {
       url: "https://rpc.linea.build",
+    },
+    zksync: {
+      url: "https://mainnet.era.zksync.io",
+      zksync: true,
+      ethNetwork: 'eth',
+      verifyURL: 'https://zksync2-mainnet-explorer.zksync.io/contract_verification',
     },
     scroll: {
       url: "https://rpc.scroll.io",

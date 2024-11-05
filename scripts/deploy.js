@@ -1,42 +1,33 @@
 const { ethers } = require('hardhat')
+const { getWallet, deployContract } = require('./lib')
 
 require('dotenv').config()
 
 const {
-  PRIVATE_KEY,
   VAULT,
   PROPOSER,
   EXECUTORS,
 } = process.env
 
 const ADDR_ZERO = '0x0000000000000000000000000000000000000000'
-const CONTRACT_NAME = 'AtomicMintContract' // AtomicLockContract, AtomicMintContract
+const CONTRACT_NAME = 'AtomicMintContract' // AtomicMintContract or AtomicLockContract
 
 module.exports = async function deploy() {
   await hre.run('compile')
 
-  const wallet = new ethers.Wallet(PRIVATE_KEY, ethers.provider)
-  const admin = wallet.address
-  console.log('admin:', admin)
-
+  const admin = getWallet().address
   const vault = ethers.utils.getAddress(VAULT || ADDR_ZERO)
   const proposer = ethers.utils.getAddress(PROPOSER)
   const executors = EXECUTORS.split(',').map(addr => ethers.utils.getAddress(addr))
 
+  console.log('admin:', admin)
   console.log('vault:', vault)
   console.log('proposer:', proposer)
   console.log('executors:', executors)
 
-  console.log(`Deploying ${CONTRACT_NAME}...`)
-  const factory = await ethers.getContractFactory(CONTRACT_NAME, wallet)
-  const impl = await factory.deploy()
-  await impl.deployed()
-  console.log(`Implementation deployed at: ${impl.address}`)
+  const impl = await deployContract(CONTRACT_NAME, [])
 
-  console.log('Deploying Proxy...')
-  const data = impl.interface.encodeFunctionData('initialize', [admin, vault, proposer, executors, executors.length])
-  const ERC1967Proxy = await ethers.getContractFactory('ERC1967Proxy', wallet)
-  const deployed = await ERC1967Proxy.deploy(impl.address, data)
-  await deployed.deployed()
-  console.log(`${CONTRACT_NAME} deployed to:`, deployed.address)
+  const data = impl.interface.encodeFunctionData('initialize', [admin, vault, proposer, executors, 2])
+  console.log(data) // remove
+  await deployContract('ERC1967Proxy', [impl.address, data])
 }
