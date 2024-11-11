@@ -7,7 +7,9 @@
   "explorerUrl": "https://taikoscan.network",
   "tokens": {
     "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77": "SolvBTC",
-    "0xCC0966D8418d412c599A6421b760a847eB169A8c": "SolvBTC.BBN"
+    "0xCC0966D8418d412c599A6421b760a847eB169A8c": "SolvBTC.BBN",
+    "0xf7fB2DF9280eB0a76427Dc3b34761DB8b1441a49": "M-BTC",
+    "0xF570e9f6a6916eA31c12c2234a11941f5E990783": "MERL"
   },
   "atomicId": 39
 }
