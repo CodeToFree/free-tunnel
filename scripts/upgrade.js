@@ -1,5 +1,5 @@
 const { ethers } = require('hardhat')
-const { deployContract } = require('./lib')
+const { getWallet, deployContract } = require('./lib')
 
 require('dotenv').config()
 
@@ -17,6 +17,7 @@ module.exports = async function upgrade() {
     throw new Error('No proxy address')
   }
 
+  const wallet = getWallet()
   const impl = await deployContract(CONTRACT_NAME, [])
 
   console.log('Upgrading...')
