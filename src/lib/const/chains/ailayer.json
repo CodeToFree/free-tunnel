@@ -6,7 +6,8 @@
   "rpcUrl": "https://mainnet-rpc.ailayer.xyz",
   "explorerUrl": "https://mainnet-explorer.ailayer.xyz",
   "tokens": {
-    "0x0F921c39eFd98809FE6D20a88A4357454578987a": "SolvBTC.b"
+    "0x0F921c39eFd98809FE6D20a88A4357454578987a": "SolvBTC.b",
+    "0x59889b7021243dB5B1e065385F918316cD90D46c": "BBTC"
   },
   "atomicId": 35
 }
