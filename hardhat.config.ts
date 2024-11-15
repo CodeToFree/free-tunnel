@@ -126,8 +126,8 @@ const hardhatConfig = {
     kroma: {
       url: "https://api.kroma.network",
     },
-    klaytn: {
-      url: "https://public-en-cypress.klaytn.net",
+    kaia: {
+      url: "https://public-en.node.kaia.io",
     },
     ailayer: {
       url: "https://mainnet-rpc.ailayer.xyz",

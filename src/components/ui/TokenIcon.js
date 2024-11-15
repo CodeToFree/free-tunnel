@@ -86,8 +86,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/kava.png' className={_className} />
   } else if (token === 'kroma') {
     return <img src='/tokens/kroma.png' className={_className} />
-  } else if (token === 'klaytn') {
-    return <img src='/tokens/klaytn.png' className={_className} />
+  } else if (token === 'kaia') {
+    return <img src='/tokens/kaia.png' className={_className} />
   } else if (token === 'ailayer') {
     return <img src='/tokens/ailayer.png' className={_className} />
   } else if (token === 'zircuit') {

@@ -30,7 +30,7 @@ contract ReqHelpers {
     // 0x16: opbnb
     // 0x20: kava
     // 0x21: kroma
-    // 0x22: klaytn
+    // 0x22: kaia
     // 0x23: ailayer
     // 0x24: zircuit
     // 0x25: iotex
