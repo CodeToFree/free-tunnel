@@ -150,6 +150,9 @@ const hardhatConfig = {
     duck: {
       url: "https://rpc.duckchain.io"
     },
+    morph: {
+      url: "https://rpc.morphl2.io"
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

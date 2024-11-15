@@ -38,6 +38,7 @@ contract ReqHelpers {
     // 0x27: taiko
     // 0x28: sei
     // 0x29: duck
+    // 0x2a: morph
     // 0xf0: sepolia
     // 0xf1: merlin-testnet
     // 0xf2: b2-testnet

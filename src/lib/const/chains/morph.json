@@ -1,0 +1,11 @@
+{
+  "chainId": 2818,
+  "name": "Morph",
+  "icon": "morph",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.morphl2.io",
+  "explorerUrl": "https://explorer.morphl2.io",
+  "tokens": {
+  },
+  "atomicId": 42
+}

@@ -30,6 +30,7 @@ import zeta from './chains/zeta.json'
 import taiko from './chains/taiko.json'
 import sei from './chains/sei.json'
 import duck from './chains/duck.json'
+import morph from './chains/morph.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
 import b2_testnet from './chains/b2_testnet.json'
@@ -50,7 +51,7 @@ export const ROLES = {
 
 const chains = TESTNET
   ? { sepolia, merlin_testnet, b2_testnet }
-  : { eth, arb, bnb, polygon, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, opbnb, kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck }
+  : { eth, arb, bnb, polygon, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, opbnb, kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)
