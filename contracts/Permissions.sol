@@ -3,10 +3,9 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "./Constants.sol";
 
-contract Permissions {
-    bytes26 constant ETH_SIGN_HEADER = bytes26("\x19Ethereum Signed Message:\n");
-
+contract Permissions is Constants {
     struct PermissionsStorage {
         address _admin;
         address _vault;
@@ -188,10 +187,14 @@ contract Permissions {
         require(activeSince < block.timestamp + 5 days, "The activeSince should be within 5 days from now");
 
         bytes32 digest = keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER, Strings.toString(29 + 43 * newExecutors.length + 11 + Math.log10(threshold) + 1),
+            ETH_SIGN_HEADER,
+            Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + (29 + 43 * newExecutors.length) + (12 + Math.log10(threshold) + 1) + (15 + 10) + (25 + Math.log10(exeIndex) + 1)),
+            "[", BRIDGE_CHANNEL, "]\n",
             "Sign to update executors to:\n",
             __joinAddressList(newExecutors),
-            "Threshold: ", Strings.toString(threshold)
+            "Threshold: ", Strings.toString(threshold), "\n",
+            "Active since: ", Strings.toString(activeSince), "\n",
+            "Current executors index: ", Strings.toString(exeIndex)
         ));
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
 
