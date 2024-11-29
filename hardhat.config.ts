@@ -60,6 +60,9 @@ const hardhatConfig = {
     polygon: {
       url: "https://polygon-rpc.com",
     },
+    opt: {
+      url: "https://rpc.ankr.com/optimism",
+    },
     avax: {
       url: "https://api.avax.network/ext/bc/C/rpc",
     },
