@@ -123,6 +123,9 @@ const hardhatConfig = {
     opbnb: {
       url: "https://opbnb-mainnet-rpc.bnbchain.org",
     },
+    neox: {
+      url: "https://mainnet-1.rpc.banelabs.org",
+    },
     kava: {
       url: "https://evm.kava.io",
     },

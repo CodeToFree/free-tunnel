@@ -1,0 +1,12 @@
+{
+  "chainId": 47763,
+  "name": "NeoX",
+  "icon": "neox",
+  "currency": "GAS",
+  "rpcUrl": "https://mainnet-1.rpc.banelabs.org",
+  "explorerUrl": "https://xexplorer.neo.org",
+  "tokens": {
+    "0xAFbf5d6dCA6Bd673c9B7ba796F350665c670DFEF": "USDT"
+  },
+  "atomicId": 26
+}

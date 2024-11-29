@@ -25,6 +25,7 @@ contract Constants {
     // 0x14: bb
     // 0x15: bob
     // 0x16: opbnb
+    // 0x1a: neox
     // 0x20: kava
     // 0x21: kroma
     // 0x22: kaia
