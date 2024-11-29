@@ -2,6 +2,7 @@ import eth from './chains/eth.json'
 import arb from './chains/arb.json'
 import bnb from './chains/bnb.json'
 import polygon from './chains/polygon.json'
+import opt from './chains/opt.json'
 import avax from './chains/avax.json'
 import base from './chains/base.json'
 import linea from './chains/linea.json'
@@ -51,7 +52,7 @@ export const ROLES = {
 
 const chains = TESTNET
   ? { sepolia, merlin_testnet, b2_testnet }
-  : { eth, arb, bnb, polygon, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, opbnb, kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph }
+  : { eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle, merlin, b2, bitlayer, bevm, bb, bob, opbnb, kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))
 export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 86400 * 2)
