@@ -23,7 +23,7 @@ export default function Toasts ({ toasts }) {
           }
           </div>
           <div className='mx-3 text-sm font-normal flex-1 overflow-hidden max-h-20'>
-            <div className='text-gray-900 font-medium'>{toast.content}</div>
+            <div className='text-gray-900 dark:text-gray-100 font-medium'>{toast.content}</div>
             <div className='flex-start flex mt-1 gap-2'>
             {
               toast.buttons?.map((btn, index) => (

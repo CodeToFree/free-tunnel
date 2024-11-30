@@ -1,0 +1,11 @@
+{
+  "chainId": "sui",
+  "name": "Sui",
+  "icon": "sui",
+  "currency": "SUI",
+  "rpcUrl": "https://fullnode.mainnet.sui.io:443",
+  "explorerUrl": "https://suiscan.xyz/mainnet",
+  "tokens": {
+  },
+  "atomicId": 160
+}

@@ -35,7 +35,7 @@ export function useWeb3ModalFromChannel(channel) {
     createWeb3Modal({
       projectId,
       themeMode: DARK_MODE ? 'dark' : 'light',
-      chains: chains.filter(c => c.chainId !== 'tron'),
+      chains: chains.filter(c => typeof c.chainId === 'number'),
       chainImages: Object.fromEntries(chains.map(c => [c.chainId, `/tokens/${c.icon}.png`])),
       ethersConfig: defaultConfig({ metadata }),
       excludeWalletIds: [
