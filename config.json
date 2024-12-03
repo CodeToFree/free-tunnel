@@ -1,5 +1,5 @@
 {
-  "main": "./contracts/FreeTunnelFactory.sol",
+  "main": "./contracts/FreeTunnelHub.sol",
   "deploy": "",
   "framework": "hardhat",
   "npmClient": "yarn",
