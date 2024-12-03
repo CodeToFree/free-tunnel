@@ -8,21 +8,50 @@ import { task } from 'hardhat/config'
 
 import config from './config.json'
 
-task('deploy-factory', 'Deploy Factory Contract')
-  .setAction(async () => {
-    const deploy = require('./scripts/deployFactory')
-    await deploy()
-  })
-
-task('deploy', 'Deploy Contract')
+task('deploy', 'Deploy')
   .setAction(async () => {
     const deploy = require('./scripts/deploy')
     await deploy()
   })
 
-task('upgrade', 'Upgrade Contract')
+task('deploy-hub', 'Deploy FreeTunnelHub')
+  .addParam('tbm', 'Address of TunnelBoringMachine')
+  .setAction(async (taskArgs) => {
+    const deploy = require('./scripts/deployHub')
+    await deploy(taskArgs.tbm)
+  })
+
+task('deploy-tbm', 'Deploy TunnelBoringMachine')
+  .addParam('v', 'Version of TunnelBoringMachine')
+  .setAction(async (taskArgs) => {
+    const deploy = require('./scripts/deployTBM')
+    await deploy(taskArgs.v)
+  })
+
+task('open-tunnel', 'Open a new Tunnel')
+  .addParam('name', 'Tunnel name', '')
+  .setAction(async (taskArgs) => {
+    const openTunnel = require('./scripts/openTunnel')
+    await openTunnel(taskArgs.name)
+  })
+
+task('update-tbm', 'Update TunnelBoringMachine')
+  .addParam('v', 'Version of TunnelBoringMachine')
+  .setAction(async (taskArgs) => {
+    const upgrade = require('./scripts/updateTBM')
+    await upgrade(taskArgs.v)
+  })
+
+task('upgrade-tunnel', 'Upgrade Tunnel')
+  .addParam('name', 'Tunnel name', '')
+  .setAction(async (taskArgs) => {
+    const upgrade = require('./scripts/upgradeTunnel')
+    await upgrade(taskArgs.name)
+  })
+
+task('upgrade-hub', 'Upgrade FreeTunnelHub')
   .setAction(async () => {
-    const upgrade = require('./scripts/upgrade')
+    const upgrade = require('./scripts/upgradeHub')
     await upgrade()
   })
 

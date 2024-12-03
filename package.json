@@ -7,11 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "clean": "hardhat clean",
     "compile": "hardhat compile --config hardhat.config.ts",
     "test": "hardhat test",
-    "deploy:factory": "hardhat deploy-factory",
     "deploy": "hardhat deploy",
-    "up": "hardhat upgrade"
+    "deploy:hub": "hardhat deploy-hub",
+    "deploy:tbm": "hardhat deploy-tbm",
+    "open": "hardhat open-tunnel",
+    "update:tbm": "hardhat update-tbm",
+    "upgrade:tunnel": "hardhat upgrade-tunnel",
+    "upgrade:hub": "hardhat upgrade-hub"
   },
   "cacheDirectories": [
     ".next/cache"
