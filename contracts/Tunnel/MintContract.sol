@@ -1,56 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "./MintableERC20.sol";
-import "../Permissions.sol";
-import "../ReqHelpers.sol";
+import "../utils/Permissions.sol";
+import "../utils/ReqHelpers.sol";
+import "../utils/MintableERC20.sol";
 
-contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
+abstract contract MintContract is Permissions, ReqHelpers {
     using SafeERC20 for MintableERC20;
 
     mapping(bytes32 => address) public proposedMint;
     mapping(bytes32 => address) public proposedBurn;
 
-    constructor(uint8 chain, string memory bridgeChannel) Constants(chain, bridgeChannel) {}
-
-    function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
-        _initAdmin(_admin);
-        if (_vault != address(0)) {
-            _initVault(_vault);
-        }
-        _addProposer(proposer);
-        _initExecutors(executors, threshold);
-    }
-
-    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
-
-    function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
-        _addToken(tokenIndex, tokenAddr);
-    }
-
-    function createToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
-        MintableERC20 tokenAddr = new MintableERC20(address(this), _getVaultWithAdminFallback(), name, symbol, decimals);
-        _addToken(tokenIndex, address(tokenAddr));
-    }
-
-    function removeToken(uint8 tokenIndex) external onlyAdmin {
-        _removeToken(tokenIndex);
-    }
-
     event TokenMintProposed(bytes32 indexed reqId, address indexed recipient);
     event TokenMintExecuted(bytes32 indexed reqId, address indexed recipient);
     event TokenMintCancelled(bytes32 indexed reqId, address indexed recipient);
 
-    function proposeMint(bytes32 reqId, address recipient) external onlyProposer toChainOnly(reqId) {
+    function proposeMint(bytes32 reqId, address recipient) external onlyProposer toThisHub(reqId) {
         require(_actionFrom(reqId) & 0x0f == 1, "Invalid action; not lock-mint");
         _proposeMint(reqId, recipient);
     }
 
-    function proposeMintFromBurn(bytes32 reqId, address recipient) external onlyProposer toChainOnly(reqId) {
+    function proposeMintFromBurn(bytes32 reqId, address recipient) external onlyProposer toThisHub(reqId) {
         require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
         _proposeMint(reqId, recipient);
     }
@@ -105,12 +78,12 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId, address proposer) payable external toChainOnly(reqId) {
+    function proposeBurn(bytes32 reqId, address proposer) payable external toThisHub(reqId) {
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
         _proposeBurn(reqId, proposer);
     }
 
-    function proposeBurnForMint(bytes32 reqId, address proposer) payable external fromChainOnly(reqId) {
+    function proposeBurnForMint(bytes32 reqId, address proposer) payable external fromThisHub(reqId) {
         require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
         _proposeBurn(reqId, proposer);
     }

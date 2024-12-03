@@ -18,8 +18,8 @@ abstract contract Permissions is Constants {
         uint256[] _exeActiveSinceForIndex;
     }
 
-    // keccak256(abi.encode(uint256(keccak256("atomic-lock-mint.Permissions")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant PermissionsLocation = 0xd1028ee8b04e383c5a05bb344e0e3bf65a78ced42fbbac56a26c8b6f5a4f7100;
+    // keccak256(abi.encode(uint256(keccak256("FreeTunnel.Permissions")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant PermissionsLocation = 0xdff9804befb93196cdc556fcab159c5e49557d1a7f502451a7ef8453cb499900;
 
     function _getPermissionsStorage() private pure returns (PermissionsStorage storage $) {
         assembly {
@@ -188,8 +188,8 @@ abstract contract Permissions is Constants {
 
         bytes32 digest = keccak256(abi.encodePacked(
             ETH_SIGN_HEADER,
-            Strings.toString(3 + BRIDGE_CHANNEL_LEN + (29 + 43 * newExecutors.length) + (12 + Math.log10(threshold) + 1) + (15 + 10) + (25 + Math.log10(exeIndex) + 1)),
-            "[", getBridgeChannel(), "]\n",
+            Strings.toString(3 + TUNNEL_NAME_LEN + (29 + 43 * newExecutors.length) + (12 + Math.log10(threshold) + 1) + (15 + 10) + (25 + Math.log10(exeIndex) + 1)),
+            "[", getTunnelName(), "]\n",
             "Sign to update executors to:\n",
             __joinAddressList(newExecutors),
             "Threshold: ", Strings.toString(threshold), "\n",

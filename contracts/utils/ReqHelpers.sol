@@ -11,8 +11,8 @@ abstract contract ReqHelpers is Constants {
         mapping(uint8 => uint8) _tokenDecimals;
     }
 
-    // keccak256(abi.encode(uint256(keccak256("atomic-lock-mint.ReqHelpers")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant ReqHelpersStorageLocation = 0xd6c54e2ae807cd214b40b716718abbdcf0be862340bc50cb8180c058254f4b00;
+    // keccak256(abi.encode(uint256(keccak256("FreeTunnel.ReqHelpers")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant ReqHelpersStorageLocation = 0x057585c5bab557d050e69d0aa3d9dc85384bd232fd51374129020b8431577400;
 
     function _getReqHelpersStorage() private pure returns (ReqHelpersStorage storage $) {
         assembly {
@@ -144,33 +144,33 @@ abstract contract ReqHelpers is Constants {
         uint8 specificAction = _actionFrom(reqId) & 0x0f;
         if (specificAction == 1) {
             return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + BRIDGE_CHANNEL_LEN + 29 + 66),
-                "[", getBridgeChannel(), "]\n",
+                ETH_SIGN_HEADER, Strings.toString(3 + TUNNEL_NAME_LEN + 29 + 66),
+                "[", getTunnelName(), "]\n",
                 "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         } else if (specificAction == 2) {
             return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + BRIDGE_CHANNEL_LEN + 31 + 66),
-                "[", getBridgeChannel(), "]\n",
+                ETH_SIGN_HEADER, Strings.toString(3 + TUNNEL_NAME_LEN + 31 + 66),
+                "[", getTunnelName(), "]\n",
                 "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         } else if (specificAction == 3) {
             return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + BRIDGE_CHANNEL_LEN + 29 + 66),
-                "[", getBridgeChannel(), "]\n",
+                ETH_SIGN_HEADER, Strings.toString(3 + TUNNEL_NAME_LEN + 29 + 66),
+                "[", getTunnelName(), "]\n",
                 "Sign to execute a burn-mint:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         }
         return 0x0;
     }
 
-    modifier fromChainOnly(bytes32 reqId) {
-        require(CHAIN == uint8(uint256(reqId) >> 120), "Request not from the current chain");
+    modifier fromThisHub(bytes32 reqId) {
+        require(HUB_ID == uint8(uint256(reqId) >> 120), "Request not from the current hub");
         _;
     }
 
-    modifier toChainOnly(bytes32 reqId) {
-        require(CHAIN == uint8(uint256(reqId) >> 112), "Request not to the current chain");
+    modifier toThisHub(bytes32 reqId) {
+        require(HUB_ID == uint8(uint256(reqId) >> 112), "Request not to the current hub");
         _;
     }
 }

@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../Permissions.sol";
-import "../ReqHelpers.sol";
+import "../utils/Permissions.sol";
+import "../utils/ReqHelpers.sol";
 
-contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
+abstract contract LockContract is Permissions, ReqHelpers {
     using SafeERC20 for IERC20;
     
     mapping(address => uint256) public lockedBalanceOf;
@@ -16,30 +15,17 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
     mapping(bytes32 => address) public proposedLock;
     mapping(bytes32 => address) public proposedUnlock;
 
-    constructor(uint8 chain, string memory bridgeChannel) Constants(chain, bridgeChannel) {}
-
-    function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
-        _initAdmin(_admin);
-        _initVault(_vault);
-        _addProposer(proposer);
-        _initExecutors(executors, threshold);
-    }
-
-    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
-
-    function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
-        _addToken(tokenIndex, tokenAddr);
-    }
-
-    function removeToken(uint8 tokenIndex) external onlyAdmin {
-        _removeToken(tokenIndex);
-    }
-
     event TokenLockProposed(bytes32 indexed reqId, address indexed proposer);
     event TokenLockExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenLockCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeLock(bytes32 reqId, address proposer) payable external fromChainOnly(reqId) {
+    function __getLockTxValue(bytes32 reqId) external view returns (uint256 value) {
+        if (_tokenFrom(reqId) == address(1)) {
+            value = _amountFrom(reqId);
+        }
+    }
+
+    function proposeLock(bytes32 reqId, address proposer) payable external fromThisHub(reqId) {
         _createdTimeFrom(reqId, true);
         uint8 action = _actionFrom(reqId);
         require(action & 0x0f == 1, "Invalid action; not lock-mint");
@@ -120,7 +106,7 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenUnlockExecuted(bytes32 indexed reqId, address indexed recipient);
     event TokenUnlockCancelled(bytes32 indexed reqId, address indexed recipient);
 
-    function proposeUnlock(bytes32 reqId, address recipient) external onlyProposer fromChainOnly(reqId) {
+    function proposeUnlock(bytes32 reqId, address recipient) external onlyProposer fromThisHub(reqId) {
         _createdTimeFrom(reqId, true);
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
         require(proposedUnlock[reqId] == address(0), "Invalid reqId");
