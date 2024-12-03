@@ -2,49 +2,34 @@
 pragma solidity ^0.8.20;
 
 contract Constants {
-    // 0x00: ethereum
-    // 0x01: arbitrum
-    // 0x02: bnb smart chain
-    // 0x03: polygon
-    // 0x04: optimism
-    // 0x05: avalanche
-    // 0x06: base
-    // 0x07: linea
-    // 0x08: zksync
-    // 0x09: scroll
-    // 0x0a: mode
-    // 0x0b: manta
-    // 0x0c: zklink
-    // 0x0d: core
-    // 0x0e: xlayer
-    // 0x0f: mantle
-    // 0x10: merlin
-    // 0x11: b2
-    // 0x12: bitlayer
-    // 0x13: bevm
-    // 0x14: bb
-    // 0x15: bob
-    // 0x16: opbnb
-    // 0x1a: neox
-    // 0x20: kava
-    // 0x21: kroma
-    // 0x22: kaia
-    // 0x23: ailayer
-    // 0x24: zircuit
-    // 0x25: iotex
-    // 0x26: zeta
-    // 0x27: taiko
-    // 0x28: sei
-    // 0x29: duck
-    // 0x2a: morph
-    // 0xa0: (non-evm) sui
-    // 0xf0: sepolia
-    // 0xf1: merlin-testnet
-    // 0xf2: b2-testnet
-    uint8 constant CHAIN = 0x00;
+    uint8 public immutable CHAIN;
+    bytes32 internal immutable BRIDGE_CHANNEL_BYTES;
+    uint8 internal immutable BRIDGE_CHANNEL_LEN;
 
-    // This value should be different for different bridge deployments
-    string constant BRIDGE_CHANNEL = "Merlin ERC20 Bridge";
+    constructor (uint8 chain, string memory bridgeChannel) {
+        CHAIN = chain;
+
+        bytes memory channelBytes = bytes(bridgeChannel);
+        uint256 len = channelBytes.length;
+        require(len < 32, "The length of bridgeChannel must be less than 32.");
+        bytes32 channelBytes32;
+        assembly {
+            channelBytes32 := mload(add(channelBytes, 32))
+        }
+        BRIDGE_CHANNEL_BYTES = channelBytes32;
+        BRIDGE_CHANNEL_LEN = uint8(len);
+    }
+
+    function getBridgeChannel() public view returns (bytes memory) {
+        uint8 n = BRIDGE_CHANNEL_LEN;
+        bytes32 data = BRIDGE_CHANNEL_BYTES;
+        bytes memory result = new bytes(BRIDGE_CHANNEL_LEN);
+        assembly {
+            let resultPtr := add(result, 0x20)
+            mstore(resultPtr, shl(mul(sub(32, n), 8), data))
+        }
+        return result;
+    }
 
     uint256 constant PROPOSE_PERIOD = 48 hours;
     uint256 constant EXPIRE_PERIOD = 72 hours;

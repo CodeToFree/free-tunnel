@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "./Constants.sol";
 
-contract Permissions is Constants {
+abstract contract Permissions is Constants {
     struct PermissionsStorage {
         address _admin;
         address _vault;
@@ -188,8 +188,8 @@ contract Permissions is Constants {
 
         bytes32 digest = keccak256(abi.encodePacked(
             ETH_SIGN_HEADER,
-            Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + (29 + 43 * newExecutors.length) + (12 + Math.log10(threshold) + 1) + (15 + 10) + (25 + Math.log10(exeIndex) + 1)),
-            "[", BRIDGE_CHANNEL, "]\n",
+            Strings.toString(3 + BRIDGE_CHANNEL_LEN + (29 + 43 * newExecutors.length) + (12 + Math.log10(threshold) + 1) + (15 + 10) + (25 + Math.log10(exeIndex) + 1)),
+            "[", getBridgeChannel(), "]\n",
             "Sign to update executors to:\n",
             __joinAddressList(newExecutors),
             "Threshold: ", Strings.toString(threshold), "\n",

@@ -16,6 +16,8 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
     mapping(bytes32 => address) public proposedLock;
     mapping(bytes32 => address) public proposedUnlock;
 
+    constructor(uint8 chain, string memory bridgeChannel) Constants(chain, bridgeChannel) {}
+
     function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
         _initAdmin(_admin);
         _initVault(_vault);
@@ -37,13 +39,11 @@ contract AtomicLockContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenLockExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenLockCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeLock(bytes32 reqId) payable external fromChainOnly(reqId) {
+    function proposeLock(bytes32 reqId, address proposer) payable external fromChainOnly(reqId) {
         _createdTimeFrom(reqId, true);
         uint8 action = _actionFrom(reqId);
         require(action & 0x0f == 1, "Invalid action; not lock-mint");
         require(proposedLock[reqId] == address(0), "Invalid reqId");
-
-        address proposer = msg.sender;
         require(proposer > address(1), "Invalid proposer");
 
         uint256 amount = _amountFrom(reqId);

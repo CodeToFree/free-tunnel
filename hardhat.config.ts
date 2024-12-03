@@ -8,6 +8,12 @@ import { task } from 'hardhat/config'
 
 import config from './config.json'
 
+task('deploy-factory', 'Deploy Factory Contract')
+  .setAction(async () => {
+    const deploy = require('./scripts/deployFactory')
+    await deploy()
+  })
+
 task('deploy', 'Deploy Contract')
   .setAction(async () => {
     const deploy = require('./scripts/deploy')

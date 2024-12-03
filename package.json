@@ -9,6 +9,7 @@
     "lint": "next lint",
     "compile": "hardhat compile --config hardhat.config.ts",
     "test": "hardhat test",
+    "deploy:factory": "hardhat deploy-factory",
     "deploy": "hardhat deploy",
     "up": "hardhat upgrade"
   },

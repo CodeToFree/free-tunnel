@@ -15,6 +15,8 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     mapping(bytes32 => address) public proposedMint;
     mapping(bytes32 => address) public proposedBurn;
 
+    constructor(uint8 chain, string memory bridgeChannel) Constants(chain, bridgeChannel) {}
+
     function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
         _initAdmin(_admin);
         if (_vault != address(0)) {
@@ -103,21 +105,19 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId) payable external toChainOnly(reqId) {
+    function proposeBurn(bytes32 reqId, address proposer) payable external toChainOnly(reqId) {
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
-        _proposeBurn(reqId);
+        _proposeBurn(reqId, proposer);
     }
 
-    function proposeBurnForMint(bytes32 reqId) payable external fromChainOnly(reqId) {
+    function proposeBurnForMint(bytes32 reqId, address proposer) payable external fromChainOnly(reqId) {
         require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
-        _proposeBurn(reqId);
+        _proposeBurn(reqId, proposer);
     }
 
-    function _proposeBurn(bytes32 reqId) private {
+    function _proposeBurn(bytes32 reqId, address proposer) private {
         _createdTimeFrom(reqId, true);
         require(proposedBurn[reqId] == address(0), "Invalid reqId");
-
-        address proposer = msg.sender;
         require(proposer > address(1), "Invalid proposer");
 
         uint256 amount = _amountFrom(reqId);
@@ -158,4 +158,6 @@ contract AtomicMintContract is Permissions, ReqHelpers, UUPSUpgradeable {
 
         emit TokenBurnCancelled(reqId, proposer);
     }
+
+    function updateLockedBalanceOf(address token, uint256 amount) external {}
 }

@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "./Constants.sol";
 
-contract ReqHelpers is Constants {
+abstract contract ReqHelpers is Constants {
     struct ReqHelpersStorage {
         mapping(uint8 => address) _tokens;
         mapping(uint8 => uint8) _tokenDecimals;
@@ -140,24 +140,24 @@ contract ReqHelpers is Constants {
         }
     }
 
-    function _digestFromReqSigningMessage(bytes32 reqId) internal pure returns (bytes32) {
+    function _digestFromReqSigningMessage(bytes32 reqId) internal view returns (bytes32) {
         uint8 specificAction = _actionFrom(reqId) & 0x0f;
         if (specificAction == 1) {
             return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 29 + 66),
-                "[", BRIDGE_CHANNEL, "]\n",
+                ETH_SIGN_HEADER, Strings.toString(3 + BRIDGE_CHANNEL_LEN + 29 + 66),
+                "[", getBridgeChannel(), "]\n",
                 "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         } else if (specificAction == 2) {
             return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 31 + 66),
-                "[", BRIDGE_CHANNEL, "]\n",
+                ETH_SIGN_HEADER, Strings.toString(3 + BRIDGE_CHANNEL_LEN + 31 + 66),
+                "[", getBridgeChannel(), "]\n",
                 "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         } else if (specificAction == 3) {
             return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + bytes(BRIDGE_CHANNEL).length + 29 + 66),
-                "[", BRIDGE_CHANNEL, "]\n",
+                ETH_SIGN_HEADER, Strings.toString(3 + BRIDGE_CHANNEL_LEN + 29 + 66),
+                "[", getBridgeChannel(), "]\n",
                 "Sign to execute a burn-mint:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         }
