@@ -43,7 +43,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const targetChains = action === 'burn-unlock' ? channel.from : channel.to
   const tokenPath = channel?.paths?.[token?.index]
   const targets = React.useMemo(() => {
-    return targetChains.filter(c => c.id !== chain?.id && (tokenPath ? tokenPath.includes(c.atomicId) : true))
+    return targetChains.filter(c => c.id !== chain?.id && (tokenPath ? tokenPath.includes(c.hubId) : true))
   }, [chain?.id, targetChains, tokenPath])
   const [target, setTarget] = React.useState(targets[0])
 
@@ -54,8 +54,8 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const vaultLimit = channel.vault?.[token?.index] || 0
   const useVault = Boolean(vaultLimit) && (Number(amount) >= vaultLimit)
 
-  const from = action === 'burn-unlock' ? target?.atomicId : chain?.atomicId
-  const to = action === 'burn-unlock' ? chain?.atomicId : target?.atomicId
+  const from = action === 'burn-unlock' ? target?.hubId : chain?.hubId
+  const to = action === 'burn-unlock' ? chain?.hubId : target?.hubId
   const reqId = React.useMemo(
     () => newRequestId(action, amount, token?.index, from, to, useVault),
     [action, amount, token?.index, from, to, useVault]
@@ -124,7 +124,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
         <div className='mb-2 flex'>
           <Label value={`Receive ${toActionName} on`} />
         </div>
-        <TokenSelector tokens={targets.map(t => ({ ...t, addr: t.atomicId }))} onChange={setTarget} />
+        <TokenSelector tokens={targets.map(t => ({ ...t, addr: t.hubId }))} onChange={setTarget} />
       </div>
 
       <div>

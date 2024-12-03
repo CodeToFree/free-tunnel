@@ -32,8 +32,8 @@ export function parseRequest(id) {
   const actionId = parseInt('0x' + id.substring(14, 16))
   const tokenIndex = parseInt('0x' + id.substring(16, 18))
   const value = ethers.utils.formatUnits('0x' + id.substring(18, 34), 6)
-  const fromChain = CHAINS.find(c => c.atomicId === parseInt('0x' + id.substring(34, 36)))
-  const toChain = CHAINS.find(c => c.atomicId === parseInt('0x' + id.substring(36, 38)))
+  const fromChain = CHAINS.find(c => c.hubId === parseInt('0x' + id.substring(34, 36)))
+  const toChain = CHAINS.find(c => c.hubId === parseInt('0x' + id.substring(36, 38)))
   const vault = (actionId & 0x10) > 0
 
   return { id, v, created, actionId, tokenIndex, value, fromChain, toChain, vault }
