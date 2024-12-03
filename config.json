@@ -1,5 +1,5 @@
 {
-  "main": "./contracts/lock/AtomicLockContract.sol",
+  "main": "./contracts/FreeTunnelFactory.sol",
   "deploy": "",
   "framework": "hardhat",
   "npmClient": "yarn",

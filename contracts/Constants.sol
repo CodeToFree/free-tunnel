@@ -20,15 +20,12 @@ contract Constants {
         BRIDGE_CHANNEL_LEN = uint8(len);
     }
 
-    function getBridgeChannel() public view returns (bytes memory) {
-        uint8 n = BRIDGE_CHANNEL_LEN;
-        bytes32 data = BRIDGE_CHANNEL_BYTES;
-        bytes memory result = new bytes(BRIDGE_CHANNEL_LEN);
+    function getBridgeChannel() public view returns (string memory bridgeChannel) {
+        bytes32 channelBytes32 = BRIDGE_CHANNEL_BYTES;
+        bridgeChannel = new string(BRIDGE_CHANNEL_LEN);
         assembly {
-            let resultPtr := add(result, 0x20)
-            mstore(resultPtr, shl(mul(sub(32, n), 8), data))
+            mstore(add(bridgeChannel, 32), channelBytes32)
         }
-        return result;
     }
 
     uint256 constant PROPOSE_PERIOD = 48 hours;

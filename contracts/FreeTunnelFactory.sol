@@ -65,7 +65,7 @@ contract FreeTunnelFactory is UUPSUpgradeable {
 
         bytes memory proxyBytecode = abi.encodePacked(
             type(ERC1967Proxy).creationCode,
-            abi.encode(implAddress, abi.encode(address(this), address(0), proposer, executors, threshold))
+            abi.encode(implAddress, abi.encodeCall(AtomicLockContract.initialize, (address(this), address(0), proposer, executors, threshold)))
         );
 
         address proxyAddress;
@@ -80,6 +80,7 @@ contract FreeTunnelFactory is UUPSUpgradeable {
     function upgradeLockContract(string memory bridgeChannel) external {
         bytes32 channelHash = keccak256(abi.encodePacked(bridgeChannel, " (LockContract)"));
         address implAddress = _deployLock(bridgeChannel, channelHash);
+        require(implAddress != address(0), "LockContract not deployed yet");
         AtomicLockContract channelContract = AtomicLockContract(payable(addressOfChannel[channelHash]));
         channelContract.upgradeToAndCall(implAddress, "");
     }
@@ -100,7 +101,7 @@ contract FreeTunnelFactory is UUPSUpgradeable {
 
         bytes memory proxyBytecode = abi.encodePacked(
             type(ERC1967Proxy).creationCode,
-            abi.encode(implAddress, abi.encode(address(this), address(0), proposer, executors, threshold))
+            abi.encode(implAddress, abi.encodeCall(AtomicMintContract.initialize, (address(this), address(0), proposer, executors, threshold)))
         );
 
         address proxyAddress;
@@ -115,6 +116,7 @@ contract FreeTunnelFactory is UUPSUpgradeable {
     function upgradeMintContract(string memory bridgeChannel) external {
         bytes32 channelHash = keccak256(abi.encodePacked(bridgeChannel, " (MintContract)"));
         address implAddress = _deployMint(bridgeChannel, channelHash);
+        require(implAddress != address(0), "MintContract not deployed yet");
         AtomicMintContract channelContract = AtomicMintContract(addressOfChannel[channelHash]);
         channelContract.upgradeToAndCall(implAddress, "");
     }
