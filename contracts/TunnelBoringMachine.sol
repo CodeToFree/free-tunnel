@@ -6,14 +6,15 @@ import "./Tunnel/TunnelContract.sol";
 contract TunnelBoringMachine {
     uint64 public immutable VERSION;
 
-    constructor (uint64 version) {
+    constructor(uint64 version) {
         VERSION = version;
     }
 
-    function openNewTunnel(uint8 hubId, string memory tunnelName, bytes32 tunnelHash) external returns (address tunnelAddress) {
-        bytes memory bytecode = abi.encodePacked(type(TunnelContract).creationCode, abi.encode(VERSION, hubId, tunnelName));
+    function openNewTunnel(address hubAddress, string memory tunnelName, bool isLockMode) external returns (address tunnelAddress) {
+        bytes memory bytecode = abi.encodePacked(type(TunnelContract).creationCode, abi.encode(VERSION, hubAddress, tunnelName, isLockMode));
+        bytes32 salt = bytes32(0);
         assembly {
-            tunnelAddress := create2(0, add(bytecode, 0x20), mload(bytecode), tunnelHash)
+            tunnelAddress := create2(0, add(bytecode, 0x20), mload(bytecode), salt)
         }
         require(tunnelAddress != address(0), "TunnelContract failed to deploy");
     }

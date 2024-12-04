@@ -19,14 +19,11 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
     event TunnelBoringMachineUpdated(uint64 indexed version, address tbmAddress);
 
     mapping(bytes32 => address) public addressOfTunnel;
-    event TunnelOpenned(bytes32 indexed tunnelHash, string tunnelName, address indexed tunnelAddress, uint64 indexed version);
-    event TunnelUpgraded(bytes32 indexed tunnelHash, string tunnelName, address indexed tunnelAddress, uint64 indexed version);
+    event TunnelOpenned(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
+    event TunnelUpgraded(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
 
-    function initialize(address tbmAddress) public initializer {
+    function initialize() public initializer {
         __Ownable_init(msg.sender);
-        uint64 version = TunnelBoringMachine(tbmAddress).VERSION();
-        currentTBM = tbmAddress;
-        emit TunnelBoringMachineUpdated(version, tbmAddress);
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
@@ -35,66 +32,92 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
         return TunnelBoringMachine(currentTBM).VERSION();
     }
 
-    function updateTunnelBoringMachine(address tbmAddress) public onlyOwner() {
-        uint64 version = TunnelBoringMachine(tbmAddress).VERSION();
-        require(version > currentTBMVersion(), "New version must be greater than the current version.");
+    function updateTunnelBoringMachine(uint64 version, bytes memory bytecode) public onlyOwner {
+        if (currentTBM != address(0)) {
+            require(version > currentTBMVersion(), "New version must be greater than the current version.");
+        }
+
+        bytes memory deployBytecode = abi.encodePacked(bytecode, abi.encode(version));
+
+        bytes32 salt = bytes32(0);
+        address tbmAddress;
+        assembly {
+            tbmAddress := create2(0, add(deployBytecode, 0x20), mload(deployBytecode), salt)
+        }
+        require(tbmAddress != address(0), "TunnelBoringMachine failed to deploy");
+        require(TunnelBoringMachine(tbmAddress).VERSION() == version, "TunnelBoringMachine.VERSION does not equal to version");
+
         currentTBM = tbmAddress;
         emit TunnelBoringMachineUpdated(version, tbmAddress);
     }
 
-    function getTunnelAddress(string memory tunnelName, bool lockOrMint) public view returns (address) {
-        return addressOfTunnel[getTunnelHash(tunnelName, lockOrMint)];
+    function getTunnelHash(string memory tunnelName, bool isLockMode) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(tunnelName, isLockMode ? " (Lock Mode)" : " (Mint Mode)"));
     }
 
-    function getTunnelHash(string memory tunnelName, bool lockOrMint) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(tunnelName, lockOrMint ? " (LockContract)" : " (MintContract)"));
+    function getTunnelAddress(string memory tunnelName, bool isLockMode) public view returns (address) {
+        return addressOfTunnel[getTunnelHash(tunnelName, isLockMode)];
     }
 
-    function openNewTunnel(string memory tunnelName, bool lockOrMint, address proposer, address[] calldata executors, uint256 threshold) external {
-        bytes32 tunnelHash = getTunnelHash(tunnelName, lockOrMint);
-        address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(HUB_ID, tunnelName, tunnelHash);
+    function _getTunnelContract(string memory tunnelName, bool isLockMode) private view returns (TunnelContract) {
+        address tunnelAddress = getTunnelAddress(tunnelName, isLockMode);
+        require(tunnelAddress != address(0), "Tunnel not openned");
+        return TunnelContract(payable(tunnelAddress));
+    }
 
-        bytes memory proxyBytecode = abi.encodePacked(
-            type(ERC1967Proxy).creationCode,
-            abi.encode(implAddress, abi.encodeCall(TunnelContract.initialize, (address(this), address(0), proposer, executors, threshold)))
-        );
+    function openNewTunnel(
+        string memory tunnelName,
+        bool isLockMode,
+        address admin,
+        address proposer,
+        address[] calldata executors,
+        uint256 threshold
+    ) external {
+        require(currentTBM != address(0), "No TunnelBoringMachine");
+        require(getTunnelAddress(tunnelName, isLockMode) == address(0), "Tunnel already openned");
+        require(getTunnelAddress(tunnelName, !isLockMode) == address(0), "Tunnel of the other mode already openned");
 
+        address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
+
+        bytes memory proxyBytecode = abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(implAddress, bytes("")));
+
+        bytes32 tunnelHash = getTunnelHash(tunnelName, isLockMode);
         address proxyAddress;
         assembly {
             proxyAddress := create2(0, add(proxyBytecode, 0x20), mload(proxyBytecode), tunnelHash)
         }
         require(proxyAddress != address(0), "Proxy contract failed to deploy");
 
+        TunnelContract(payable(proxyAddress)).initConfigs(admin, proposer, executors, threshold, address(0));
+
         addressOfTunnel[tunnelHash] = proxyAddress;
 
-        emit TunnelOpenned(tunnelHash, tunnelName, proxyAddress, currentTBMVersion());
+        emit TunnelOpenned(proxyAddress, currentTBMVersion(), implAddress, tunnelName);
     }
 
-    function upgradeTunnel(string memory tunnelName, bool lockOrMint) external {
-        bytes32 tunnelHash = getTunnelHash(tunnelName, lockOrMint);
-        address tunnelAddress = addressOfTunnel[tunnelHash];
-        require(tunnelAddress != address(0), "TunnelContract not deployed yet");
-        address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(HUB_ID, tunnelName, tunnelHash);
-        TunnelContract(payable(tunnelAddress)).upgradeToAndCall(implAddress, "");
-
-        emit TunnelUpgraded(tunnelHash, tunnelName, tunnelAddress, currentTBMVersion());
+    function upgradeTunnel(string memory tunnelName, bool isLockMode, uint64 version) external returns (address implAddress) {
+        require(version == currentTBMVersion(), "The given version is not the current TunnelBoringMachine version.");
+        TunnelContract tunnel = _getTunnelContract(tunnelName, isLockMode);
+        require(msg.sender == address(tunnel), "Only for Tunnel");
+        implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
+        emit TunnelUpgraded(address(tunnel), currentTBMVersion(), implAddress, tunnelName);
     }
-
-    function _getTunnelContract(string memory tunnelName, bool lockOrMint) private view returns (TunnelContract) {
-        return TunnelContract(payable(getTunnelAddress(tunnelName, lockOrMint)));
-    }
-
-    receive() external payable {}
-
 
     // Lock methods
-    function proposeLock(string memory tunnelName, bytes32 reqId, address proposer) payable external {
+    function proposeLock(string memory tunnelName, bytes32 reqId, address proposer) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, true);
         uint256 value = tunnel.__getLockTxValue(reqId);
         tunnel.proposeLock{ value: value }(reqId, proposer);
     }
 
-    function executeLock(string memory tunnelName, bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
+    function executeLock(
+        string memory tunnelName,
+        bytes32 reqId,
+        bytes32[] memory r,
+        bytes32[] memory yParityAndS,
+        address[] memory executors,
+        uint256 exeIndex
+    ) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, true);
         tunnel.executeLock(reqId, r, yParityAndS, executors, exeIndex);
     }
@@ -115,7 +138,14 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
         tunnel.proposeMintFromBurn(reqId, recipient);
     }
 
-    function executeMint(string memory tunnelName, bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
+    function executeMint(
+        string memory tunnelName,
+        bytes32 reqId,
+        bytes32[] memory r,
+        bytes32[] memory yParityAndS,
+        address[] memory executors,
+        uint256 exeIndex
+    ) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.executeMint(reqId, r, yParityAndS, executors, exeIndex);
     }
@@ -131,7 +161,14 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
         tunnel.proposeUnlock(reqId, recipient);
     }
 
-    function executeUnlock(string memory tunnelName, bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
+    function executeUnlock(
+        string memory tunnelName,
+        bytes32 reqId,
+        bytes32[] memory r,
+        bytes32[] memory yParityAndS,
+        address[] memory executors,
+        uint256 exeIndex
+    ) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, true);
         tunnel.executeUnlock(reqId, r, yParityAndS, executors, exeIndex);
     }
@@ -142,17 +179,24 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
     }
 
     // Burn methods
-    function proposeBurn(string memory tunnelName, bytes32 reqId, address proposer) payable external {
+    function proposeBurn(string memory tunnelName, bytes32 reqId, address proposer) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.proposeBurn(reqId, proposer);
     }
 
-    function proposeBurnForMint(string memory tunnelName, bytes32 reqId, address proposer) payable external {
+    function proposeBurnForMint(string memory tunnelName, bytes32 reqId, address proposer) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.proposeBurnForMint(reqId, proposer);
     }
 
-    function executeBurn(string memory tunnelName, bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
+    function executeBurn(
+        string memory tunnelName,
+        bytes32 reqId,
+        bytes32[] memory r,
+        bytes32[] memory yParityAndS,
+        address[] memory executors,
+        uint256 exeIndex
+    ) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.executeBurn(reqId, r, yParityAndS, executors, exeIndex);
     }
@@ -161,4 +205,6 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.cancelBurn(reqId);
     }
+
+    receive() external payable {}
 }

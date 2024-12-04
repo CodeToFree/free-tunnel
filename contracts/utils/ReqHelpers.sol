@@ -164,13 +164,23 @@ abstract contract ReqHelpers is Constants {
         return 0x0;
     }
 
-    modifier fromThisHub(bytes32 reqId) {
-        require(HUB_ID == uint8(uint256(reqId) >> 120), "Request not from the current hub");
+    modifier isLockMode() {
+        require(IS_LOCK_MODE, "Tunnel running on lock mode");
         _;
     }
 
-    modifier toThisHub(bytes32 reqId) {
-        require(HUB_ID == uint8(uint256(reqId) >> 112), "Request not to the current hub");
+    modifier isMintMode() {
+        require(!IS_LOCK_MODE, "Tunnel running on mint mode");
+        _;
+    }
+
+    modifier hubIsMintOppositeSideOf(bytes32 reqId) {
+        require(HUB_ID() == uint8(uint256(reqId) >> 120), "Current hub is not the mint-opposite side of reqId");
+        _;
+    }
+
+    modifier hubIsMintSideOf(bytes32 reqId) {
+        require(HUB_ID() == uint8(uint256(reqId) >> 112), "Current hub is not the mint side of reqId");
         _;
     }
 }

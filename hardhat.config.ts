@@ -15,38 +15,27 @@ task('deploy', 'Deploy')
   })
 
 task('deploy-hub', 'Deploy FreeTunnelHub')
-  .addParam('tbm', 'Address of TunnelBoringMachine')
-  .setAction(async (taskArgs) => {
+  .setAction(async () => {
     const deploy = require('./scripts/deployHub')
-    await deploy(taskArgs.tbm)
-  })
-
-task('deploy-tbm', 'Deploy TunnelBoringMachine')
-  .addParam('v', 'Version of TunnelBoringMachine')
-  .setAction(async (taskArgs) => {
-    const deploy = require('./scripts/deployTBM')
-    await deploy(taskArgs.v)
-  })
-
-task('open-tunnel', 'Open a new Tunnel')
-  .addParam('name', 'Tunnel name', '')
-  .setAction(async (taskArgs) => {
-    const openTunnel = require('./scripts/openTunnel')
-    await openTunnel(taskArgs.name)
+    await deploy()
   })
 
 task('update-tbm', 'Update TunnelBoringMachine')
-  .addParam('v', 'Version of TunnelBoringMachine')
-  .setAction(async (taskArgs) => {
-    const upgrade = require('./scripts/updateTBM')
-    await upgrade(taskArgs.v)
+  .setAction(async () => {
+    const updateTBM = require('./scripts/updateTBM')
+    await updateTBM()
+  })
+
+task('open-tunnel', 'Open a new Tunnel')
+  .setAction(async () => {
+    const openTunnel = require('./scripts/openTunnel')
+    await openTunnel()
   })
 
 task('upgrade-tunnel', 'Upgrade Tunnel')
-  .addParam('name', 'Tunnel name', '')
-  .setAction(async (taskArgs) => {
+  .setAction(async () => {
     const upgrade = require('./scripts/upgradeTunnel')
-    await upgrade(taskArgs.name)
+    await upgrade()
   })
 
 task('upgrade-hub', 'Upgrade FreeTunnelHub')

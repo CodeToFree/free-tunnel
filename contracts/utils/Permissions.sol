@@ -3,9 +3,10 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./Constants.sol";
 
-abstract contract Permissions is Constants {
+abstract contract Permissions is Constants, Initializable {
     struct PermissionsStorage {
         address _admin;
         address _vault;
@@ -27,33 +28,17 @@ abstract contract Permissions is Constants {
         }
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == getAdmin(), "Require admin");
-        _;
-    }
+    event AdminTransferred(address indexed prevAdmin, address indexed newAdmin);
 
-    modifier onlyVaultWithAdminFallback() {
-        require(msg.sender == _getVaultWithAdminFallback(), "Require vault");
-        _;
-    }
-
-    modifier onlyProposer() {
+    function _initAdmin(address admin) internal onlyInitializing {
         PermissionsStorage storage $ = _getPermissionsStorage();
-        require($._proposerIndex[msg.sender] > 0, "Require a proposer");
-        _;
+        $._admin = admin;
+        emit AdminTransferred(address(0), admin);
     }
 
     function getAdmin() public view returns (address) {
         PermissionsStorage storage $ = _getPermissionsStorage();
         return $._admin;
-    }
-
-    event AdminTransferred(address indexed prevAdmin, address indexed newAdmin);
-
-    function _initAdmin(address admin) internal {
-        PermissionsStorage storage $ = _getPermissionsStorage();
-        $._admin = admin;
-        emit AdminTransferred(address(0), admin);
     }
 
     function transferAdmin(address newAdmin) external onlyAdmin {
@@ -63,6 +48,19 @@ abstract contract Permissions is Constants {
         emit AdminTransferred(prevAdmin, newAdmin);
     }
 
+    modifier onlyAdmin() {
+        require(msg.sender == getAdmin(), "Require admin");
+        _;
+    }
+
+
+    event VaultTransferred(address indexed prevVault, address indexed newVault);
+
+    function _initVault(address vault) internal onlyInitializing {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        $._vault = vault;
+        emit VaultTransferred(address(0), vault);
+    }
 
     function getVault() public view returns (address) {
         PermissionsStorage storage $ = _getPermissionsStorage();
@@ -75,19 +73,16 @@ abstract contract Permissions is Constants {
         return vault == address(0) ? $._admin : vault;
     }
 
-    event VaultTransferred(address indexed prevVault, address indexed newVault);
-
-    function _initVault(address vault) internal {
-        PermissionsStorage storage $ = _getPermissionsStorage();
-        $._vault = vault;
-        emit VaultTransferred(address(0), vault);
-    }
-
     function transferVault(address newVault) external onlyVaultWithAdminFallback {
         PermissionsStorage storage $ = _getPermissionsStorage();
         address prevVault = $._vault;
         $._vault = newVault;
         emit VaultTransferred(prevVault, newVault);
+    }
+
+    modifier onlyVaultWithAdminFallback() {
+        require(msg.sender == _getVaultWithAdminFallback(), "Require vault");
+        _;
     }
 
 
@@ -132,6 +127,21 @@ abstract contract Permissions is Constants {
         emit ProposerRemoved(proposer);
     }
 
+    modifier onlyProposer() {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require($._proposerIndex[msg.sender] > 0, "Require a proposer");
+        _;
+    }
+
+
+    function _initExecutors(address[] memory executors, uint256 threshold) internal onlyInitializing {
+        PermissionsStorage storage $ = _getPermissionsStorage();
+        require($._exeThresholdForIndex.length == 0, "Executors already initialized");
+        require(threshold > 0, "Threshold must be greater than 0");
+        $._executorsForIndex.push(executors);
+        $._exeThresholdForIndex.push(threshold);
+        $._exeActiveSinceForIndex.push(1);
+    }
 
     function executorsForIndex(uint256 index) external view returns (address[] memory) {
         PermissionsStorage storage $ = _getPermissionsStorage();
@@ -157,15 +167,6 @@ abstract contract Permissions is Constants {
         executors = $._executorsForIndex[exeIndex];
         threshold = $._exeThresholdForIndex[exeIndex];
         activeSince = $._exeActiveSinceForIndex[exeIndex];
-    }
-
-    function _initExecutors(address[] memory executors, uint256 threshold) internal {
-        PermissionsStorage storage $ = _getPermissionsStorage();
-        require($._exeThresholdForIndex.length == 0, "Executors already initialized");
-        require(threshold > 0, "Threshold must be greater than 0");
-        $._executorsForIndex.push(executors);
-        $._exeThresholdForIndex.push(threshold);
-        $._exeActiveSinceForIndex.push(1);
     }
 
     // All history executors will be recorded and indexed in chronological order. 

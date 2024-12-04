@@ -1,4 +1,3 @@
-const { ethers } = require('hardhat')
 const { deployContract } = require('./lib')
 
 // List of hubId
@@ -41,18 +40,15 @@ const { deployContract } = require('./lib')
 // 0xf0: sepolia
 // 0xf1: merlin-testnet
 // 0xf2: b2-testnet
-module.exports = async function deployHub(tbmAddress) {
-  if (!tbmAddress) {
-    throw new Error('Requires a TBM address (--tbm)')
-  } else if (!ethers.utils.isAddress(tbmAddress)) {
-    throw new Error('Invalid TBM address (--tbm)')
-  }
 
+module.exports = async function deployHub() {
   await hre.run('compile')
 
   const chainConfig = require(`../src/lib/const/chains/${hre.network.name}.json`)
   const impl = await deployContract('FreeTunnelHub', [chainConfig.hubId])
 
-  const data = impl.interface.encodeFunctionData('initialize', [tbmAddress])
-  await deployContract('ERC1967Proxy', [impl.address, data])
+  const data = impl.interface.encodeFunctionData('initialize', [])
+  const proxy = await deployContract('ERC1967Proxy', [impl.address, data])
+
+  return proxy.address
 }

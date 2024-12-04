@@ -3,17 +3,15 @@ const { ethers } = require('hardhat')
 const { getWallet } = require('./lib')
 
 const {
-  FREE_TUNNEL_HUB_ADDRESS,
-  TUNNEL_NAME,
+  TBM_VERSION,
+  TUNNEL_ADDRESS,
 } = process.env
 
-module.exports = async function upgradeTunnel(_tunnelName) {
-  const tunnelName = _tunnelName || TUNNEL_NAME
-  console.log('Upgrading a Tunnel:', tunnelName)
+module.exports = async function upgradeTunnel() {
+  console.log('Upgrading a Tunnel:', TUNNEL_ADDRESS)
 
-  const factory = await ethers.getContractFactory('FreeTunnelHub')
-  const hubContract = new ethers.Contract(FREE_TUNNEL_HUB_ADDRESS, factory.interface, getWallet())
+  const tunnel = await ethers.getContractAt('TunnelContract', TUNNEL_ADDRESS, getWallet())
 
-  await hubContract.upgradeTunnel(tunnelName, true)
+  await tunnel.upgradeTunnel(+TBM_VERSION)
   console.log(`TunnelContract Upgraded.`)
 }

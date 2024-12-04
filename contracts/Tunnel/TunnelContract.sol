@@ -8,27 +8,31 @@ import "./LockContract.sol";
 import "./MintContract.sol";
 
 contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
-    constructor(uint64 version, uint8 hubId, string memory tunnelName) Constants(version, hubId, tunnelName) {}
+    constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) {}
 
-    function initialize(address _admin, address _vault, address proposer, address[] calldata executors, uint256 threshold) public initializer {
-        _initAdmin(_admin);
-        if (_vault != address(0)) {
-            _initVault(_vault);
-        }
+    function initConfigs(address admin, address proposer, address[] calldata executors, uint256 threshold, address vault) external initializer {
+        _initAdmin(admin);
         _addProposer(proposer);
         _initExecutors(executors, threshold);
+        if (vault != address(0)) {
+            _initVault(vault);
+        }
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
+    function upgradeTunnel(uint64 version) public onlyProxy onlyAdmin {
+        address newImplementation = ITunnelHub(HUB_ADDRESS).upgradeTunnel(getTunnelName(), IS_LOCK_MODE, version);
+        UUPSUpgradeable.upgradeToAndCall(newImplementation, "");
+    }
+
+    function _authorizeUpgrade(address newImplementation) internal pure override {}
+
+    function upgradeToAndCall(address, bytes memory) public payable override {
+        revert("Use upgradeTunnel");
+    }
 
     function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
         _addToken(tokenIndex, tokenAddr);
     }
-
-    // function createToken(uint8 tokenIndex, string memory name, string memory symbol, uint8 decimals) external onlyAdmin {
-    //     MintableERC20 tokenAddr = new MintableERC20(address(this), _getVaultWithAdminFallback(), name, symbol, decimals);
-    //     _addToken(tokenIndex, address(tokenAddr));
-    // }
 
     function removeToken(uint8 tokenIndex) external onlyAdmin {
         _removeToken(tokenIndex);

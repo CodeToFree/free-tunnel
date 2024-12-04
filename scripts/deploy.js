@@ -1,9 +1,7 @@
-const deployTBM = require('./deployTBM')
 const deployHub = require('./deployHub')
-
-const version = 20241203
+const updateTBM = require('./updateTBM')
 
 module.exports = async function deploy() {
-  const tbmAddress = await deployTBM(version)
-  await deployHub(tbmAddress)
+  const hubAddress = await deployHub()
+  await updateTBM(hubAddress)
 }

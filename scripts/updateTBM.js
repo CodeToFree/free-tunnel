@@ -1,18 +1,23 @@
 require('dotenv').config()
 const { ethers } = require('hardhat')
 const { getWallet } = require('./lib')
-const deployTBM = require('./deployTBM')
 
 const {
+  TBM_VERSION,
   FREE_TUNNEL_HUB_ADDRESS,
 } = process.env
 
-module.exports = async function updateTBM(version) {
-  const tbmAddress = await deployTBM(version)
+module.exports = async function updateTBM(_hubAddress) {
+  await hre.run('compile')
 
-  const factory = await ethers.getContractFactory('FreeTunnelHub')
-  const hubContract = new ethers.Contract(FREE_TUNNEL_HUB_ADDRESS, factory.interface, getWallet())
+  const hubAddress = _hubAddress || FREE_TUNNEL_HUB_ADDRESS
 
-  await hubContract.updateTunnelBoringMachine(tbmAddress)
-  console.log(`TunnelBoringMachine Updated.`)
+  const wallet = getWallet()
+  const hubContract = await ethers.getContractAt('FreeTunnelHub', hubAddress, wallet)
+
+  const TunnelBoringMachine = await ethers.getContractFactory('TunnelBoringMachine', wallet)
+  const tx = await hubContract.updateTunnelBoringMachine(+TBM_VERSION, TunnelBoringMachine.bytecode)
+  await tx.wait()
+
+  console.log('TunnelBoringMachine updated:', await hubContract.currentTBM())
 }
