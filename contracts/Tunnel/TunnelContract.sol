@@ -36,7 +36,7 @@ contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
     function _authorizeUpgrade(address newImplementation) internal pure override {}
 
     function upgradeToAndCall(address, bytes memory) public payable override {
-        revert("Use upgradeTunnel");
+        revert("Method upgradeToAndCall disabled. Use upgradeTunnel.");
     }
 
     function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
