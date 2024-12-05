@@ -48,9 +48,11 @@ module.exports = async function deployHub() {
 
   const chainConfig = require(`../src/lib/const/chains/${hre.network.name}.json`)
   const impl = await deployContract('FreeTunnelHub', [chainConfig.hubId])
+  await impl.deployed()
 
   const data = impl.interface.encodeFunctionData('initialize', [])
   const proxy = await deployContract('ERC1967Proxy', [impl.address, data])
+  await proxy.deployed()
 
   return proxy.address
 }
