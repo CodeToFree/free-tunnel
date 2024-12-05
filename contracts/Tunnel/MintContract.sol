@@ -6,10 +6,13 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "../utils/Permissions.sol";
 import "../utils/ReqHelpers.sol";
-import "../utils/MintableERC20.sol";
 
 abstract contract MintContract is Permissions, ReqHelpers {
-    using SafeERC20 for MintableERC20;
+    using SafeERC20 for IERC20;
+
+    bytes4 private constant MINT_SELECTOR = bytes4(keccak256("mint(address,uint256)"));
+    bytes4 private constant BURN_SELECTOR = bytes4(keccak256("burn(address,uint256)"));
+    bytes4 private constant BURN2_SELECTOR = bytes4(keccak256("burn(uint256)"));
 
     struct MintContractStorage {
         mapping(bytes32 => address) proposedMint;
@@ -78,11 +81,13 @@ abstract contract MintContract is Permissions, ReqHelpers {
         if (_actionFrom(reqId) & 0x10 > 0) {
             vault = getVault();
         }
-        if (vault == address(0)) {
-            MintableERC20(tokenAddr).mint(recipient, amount);
-        } else {
-            MintableERC20(tokenAddr).mint(vault, amount);
-        }
+
+        (bool success, bytes memory data) = tokenAddr.call(abi.encodeWithSelector(
+          MINT_SELECTOR,
+          vault == address(0) ? recipient: vault,
+          amount
+        ));
+        require(success && (data.length == 0 || abi.decode(data, (bool))), "Mint failed");
 
         emit TokenMintExecuted(reqId, recipient);
     }
@@ -122,7 +127,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
         address tokenAddr = _tokenFrom(reqId);
         $.proposedBurn[reqId] = proposer;
 
-        MintableERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
+        IERC20(tokenAddr).safeTransferFrom(proposer, address(this), amount);
 
         emit TokenBurnProposed(reqId, proposer);
     }
@@ -139,7 +144,14 @@ abstract contract MintContract is Permissions, ReqHelpers {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        MintableERC20(tokenAddr).burn(address(this), amount);
+
+        (bool success, bytes memory data) = tokenAddr.call(abi.encodeWithSelector(BURN_SELECTOR, address(this), amount));
+        if (success) {
+            require(data.length == 0 || abi.decode(data, (bool)), "Burn failed");
+        } else {
+            (success, data) = tokenAddr.call(abi.encodeWithSelector(BURN2_SELECTOR, amount));
+            require(success && (data.length == 0 || abi.decode(data, (bool))), "Burn failed");
+        }
 
         emit TokenBurnExecuted(reqId, proposer);
     }
@@ -154,7 +166,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
-        MintableERC20(tokenAddr).safeTransfer(proposer, amount);
+        IERC20(tokenAddr).safeTransfer(proposer, amount);
 
         emit TokenBurnCancelled(reqId, proposer);
     }
