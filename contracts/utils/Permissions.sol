@@ -127,9 +127,11 @@ abstract contract Permissions is Constants, Initializable {
         emit ProposerRemoved(proposer);
     }
 
-    modifier onlyProposer() {
-        PermissionsStorage storage $ = _getPermissionsStorage();
-        require($._proposerIndex[msg.sender] > 0, "Require a proposer");
+    modifier onlyHubOrProposer() {
+        if (msg.sender != HUB_ADDRESS) {
+            PermissionsStorage storage $ = _getPermissionsStorage();
+            require($._proposerIndex[msg.sender] > 0, "Require a proposer");
+        }
         _;
     }
 

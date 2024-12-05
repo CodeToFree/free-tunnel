@@ -132,7 +132,7 @@ abstract contract LockContract is Permissions, ReqHelpers {
     event TokenUnlockExecuted(bytes32 indexed reqId, address indexed recipient);
     event TokenUnlockCancelled(bytes32 indexed reqId, address indexed recipient);
 
-    function proposeUnlock(bytes32 reqId, address recipient) external onlyProposer isLockMode hubIsMintOppositeSideOf(reqId) {
+    function proposeUnlock(bytes32 reqId, address recipient) external onlyHubOrProposer isLockMode hubIsMintOppositeSideOf(reqId) {
         _createdTimeFrom(reqId, true);
         LockContractStorage storage $ = _getLockContractStorage();
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");

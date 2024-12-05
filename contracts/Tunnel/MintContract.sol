@@ -39,12 +39,12 @@ abstract contract MintContract is Permissions, ReqHelpers {
         return $.proposedBurn[reqId];
     }
 
-    function proposeMint(bytes32 reqId, address recipient) external onlyProposer isMintMode hubIsMintSideOf(reqId) {
+    function proposeMint(bytes32 reqId, address recipient) external onlyHubOrProposer isMintMode hubIsMintSideOf(reqId) {
         require(_actionFrom(reqId) & 0x0f == 1, "Invalid action; not lock-mint");
         _proposeMint(reqId, recipient);
     }
 
-    function proposeMintFromBurn(bytes32 reqId, address recipient) external onlyProposer isMintMode hubIsMintSideOf(reqId) {
+    function proposeMintFromBurn(bytes32 reqId, address recipient) external onlyHubOrProposer isMintMode hubIsMintSideOf(reqId) {
         require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
         _proposeMint(reqId, recipient);
     }

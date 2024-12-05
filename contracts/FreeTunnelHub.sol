@@ -130,11 +130,13 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
     // Mint methods
     function proposeMint(string memory tunnelName, bytes32 reqId, address recipient) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
+        require(tunnel.proposerIndex(msg.sender) > 0, "Require a proposer");
         tunnel.proposeMint(reqId, recipient);
     }
 
     function proposeMintFromBurn(string memory tunnelName, bytes32 reqId, address recipient) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
+        require(tunnel.proposerIndex(msg.sender) > 0, "Require a proposer");
         tunnel.proposeMintFromBurn(reqId, recipient);
     }
 
@@ -153,29 +155,6 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
     function cancelMint(string memory tunnelName, bytes32 reqId) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.cancelMint(reqId);
-    }
-
-    // Unlock methods
-    function proposeUnlock(string memory tunnelName, bytes32 reqId, address recipient) external {
-        TunnelContract tunnel = _getTunnelContract(tunnelName, true);
-        tunnel.proposeUnlock(reqId, recipient);
-    }
-
-    function executeUnlock(
-        string memory tunnelName,
-        bytes32 reqId,
-        bytes32[] memory r,
-        bytes32[] memory yParityAndS,
-        address[] memory executors,
-        uint256 exeIndex
-    ) external {
-        TunnelContract tunnel = _getTunnelContract(tunnelName, true);
-        tunnel.executeUnlock(reqId, r, yParityAndS, executors, exeIndex);
-    }
-
-    function cancelUnlock(string memory tunnelName, bytes32 reqId) external {
-        TunnelContract tunnel = _getTunnelContract(tunnelName, true);
-        tunnel.cancelUnlock(reqId);
     }
 
     // Burn methods
@@ -204,6 +183,30 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
     function cancelBurn(string memory tunnelName, bytes32 reqId) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         tunnel.cancelBurn(reqId);
+    }
+
+    // Unlock methods
+    function proposeUnlock(string memory tunnelName, bytes32 reqId, address recipient) external {
+        TunnelContract tunnel = _getTunnelContract(tunnelName, true);
+        require(tunnel.proposerIndex(msg.sender) > 0, "Require a proposer");
+        tunnel.proposeUnlock(reqId, recipient);
+    }
+
+    function executeUnlock(
+        string memory tunnelName,
+        bytes32 reqId,
+        bytes32[] memory r,
+        bytes32[] memory yParityAndS,
+        address[] memory executors,
+        uint256 exeIndex
+    ) external {
+        TunnelContract tunnel = _getTunnelContract(tunnelName, true);
+        tunnel.executeUnlock(reqId, r, yParityAndS, executors, exeIndex);
+    }
+
+    function cancelUnlock(string memory tunnelName, bytes32 reqId) external {
+        TunnelContract tunnel = _getTunnelContract(tunnelName, true);
+        tunnel.cancelUnlock(reqId);
     }
 
     receive() external payable {}
