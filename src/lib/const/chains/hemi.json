@@ -1,0 +1,11 @@
+{
+  "chainId": 43111,
+  "name": "Hemi",
+  "icon": "hemi",
+  "currency": "ETH",
+  "rpcUrl": "https://7e57304f.rpc.hemi.network/rpc",
+  "explorerUrl": "https://explorer-b81c3bd8.hemi.xyz",
+  "tokens": {
+  },
+  "hubId": 44
+}

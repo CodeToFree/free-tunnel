@@ -186,6 +186,9 @@ const hardhatConfig = {
     exsat: {
       url: "https://evm.exsat.network"
     },
+    hemi: {
+      url: "https://7e57304f.rpc.hemi.network/rpc"
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },
