@@ -1,0 +1,11 @@
+{
+  "chainId": 7200,
+  "name": "exSat",
+  "icon": "exsat",
+  "currency": "BTC",
+  "rpcUrl": "https://evm.exsat.network",
+  "explorerUrl": "https://scan.exsat.network",
+  "tokens": {
+  },
+  "hubId": 43
+}

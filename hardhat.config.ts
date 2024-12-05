@@ -183,6 +183,9 @@ const hardhatConfig = {
     morph: {
       url: "https://rpc.morphl2.io"
     },
+    exsat: {
+      url: "https://evm.exsat.network"
+    },
     sepolia: {
       url: "https://eth-sepolia.public.blastapi.io",
     },

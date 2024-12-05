@@ -33,6 +33,7 @@ import taiko from './chains/taiko.json'
 import sei from './chains/sei.json'
 import duck from './chains/duck.json'
 import morph from './chains/morph.json'
+import exsat from './chains/exsat.json'
 import sui from './chains/sui.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
@@ -55,7 +56,7 @@ export const ROLES = {
 const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet } : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
   merlin, b2, bitlayer, bevm, bb, bob, opbnb, neox,
-  kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph,
+  kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat,
   sui,
 }
 
