@@ -50,6 +50,12 @@ task('update-quota', 'Update Mint Quota')
     await updateMintQuota()
   })
 
+task('add-token', 'Add Token')
+  .setAction(async () => {
+    const addToken = require('./scripts/addToken')
+    await addToken()
+  })
+
 const hardhatConfig = {
   solidity: {
     version: config.compilers.solc,
