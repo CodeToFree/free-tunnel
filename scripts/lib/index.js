@@ -14,7 +14,7 @@ function getWallet(privateKey) {
 }
 exports.getWallet = getWallet
 
-exports.deployContract = async function deployContract(contractName, args) {
+exports.deployContract = async function deployContract(contractName, args = []) {
   const wallet = getWallet()
   console.log(`Deploying ${contractName} by ${wallet.address}...`)
 

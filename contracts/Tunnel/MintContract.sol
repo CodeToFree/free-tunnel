@@ -107,12 +107,22 @@ abstract contract MintContract is Permissions, ReqHelpers {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId, address proposer) external payable isMintMode hubIsMintSideOf(reqId) {
+    function proposeBurn(bytes32 reqId) external payable isMintMode hubIsMintSideOf(reqId) {
+        require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
+        _proposeBurn(reqId, msg.sender);
+    }
+
+    function proposeBurnFromHub(bytes32 reqId, address proposer) external payable onlyHub isMintMode hubIsMintSideOf(reqId) {
         require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
         _proposeBurn(reqId, proposer);
     }
 
-    function proposeBurnForMint(bytes32 reqId, address proposer) external payable isMintMode hubIsMintOppositeSideOf(reqId) {
+    function proposeBurnForMint(bytes32 reqId) external payable isMintMode hubIsMintOppositeSideOf(reqId) {
+        require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
+        _proposeBurn(reqId, msg.sender);
+    }
+
+    function proposeBurnForMintFromHub(bytes32 reqId, address proposer) external payable onlyHub isMintMode hubIsMintOppositeSideOf(reqId) {
         require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
         _proposeBurn(reqId, proposer);
     }

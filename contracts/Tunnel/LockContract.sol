@@ -44,7 +44,15 @@ abstract contract LockContract is Permissions, ReqHelpers {
         return $.proposedUnlock[reqId];
     }
 
-    function proposeLock(bytes32 reqId, address proposer) external payable isLockMode hubIsMintOppositeSideOf(reqId) {
+    function proposeLock(bytes32 reqId) external payable {
+        _proposeLock(reqId, msg.sender);
+    }
+
+    function proposeLockFromHub(bytes32 reqId, address proposer) external payable onlyHub {
+        _proposeLock(reqId, proposer);
+    }
+
+    function _proposeLock(bytes32 reqId, address proposer) private isLockMode hubIsMintOppositeSideOf(reqId) {
         _createdTimeFrom(reqId, true);
         LockContractStorage storage $ = _getLockContractStorage();
         uint8 action = _actionFrom(reqId);

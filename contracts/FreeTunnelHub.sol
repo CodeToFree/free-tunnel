@@ -10,11 +10,7 @@ import "./Tunnel/TunnelContract.sol";
 import "./utils/SigVerifier.sol";
 
 contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
-    uint8 public immutable HUB_ID;
-
-    constructor(uint8 hubId) {
-        HUB_ID = hubId;
-    }
+    uint8 public HUB_ID;
 
     address public currentTBM;
     event TunnelBoringMachineUpdated(uint64 indexed version, address tbmAddress);
@@ -23,11 +19,25 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     event TunnelOpenned(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
     event TunnelUpgraded(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
 
-    function initialize() public initializer {
+    function initialize(uint8 hubId) public initializer {
         __Ownable_init(msg.sender);
+        HUB_ID = hubId;
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    function upgrade(bytes memory bytecode) public onlyOwner {
+        address implAddress;
+        assembly {
+            implAddress := create2(0, add(bytecode, 0x20), mload(bytecode), "")
+        }
+        require(implAddress != address(0), "New implementation of FreeTunnelHub failed to deploy");
+        UUPSUpgradeable.upgradeToAndCall(implAddress, "");
+    }
+
+    function _authorizeUpgrade(address newImplementation) internal pure override {}
+
+    function upgradeToAndCall(address, bytes memory) public payable override {
+        revert("Method upgradeToAndCall disabled. Use upgrade.");
+    }
 
     function currentTBMVersion() public view returns (uint64) {
         return TunnelBoringMachine(currentTBM).VERSION();
@@ -40,10 +50,9 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
 
         bytes memory deployBytecode = abi.encodePacked(bytecode, abi.encode(version));
 
-        bytes32 salt = bytes32(0);
         address tbmAddress;
         assembly {
-            tbmAddress := create2(0, add(deployBytecode, 0x20), mload(deployBytecode), salt)
+            tbmAddress := create2(0, add(deployBytecode, 0x20), mload(deployBytecode), "")
         }
         require(tbmAddress != address(0), "TunnelBoringMachine failed to deploy");
         require(TunnelBoringMachine(tbmAddress).VERSION() == version, "TunnelBoringMachine.VERSION does not equal to version");
@@ -117,10 +126,10 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     // Lock methods
-    function proposeLock(string memory tunnelName, bytes32 reqId, address proposer) external payable {
+    function proposeLock(string memory tunnelName, bytes32 reqId) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, true);
         uint256 value = tunnel.__getLockTxValue(reqId);
-        tunnel.proposeLock{ value: value }(reqId, proposer);
+        tunnel.proposeLockFromHub{ value: value }(reqId, msg.sender);
     }
 
     function executeLock(
@@ -171,14 +180,14 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     // Burn methods
-    function proposeBurn(string memory tunnelName, bytes32 reqId, address proposer) external payable {
+    function proposeBurn(string memory tunnelName, bytes32 reqId) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
-        tunnel.proposeBurn(reqId, proposer);
+        tunnel.proposeBurnFromHub(reqId, msg.sender);
     }
 
-    function proposeBurnForMint(string memory tunnelName, bytes32 reqId, address proposer) external payable {
+    function proposeBurnForMint(string memory tunnelName, bytes32 reqId) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
-        tunnel.proposeBurnForMint(reqId, proposer);
+        tunnel.proposeBurnForMintFromHub(reqId, msg.sender);
     }
 
     function executeBurn(

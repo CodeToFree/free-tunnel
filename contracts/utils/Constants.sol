@@ -9,9 +9,10 @@ interface ITunnelHub {
 contract Constants {
     uint64 public immutable VERSION;
     address public immutable HUB_ADDRESS;
+    uint8 public immutable HUB_ID;
     bytes32 internal immutable TUNNEL_NAME_BYTES;
     uint8 internal immutable TUNNEL_NAME_LEN;
-    bool internal immutable IS_LOCK_MODE;
+    bool public immutable IS_LOCK_MODE;
 
     uint256 constant PROPOSE_PERIOD = 48 hours;
     uint256 constant EXPIRE_PERIOD = 72 hours;
@@ -20,6 +21,7 @@ contract Constants {
     constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) {
         VERSION = version;
         HUB_ADDRESS = hubAddress;
+        HUB_ID = ITunnelHub(hubAddress).HUB_ID();
         IS_LOCK_MODE = isLockMode;
 
         bytes memory nameBytes = bytes(tunnelName);
@@ -31,10 +33,6 @@ contract Constants {
         }
         TUNNEL_NAME_BYTES = nameBytes32;
         TUNNEL_NAME_LEN = uint8(len);
-    }
-
-    function HUB_ID() public view returns (uint8) {
-        return ITunnelHub(HUB_ADDRESS).HUB_ID();
     }
 
     function getTunnelName() public view returns (string memory tunnelName) {

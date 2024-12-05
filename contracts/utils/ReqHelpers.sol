@@ -173,12 +173,12 @@ abstract contract ReqHelpers is Constants, SigVerifier {
     }
 
     modifier hubIsMintOppositeSideOf(bytes32 reqId) {
-        require(HUB_ID() == uint8(uint256(reqId) >> 120), "Current hub is not the mint-opposite side of reqId");
+        require(HUB_ID == uint8(uint256(reqId) >> 120), "Current hub is not the mint-opposite side of reqId");
         _;
     }
 
     modifier hubIsMintSideOf(bytes32 reqId) {
-        require(HUB_ID() == uint8(uint256(reqId) >> 112), "Current hub is not the mint side of reqId");
+        require(HUB_ID == uint8(uint256(reqId) >> 112), "Current hub is not the mint side of reqId");
         _;
     }
 }
