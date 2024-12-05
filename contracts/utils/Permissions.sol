@@ -136,10 +136,16 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
     }
 
 
-    function _initExecutors(address[] memory executors, uint256 threshold) internal onlyInitializing {
+    function _initExecutors(address[] memory executors, uint256 threshold, uint256 exeIndex) internal onlyInitializing {
         PermissionsStorage storage $ = _getPermissionsStorage();
         require($._exeThresholdForIndex.length == 0, "Executors already initialized");
         require(threshold > 0, "Threshold must be greater than 0");
+        while (exeIndex > 0) {
+            $._executorsForIndex.push(new address[](0));
+            $._exeThresholdForIndex.push(0);
+            $._exeActiveSinceForIndex.push(0);
+            exeIndex--;
+        }
         $._executorsForIndex.push(executors);
         $._exeThresholdForIndex.push(threshold);
         $._exeActiveSinceForIndex.push(1);

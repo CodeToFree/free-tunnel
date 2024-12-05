@@ -74,6 +74,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
         uint256 until,
         address[] calldata executors,
         uint256 threshold,
+        uint256 exeIndex,
         address proposer
     ) external {
         require(currentTBM != address(0), "No TunnelBoringMachine");
@@ -100,7 +101,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
         }
         require(proxyAddress != address(0), "Proxy contract failed to deploy");
 
-        TunnelContract(payable(proxyAddress)).initConfigs(admin, executors, threshold, proposer, address(0));
+        TunnelContract(payable(proxyAddress)).initConfigs(admin, executors, threshold, exeIndex, proposer, address(0));
 
         addressOfTunnel[tunnelHash] = proxyAddress;
 
