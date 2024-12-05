@@ -106,7 +106,7 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], un
         size='xs'
         onClick={underThreshold ? sign : execute}
         disabled={!exes || (signed && underThreshold)}
-        forceChains={[chain]}
+        forceChains={!underThreshold && [chain]}
       >
         <ExecuteText underThreshold={underThreshold} signed={signed} step={step} action={action} />
       </ConnectButton>
