@@ -10,10 +10,12 @@ import "./MintContract.sol";
 contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
     constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) {}
 
-    function initConfigs(address admin, address proposer, address[] calldata executors, uint256 threshold, address vault) external initializer {
+    function initConfigs(address admin, address[] calldata executors, uint256 threshold, address proposer, address vault) external initializer {
         _initAdmin(admin);
-        _addProposer(proposer);
         _initExecutors(executors, threshold);
+        if (proposer != address(0)) {
+            _addProposer(proposer);
+        }
         if (vault != address(0)) {
             _initVault(vault);
         }

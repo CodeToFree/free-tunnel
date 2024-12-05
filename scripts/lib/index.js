@@ -5,11 +5,11 @@ const { Deployer } = require('@matterlabs/hardhat-zksync-deploy')
 require('dotenv').config()
 const { PRIVATE_KEY } = process.env
 
-function getWallet() {
+function getWallet(privateKey) {
   if (['zksync', 'zklink'].includes(hre.network.name)) {
-    return new ZkWallet(PRIVATE_KEY)
+    return new ZkWallet(privateKey || PRIVATE_KEY)
   } else {
-    return new ethers.Wallet(PRIVATE_KEY, ethers.provider)
+    return new ethers.Wallet(privateKey || PRIVATE_KEY, ethers.provider)
   }
 }
 exports.getWallet = getWallet

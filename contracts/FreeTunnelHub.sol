@@ -7,8 +7,9 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 import "./TunnelBoringMachine.sol";
 import "./Tunnel/TunnelContract.sol";
+import "./utils/SigVerifier.sol";
 
-contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
+contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     uint8 public immutable HUB_ID;
 
     constructor(uint8 hubId) {
@@ -68,14 +69,25 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
     function openNewTunnel(
         string memory tunnelName,
         bool isLockMode,
-        address admin,
-        address proposer,
+        bytes32 r,
+        bytes32 yParityAndS,
+        uint256 until,
         address[] calldata executors,
-        uint256 threshold
+        uint256 threshold,
+        address proposer
     ) external {
         require(currentTBM != address(0), "No TunnelBoringMachine");
         require(getTunnelAddress(tunnelName, isLockMode) == address(0), "Tunnel already openned");
         require(getTunnelAddress(tunnelName, !isLockMode) == address(0), "Tunnel of the other mode already openned");
+        require(until > block.timestamp, "Signature expired");
+
+        address admin = msg.sender;
+        bytes32 digest = __digestFromMessage(abi.encodePacked(
+            "FreeTunnelHub at ", Strings.toHexString(address(this)), " allows ", Strings.toHexString(admin),
+            " to open the tunnel:\n", tunnelName,
+            "\nUntil: ", Strings.toString(until)
+        ));
+        __checkSignature(digest, r, yParityAndS, owner());
 
         address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
 
@@ -88,7 +100,7 @@ contract FreeTunnelHub is OwnableUpgradeable, UUPSUpgradeable {
         }
         require(proxyAddress != address(0), "Proxy contract failed to deploy");
 
-        TunnelContract(payable(proxyAddress)).initConfigs(admin, proposer, executors, threshold, address(0));
+        TunnelContract(payable(proxyAddress)).initConfigs(admin, executors, threshold, proposer, address(0));
 
         addressOfTunnel[tunnelHash] = proxyAddress;
 

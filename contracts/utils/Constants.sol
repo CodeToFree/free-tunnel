@@ -17,8 +17,6 @@ contract Constants {
     uint256 constant EXPIRE_PERIOD = 72 hours;
     uint256 constant EXPIRE_EXTRA_PERIOD = 96 hours;
 
-    bytes26 constant ETH_SIGN_HEADER = bytes26("\x19Ethereum Signed Message:\n");
-
     constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) {
         VERSION = version;
         HUB_ADDRESS = hubAddress;

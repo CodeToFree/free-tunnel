@@ -4,8 +4,9 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "./Constants.sol";
+import "./SigVerifier.sol";
 
-abstract contract ReqHelpers is Constants {
+abstract contract ReqHelpers is Constants, SigVerifier {
     struct ReqHelpersStorage {
         mapping(uint8 => address) _tokens;
         mapping(uint8 => uint8) _tokenDecimals;
@@ -143,20 +144,17 @@ abstract contract ReqHelpers is Constants {
     function _digestFromReqSigningMessage(bytes32 reqId) internal view returns (bytes32) {
         uint8 specificAction = _actionFrom(reqId) & 0x0f;
         if (specificAction == 1) {
-            return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + TUNNEL_NAME_LEN + 29 + 66),
+            return __digestFromMessage(abi.encodePacked(
                 "[", getTunnelName(), "]\n",
                 "Sign to execute a lock-mint:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         } else if (specificAction == 2) {
-            return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + TUNNEL_NAME_LEN + 31 + 66),
+            return __digestFromMessage(abi.encodePacked(
                 "[", getTunnelName(), "]\n",
                 "Sign to execute a burn-unlock:\n", Strings.toHexString(uint256(reqId), 32)
             ));
         } else if (specificAction == 3) {
-            return keccak256(abi.encodePacked(
-                ETH_SIGN_HEADER, Strings.toString(3 + TUNNEL_NAME_LEN + 29 + 66),
+            return __digestFromMessage(abi.encodePacked(
                 "[", getTunnelName(), "]\n",
                 "Sign to execute a burn-mint:\n", Strings.toHexString(uint256(reqId), 32)
             ));

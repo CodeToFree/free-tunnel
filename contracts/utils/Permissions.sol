@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./Constants.sol";
+import "./SigVerifier.sol";
 
-abstract contract Permissions is Constants, Initializable {
+abstract contract Permissions is Constants, SigVerifier, Initializable {
     struct PermissionsStorage {
         address _admin;
         address _vault;
@@ -189,9 +189,7 @@ abstract contract Permissions is Constants, Initializable {
         require(activeSince > block.timestamp + 36 hours, "The activeSince should be after 1.5 days from now");
         require(activeSince < block.timestamp + 5 days, "The activeSince should be within 5 days from now");
 
-        bytes32 digest = keccak256(abi.encodePacked(
-            ETH_SIGN_HEADER,
-            Strings.toString(3 + TUNNEL_NAME_LEN + (29 + 43 * newExecutors.length) + (12 + Math.log10(threshold) + 1) + (15 + 10) + (25 + Math.log10(exeIndex) + 1)),
+        bytes32 digest = __digestFromMessage(abi.encodePacked(
             "[", getTunnelName(), "]\n",
             "Sign to update executors to:\n",
             __joinAddressList(newExecutors),
@@ -210,29 +208,14 @@ abstract contract Permissions is Constants, Initializable {
         } else {
             require(activeSince >= $._exeActiveSinceForIndex[newIndex], "Failed to overwrite existing executors");
             require(threshold >= $._exeThresholdForIndex[newIndex], "Failed to overwrite existing executors");
-            require(__cmpAddrList(newExecutors, $._executorsForIndex[newIndex]), "Failed to overwrite existing executors");
+            require(_cmpAddrList(newExecutors, $._executorsForIndex[newIndex]), "Failed to overwrite existing executors");
             $._executorsForIndex[newIndex] = newExecutors;
             $._exeThresholdForIndex[newIndex] = threshold;
             $._exeActiveSinceForIndex[newIndex] = activeSince;
         }
     }
 
-    function __joinAddressList(address[] memory addrs) private pure returns (string memory) {
-        string memory result = "";
-
-        for (uint256 i = 0; i < addrs.length; i++) {
-            string memory addrStr = Strings.toHexString(addrs[i]);
-            if (i == 0) {
-                result = string(abi.encodePacked(addrStr, "\n"));
-            } else {
-                result = string(abi.encodePacked(result, addrStr, "\n"));
-            }
-        }
-
-        return result;
-    }
-
-    function __cmpAddrList(address[] memory list1, address[] memory list2) private pure returns (bool) {
+    function _cmpAddrList(address[] memory list1, address[] memory list2) private pure returns (bool) {
         if (list1.length > list2.length) {
             return true;
         } else if (list1.length < list2.length) {
@@ -258,7 +241,7 @@ abstract contract Permissions is Constants, Initializable {
         require(r.length == yParityAndS.length, "Array length should equal");
         require(r.length == executors.length, "Array length should equal");
 
-        __checkExecutorsForIndex(executors, exeIndex);
+        _checkExecutorsForIndex(executors, exeIndex);
 
         for (uint256 i = 0; i < executors.length; i++) {
             address executor = executors[i];
@@ -266,7 +249,7 @@ abstract contract Permissions is Constants, Initializable {
         }
     }
 
-    function __checkExecutorsForIndex(address[] memory executors, uint256 exeIndex) private view {
+    function _checkExecutorsForIndex(address[] memory executors, uint256 exeIndex) private view {
         PermissionsStorage storage $ = _getPermissionsStorage();
         require(executors.length >= $._exeThresholdForIndex[exeIndex], "Does not meet threshold");
 
@@ -295,14 +278,5 @@ abstract contract Permissions is Constants, Initializable {
             }
             require(isExecutor, "Non-executor");
         }
-    }
-
-    function __checkSignature(bytes32 digest, bytes32 r, bytes32 yParityAndS, address signer) internal pure {
-        require(signer != address(0), "Signer cannot be empty address");
-        bytes32 s = yParityAndS & bytes32(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
-        uint8 v = uint8((uint256(yParityAndS) >> 255) + 27);
-        require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0, "Invalid signature");
-
-        require(signer == ecrecover(digest, v, r, s), "Invalid signature");
     }
 }
