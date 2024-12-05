@@ -29,7 +29,7 @@ As an upgradeable contract, TunnelContract instances can be upgraded to the late
 
 ## Role Distribution
 
-To ensure secure operations even under the trustless assumption, we separate the management of FreeTunnelHub and individual tunnels.
+To ensure secure operations under the trustless assumption, we separate the management of FreeTunnelHub and individual tunnels.
 
 ### Manager or FreeTunnelHub
 
