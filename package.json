@@ -23,7 +23,7 @@
   "dependencies": {
     "@safe-global/safe-apps-provider": "^0.18.5",
     "@safe-global/safe-apps-react-sdk": "^4.7.2",
-    "@web3modal/ethers5": "^5.1.11",
+    "@web3modal/ethers5": "^4.2.3",
     "ethers": "^5.7.2",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.2",
