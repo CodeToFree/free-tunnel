@@ -4,9 +4,9 @@
   "framework": "hardhat",
   "npmClient": "yarn",
   "compilers": {
-    "solc": "0.8.20",
+    "solc": "0.8.28",
     "truffle": "",
-    "evmVersion": "paris",
+    "evmVersion": "shanghai",
     "optimizer": {
       "enabled": true,
       "runs": 200
