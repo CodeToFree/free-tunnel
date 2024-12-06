@@ -3,8 +3,8 @@ pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
+import "./DelayedERC1967Proxy.sol";
 import "./TunnelBoringMachine.sol";
 import "./Tunnel/TunnelContract.sol";
 import "./utils/SigVerifier.sol";
@@ -101,8 +101,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
 
         address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
 
-        bytes memory proxyBytecode = abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(implAddress, bytes("")));
-
+        bytes memory proxyBytecode = type(DelayedERC1967Proxy).creationCode;
         bytes32 tunnelHash = getTunnelHash(tunnelName, isLockMode);
         address proxyAddress;
         assembly {
@@ -110,7 +109,8 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
         }
         require(proxyAddress != address(0), "Proxy contract failed to deploy");
 
-        TunnelContract(payable(proxyAddress)).initConfigs(admin, executors, threshold, exeIndex, proposer, address(0));
+        bytes memory data = abi.encodeCall(TunnelContract.initConfigs, (admin, executors, threshold, exeIndex, proposer, address(0)));
+        DelayedERC1967Proxy(payable(proxyAddress)).initImplementation(implAddress, data);
 
         addressOfTunnel[tunnelHash] = proxyAddress;
 
