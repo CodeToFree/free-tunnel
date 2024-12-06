@@ -6,7 +6,8 @@
   "rpcUrl": "https://7e57304f.rpc.hemi.network/rpc",
   "explorerUrl": "https://explorer-b81c3bd8.hemi.xyz",
   "tokens": {
-    "0xF469fBD2abcd6B9de8E169d128226C0Fc90a012e": "pumpBTC"
+    "0xF469fBD2abcd6B9de8E169d128226C0Fc90a012e": "pumpBTC",
+    "0x8154Aaf094c2f03Ad550B6890E1d4264B5DdaD9A": "iBTC"
   },
   "hubId": 44
 }

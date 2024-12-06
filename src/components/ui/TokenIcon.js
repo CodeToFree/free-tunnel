@@ -36,6 +36,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/pumpbtc.png' className={_className} />
   } else if (token === 'ubtc') {
     return <img src='/tokens/ubtc.png' className={_className} />
+  } else if (token === 'ibtc') {
+    return <img src='/tokens/ibtc.png' className={_className} />
   } else if (token === 'fdusd') {
     return <img src='/tokens/fdusd.png' className={_className} />
   } else if (token === 'bbusd') {
