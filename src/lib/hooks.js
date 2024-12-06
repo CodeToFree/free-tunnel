@@ -248,7 +248,7 @@ export function useContractQuery(address, abi, method, args, chain, refreshTrigg
     contractInstance[method](...(args || [])).then(result => {
       setPending(false)
       setResult(result)
-    })
+    }).catch(e => {})
   }, [contractInstance, method, args])
 
   React.useEffect(() => {

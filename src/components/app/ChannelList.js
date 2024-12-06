@@ -4,7 +4,7 @@ import { HiChevronDoubleDown } from 'react-icons/hi'
 
 import { CHAINS, ADDR_ZERO } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 
 import { TokenIcon } from '@/components/ui'
 
@@ -57,8 +57,9 @@ export function ChannelDetail ({ channel }) {
 }
 
 export function ChainDetail ({ chain, contractAddr }) {
-  const { result: vault } = useContractQuery(contractAddr, AtomicMint, 'getVault', null, chain)
-  const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens', null, chain)
+  const { result: version } = useContractQuery(contractAddr, TunnelContract, 'VERSION', null, chain)
+  const { result: vault } = useContractQuery(contractAddr, TunnelContract, 'getVault', null, chain)
+  const { result: _tokens } = useContractQuery(contractAddr, TunnelContract, 'getSupportedTokens', null, chain)
   const tokens = React.useMemo(() => {
     if (!_tokens) {
       return []
@@ -82,6 +83,7 @@ export function ChainDetail ({ chain, contractAddr }) {
           {contractAddr}
         </a>
       </div>
+      {version && <div className='flex justify-end text-xs text-gray-500'>v2.{version.toString()}</div>}
       {
         vault && vault !== ADDR_ZERO &&
         <div className='ml-9 flex items-center justify-between text-sm'>
