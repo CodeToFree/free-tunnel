@@ -1,6 +1,5 @@
 import React from 'react'
-import { useRouter } from 'next/router'
-import { Card, Label, Button, Badge } from 'flowbite-react'
+import { Card, Label, Badge } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
 import { useChain, useAddress, useContractQuery } from '@/lib/hooks'
@@ -19,6 +18,8 @@ import {
   capitalize,
 } from '@/components/app'
 
+import Tabs from './Tabs'
+
 export const ROLE_COLORS = {
   [ROLES.Admin]: 'red',
   [ROLES.Proposer]: 'info',
@@ -27,7 +28,6 @@ export const ROLE_COLORS = {
 }
 
 export default function TabLock() {
-  const router = useRouter()
   const chain = useChain()
   const address = useAddress()
   const { channel, contractAddr } = useFreeChannel(chain)
@@ -37,23 +37,26 @@ export default function TabLock() {
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
   const { result: exes } = useContractQuery(contractAddr, Permissions, 'getActiveExecutors')
 
+  const [isAdmin, setIsAdmin] = React.useState()
   const [role, setRole] = React.useState()
   const proposerIndex = _proposerIndex?.toNumber()
+
+  React.useEffect(() => {
+    setIsAdmin(address && address == admin)
+  }, [address, admin])
   React.useEffect(() => {
     if (!address) {
       setRole()
-    } else if (address === admin) {
-      setRole(ROLES.Admin)
     } else if (proposerIndex > 0) {
       setRole(ROLES.Proposer)
     } else if (exes?.executors.includes(address)) {
       setRole(ROLES.Executor)
     } else if (address === vault) {
       setRole(ROLES.Vault)
-    } else if (admin && exes && typeof proposerIndex !== 'number') {
+    } else if (exes && typeof proposerIndex !== 'number') {
       setRole()
     }
-  }, [address, admin, vault, proposerIndex, exes])
+  }, [address, vault, proposerIndex, exes])
 
   const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens')
   const tokens = React.useMemo(() => {
@@ -71,29 +74,7 @@ export default function TabLock() {
   return (
     <AppContainer Header={FreeHeader}>
       <div className='w-[480px] max-w-full'>
-        {
-          channel.from.length
-          ? <Button.Group>
-              <Button
-                color='purple'
-                size='sm'
-                className='flex-1'
-              >
-                Lock-Mint
-              </Button>
-              <Button
-                color='gray'
-                size='sm'
-                className='flex-1'
-                onClick={() => router.push(`/${channel.id}/unlock`)}
-              >
-                Burn-Unlock
-              </Button>
-            </Button.Group>
-          : <Button color='purple' size='sm' className='w-full'>
-              Burn-Mint
-            </Button>
-        }
+        <Tabs isBurnMint={!channel.from.length} isAdmin={isAdmin} />
 
         <Card className='mt-4'>
           <div>
@@ -111,7 +92,6 @@ export default function TabLock() {
             </div>
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
-          {role === ROLES.Admin && <SectionAdmin />}
           {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action={action} role={role} token={token} />}
         </Card>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Card, Label, Button, Badge } from 'flowbite-react'
+import { Card, Label, Badge } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
 import { useChain, useAddress, useContractQuery } from '@/lib/hooks'
@@ -19,6 +19,7 @@ import {
   capitalize,
 } from '@/components/app'
 
+import Tabs from './Tabs'
 import { ROLE_COLORS } from './TabLock'
 
 export default function TabUnlock() {
@@ -29,32 +30,35 @@ export default function TabUnlock() {
 
   React.useEffect(() => {
     if (!channel.from.length) {
-      router.replace(`/${channel.id}`)
+      router.replace(`/${router.query.channelId}`)
     }
-  }, [router, channel.id, channel.from.length])
+  }, [router, channel.from.length])
 
   const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
   const { result: vault } = useContractQuery(contractAddr, Permissions, 'getVault')
   const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
   const { result: exes } = useContractQuery(contractAddr, Permissions, 'getActiveExecutors')
 
+  const [isAdmin, setIsAdmin] = React.useState()
   const [role, setRole] = React.useState()
   const proposerIndex = _proposerIndex?.toNumber()
+
+  React.useEffect(() => {
+    setIsAdmin(address && address == admin)
+  }, [address, admin])
   React.useEffect(() => {
     if (!address) {
       setRole()
-    } else if (address === admin) {
-      setRole(ROLES.Admin)
     } else if (proposerIndex > 0) {
       setRole(ROLES.Proposer)
     } else if (exes?.executors.includes(address)) {
       setRole(ROLES.Executor)
     } else if (address === vault) {
       setRole(ROLES.Vault)
-    } else if (admin && exes && typeof proposerIndex !== 'number') {
+    } else if (exes && typeof proposerIndex !== 'number') {
       setRole()
     }
-  }, [address, admin, vault, proposerIndex, exes])
+  }, [address, vault, proposerIndex, exes])
 
   const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens')
   const tokens = React.useMemo(() => {
@@ -74,23 +78,7 @@ export default function TabUnlock() {
   return (
     <AppContainer Header={FreeHeader}>
       <div className='w-[480px] max-w-full'>
-        <Button.Group>
-          <Button
-            color='gray'
-            size='sm'
-            className='flex-1'
-            onClick={() => router.push(`/${channel.id}`)}
-          >
-            Lock-Mint
-          </Button>
-          <Button
-            color='purple'
-            size='sm'
-            className='flex-1'
-          >
-            Burn-Unlock
-          </Button>
-        </Button.Group>
+        <Tabs isBurnMint={!channel.from.length} isAdmin={isAdmin} />
 
         <Card className='mt-4'>
           <div>
@@ -108,7 +96,6 @@ export default function TabUnlock() {
             </div>
             <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
-          {role === ROLES.Admin && <SectionAdmin />}
           {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action='burn-unlock' role={role} token={token} />}
         </Card>
       </div>

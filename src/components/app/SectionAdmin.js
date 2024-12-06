@@ -7,6 +7,7 @@ import {
   ContractCallButton,
 } from '@/components/web3'
 
+import { useFreeChannel } from '@/components/AppProvider'
 import { useChain, useERC20Query } from '@/lib/hooks'
 import AtomicLock from '@/lib/abis/AtomicLock.json'
 import AtomicMint from '@/lib/abis/AtomicMint.json'
