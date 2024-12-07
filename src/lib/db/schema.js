@@ -6,9 +6,23 @@ export const ChannelSchema = mongoose.Schema({
   name: String,
   homepage: String,
   logo: String,
+  lock: String,
+  mint: String,
   from: [String],
   to: [String],
-  contracts: Object,
+  contracts: {
+    type: Object,
+    get (obj) {
+      return Object.fromEntries(Object.entries(obj).map(([k, v]) => {
+        if (v === 'lock') {
+          return [k, this.lock]
+        } else if (v === 'mint') {
+          return [k, this.mint]
+        }
+        return [k, v]
+      }))
+    },
+  },
   min: Object,
   vault: Object,
   fee: String,

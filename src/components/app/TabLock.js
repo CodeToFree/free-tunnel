@@ -11,7 +11,6 @@ import { AppContainer } from '@/components/ui'
 import { ConnectedAddress, TokenSelector } from '@/components/web3'
 import {
   FreeHeader,
-  SectionAdmin,
   SectionPropose,
   CardRequestsForProposer,
   CardRequestsForExecutor,

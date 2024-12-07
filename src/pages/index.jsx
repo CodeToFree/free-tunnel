@@ -107,7 +107,7 @@ function PendingRequests({ channels }) {
 }
 
 export const getServerSideProps = async (req) => {
-  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo from to contracts')
+  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
   const channels = result.map(({ _id, name, logo, from, to, contracts }) => ({ id: _id, name, logo, from, to, contracts }))
   return { props: { channels } }
 }
