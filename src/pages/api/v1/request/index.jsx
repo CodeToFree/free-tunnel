@@ -1,4 +1,4 @@
-import { Channels, Requests } from '@/lib/db'
+import { Tunnels, Requests } from '@/lib/db'
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -8,8 +8,8 @@ export default async function handler(req, res) {
 }
 
 async function get(req, res) {
-  const channels = await Channels.find()
-  const channelByName = Object.fromEntries(channels.map(c => ([c.name, c._id])))
+  const tunnels = await Tunnels.find()
+  const tunnelByName = Object.fromEntries(tunnels.map(c => ([c.name, c._id])))
 
   const aggregated = await Requests.aggregate([
     {
@@ -23,26 +23,26 @@ async function get(req, res) {
     },
     {
       $group: {
-        _id: { proposer: '$proposer', channel: '$channel' },
+        _id: { proposer: '$proposer', tunnel: '$channel' },
         proposer: { $first: '$proposer' },
-        channel: { $first: '$channel' },
+        tunnel: { $first: '$channel' },
         reqs: { $push: { id: '$_id', recipient: '$recipient', hash: '$hash', signatures: '$signatures' } }
       }
     },
     {
       $group: {
-        _id: '$channel',
+        _id: '$tunnel',
         reqsByProposer: { $push: { proposer: '$proposer', reqs: '$reqs' } },
       }
     },
   ])
 
   const result = Object.fromEntries(aggregated.map(item => {
-    if (!channelByName[item._id]) {
+    if (!tunnelByName[item._id]) {
       return
     }
     return [
-      channelByName[item._id],
+      tunnelByName[item._id],
       Object.fromEntries(item.reqsByProposer.map(({ proposer, reqs }) => [proposer, reqs])),
     ]
   }).filter(Boolean))

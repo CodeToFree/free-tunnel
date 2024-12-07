@@ -1,5 +1,4 @@
-import { Channels, Requests } from '@/lib/db'
-import { CHAINS } from '@/lib/const'
+import { Tunnels, Requests } from '@/lib/db'
 import { parseRequest } from '@/lib/request'
 
 export default async function handler(req, res) {
@@ -12,14 +11,14 @@ export default async function handler(req, res) {
 }
 
 async function get(req, res) {
-  const channel = await Channels.findById(req.query.channelId)
-  if (!channel) {
+  const tunnel = await Tunnels.findById(req.query.tunnelId)
+  if (!tunnel) {
     return res.status(404).send()
   }
 
   const aggregated = await Requests.aggregate([
     {
-      $match: { channel: channel.name },
+      $match: { channel: tunnel.name },
     },
     {
       $group: {
@@ -35,8 +34,8 @@ async function get(req, res) {
 }
 
 async function post(req, res) {
-  const channel = await Channels.findById(req.query.channelId)
-  if (!channel) {
+  const tunnel = await Tunnels.findById(req.query.tunnelId)
+  if (!tunnel) {
     return res.status(404).send()
   }
 
@@ -48,7 +47,7 @@ async function post(req, res) {
   }
   if (hash) {
     update['hash.p1'] = hash
-    update.channel = channel.name
+    update.channel = tunnel.name
     update.from = fromChain.chainId.toString()
     update.to = toChain.chainId.toString()
   }

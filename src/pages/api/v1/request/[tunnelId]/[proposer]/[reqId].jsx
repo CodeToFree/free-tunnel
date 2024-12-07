@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { Channels, Requests } from '@/lib/db'
+import { Tunnels, Requests } from '@/lib/db'
 import { CHAINS } from '@/lib/const'
 
 export default async function handler(req, res) {
@@ -10,8 +10,8 @@ export default async function handler(req, res) {
 }
 
 async function put(req, res) {
-  const channel = await Channels.findById(req.query.channelId)
-  if (!channel) {
+  const tunnel = await Tunnels.findById(req.query.tunnelId)
+  if (!tunnel) {
     return res.status(404).send()
   }
 
@@ -42,7 +42,7 @@ async function put(req, res) {
   await Requests.findOneAndUpdate({
     _id: reqId,
     proposer,
-    channel: channel.name,
+    channel: tunnel.name,
   }, update, { new: true })
   res.json({ result: true })
 }

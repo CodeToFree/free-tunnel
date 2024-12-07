@@ -3,22 +3,22 @@ import { Card, Button, Badge, Label } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
 import { parseRequest, ACTION_IDS } from '@/lib/request'
-import { getChannelRequests } from '@/lib/api'
+import { getTunnelRequests } from '@/lib/api'
 import { useRequests, useRequestsMethods } from '@/stores'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { PaginationButtons } from '@/components/ui'
 
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
 export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens, exes }) {
-  const { channel } = useFreeChannel()
+  const { tunnel } = useFreeTunnel()
 
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
-  const requests = useRequests(channel.id, 'executor')
+  const requests = useRequests(tunnel.id, 'executor')
   const actionId = ACTION_IDS[action]
   const allReqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))
@@ -39,10 +39,10 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
     return { reqs: reqsByTab[tab], nSign: sign.length, nExecute: execute.length, nFinished: finished.length, nCancelled: cancelled.length }
   }, [allReqs, tab, threshold])
 
-  const { storeRequestUpdateForChannel } = useRequestsMethods()
+  const { storeRequestUpdateForTunnel } = useRequestsMethods()
   React.useEffect(() => {
-    getChannelRequests(channel.id).then(reqs => storeRequestUpdateForChannel(channel.id, reqs))
-  }, [channel.id, storeRequestUpdateForChannel])
+    getTunnelRequests(tunnel.id).then(reqs => storeRequestUpdateForTunnel(tunnel.id, reqs))
+  }, [tunnel.id, storeRequestUpdateForTunnel])
 
   const size = 10
   const [page, setPage] = React.useState(0)

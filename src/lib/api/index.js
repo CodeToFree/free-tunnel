@@ -23,23 +23,23 @@ export async function fetcher(apiPath, method = 'GET', data) {
   }
 }
 
-export async function getRequests(channelId, proposer) {
-  const reqs = await fetcher(`api/v1/request/${channelId}/${proposer}`)
+export async function getRequests(tunnelId, proposer) {
+  const reqs = await fetcher(`api/v1/request/${tunnelId}/${proposer}`)
   return reqs.map(({ _id, ...rest }) => ({ id: _id, ...rest }))
 }
 
-export async function getChannelRequests(channelId) {
-  return await fetcher(`api/v1/request/${channelId}`)
+export async function getTunnelRequests(tunnelId) {
+  return await fetcher(`api/v1/request/${tunnelId}`)
 }
 
 export async function getAllRequests() {
   return await fetcher(`api/v1/request`)
 }
 
-export async function postRequest(channelId, proposer, reqId, recipient, hash) {
-  await fetcher(`api/v1/request/${channelId}`, 'POST', { proposer, reqId, recipient, hash })
+export async function postRequest(tunnelId, proposer, reqId, recipient, hash) {
+  await fetcher(`api/v1/request/${tunnelId}`, 'POST', { proposer, reqId, recipient, hash })
 }
 
-export async function updateRequest(channelId, proposer, reqId, { signature, hash }) {
-  await fetcher(`api/v1/request/${channelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
+export async function updateRequest(tunnelId, proposer, reqId, { signature, hash }) {
+  await fetcher(`api/v1/request/${tunnelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
 }

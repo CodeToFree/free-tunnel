@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import { Card, Label, Badge } from 'flowbite-react'
 
 import { useChain, useAddress, useContractQuery } from '@/lib/hooks'
-import Permissions from '@/lib/abis/Permissions.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { AppContainer } from '@/components/ui'
 import { ConnectedAddress } from '@/components/web3'
 import {
@@ -19,15 +19,15 @@ export default function TabAdmin() {
   const router = useRouter()
   const chain = useChain()
   const address = useAddress()
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
 
-  const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
+  const { result: admin } = useContractQuery(contractAddr, TunnelContract, 'getAdmin')
 
   const [isAdmin, setIsAdmin] = React.useState()
   React.useEffect(() => {
     setIsAdmin(address && address === admin)
     if (admin && address !== admin) {
-      router.push(`/${router.query.channelId}`)
+      router.push(`/${router.query.tunnelId}`)
     }
   }, [router, address, admin])
 
@@ -38,7 +38,7 @@ export default function TabAdmin() {
   return (
     <AppContainer Header={FreeHeader}>
       <div className='w-[480px] max-w-full'>
-        <Tabs isBurnMint={!channel.from.length} isAdmin={isAdmin} />
+        <Tabs isBurnMint={!tunnel.from.length} isAdmin={isAdmin} />
 
         <Card className='mt-4'>
           <div>

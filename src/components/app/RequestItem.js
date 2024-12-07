@@ -152,11 +152,11 @@ function RequestActionButton ({ role, action, exes, ...req }) {
   if ((req.hash?.e1 && req.hash?.e2) || req.hash?.c2 || (req.hash?.c1 && !req.hash?.p2)) {
     return
   }
-  if (Date.now() / 1000 > req.created + EXECUTE_PERIOD && !req.channelId) {
+  if (Date.now() / 1000 > req.created + EXECUTE_PERIOD && !req.tunnelId) {
     return <div className='mt-2'><ButtonCancel action={action} {...req} /></div>
   } else if (req.hash?.p2) {
     return <div className='mt-2'><ButtonExecute role={role} action={action} exes={exes} {...req} /></div>
-  } else if (role === ROLES.Proposer && !req.channelId) {
+  } else if (role === ROLES.Proposer && !req.tunnelId) {
     return <div className='mt-2'><ButtonPropose action={action} {...req} /></div>
   }
 }

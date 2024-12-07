@@ -5,19 +5,19 @@ import { ROLES } from '@/lib/const'
 import { parseRequest, ACTION_IDS } from '@/lib/request'
 import { useRequests } from '@/stores'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { PaginationButtons } from '@/components/ui'
 
 import { capitalize } from './lib'
 import RequestItem from './RequestItem'
 
 export default function CardRequestsForProposer ({ action = 'lock-mint', tokens, proposer, role, exes }) {
-  const { channel } = useFreeChannel()
+  const { tunnel } = useFreeTunnel()
 
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
-  const requests = useRequests(channel.id, role === ROLES.Proposer ? '' : (proposer || 'n/a'))
+  const requests = useRequests(tunnel.id, role === ROLES.Proposer ? '' : (proposer || 'n/a'))
   const actionId = ACTION_IDS[action]
   const allReqs = React.useMemo(() => {
     return requests?.map(({ id, ...rest }) => ({ ...parseRequest(id), ...rest }))

@@ -10,17 +10,17 @@ import ERC20 from '@/lib/abis/ERC20.json'
 import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
 
-export function useWeb3ModalFromChannel(channel) {
-  const channelId = channel?.id
+export function useWeb3ModalFromTunnel(tunnel) {
+  const tunnelId = tunnel?.id
   const [ready, setReady] = React.useState(false)
 
   const chains = React.useMemo(() => {
-    if (!channelId) {
+    if (!tunnelId) {
       return CHAINS
     }
-    return [...channel.from, ...channel.to].map(id => CHAINS.find(c => c.id === id))
+    return [...tunnel.from, ...tunnel.to].map(id => CHAINS.find(c => c.id === id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelId])
+  }, [tunnelId])
 
   React.useEffect(() => {
     const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID || '';

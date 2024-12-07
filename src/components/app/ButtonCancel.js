@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -9,24 +9,23 @@ import {
 
 import { EXECUTE_PERIOD } from '@/lib/const'
 import { updateRequest } from '@/lib/api'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
-import AtomicLock from '@/lib/abis/AtomicLock.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
 
 const CANCEL_INFO = {
   'lock-mint': [
-    { chain: 'fromChain', abi: AtomicLock, method: 'cancelLock' },
-    { chain: 'toChain', abi: AtomicMint, method: 'cancelMint' },
+    { chain: 'fromChain', abi: TunnelContract, method: 'cancelLock' },
+    { chain: 'toChain', abi: TunnelContract, method: 'cancelMint' },
   ],
   'burn-unlock': [
-    { chain: 'toChain', abi: AtomicMint, method: 'cancelBurn' },
-    { chain: 'fromChain', abi: AtomicLock, method: 'cancelUnlock' },
+    { chain: 'toChain', abi: TunnelContract, method: 'cancelBurn' },
+    { chain: 'fromChain', abi: TunnelContract, method: 'cancelUnlock' },
   ],
   'burn-mint': [
-    { chain: 'fromChain', abi: AtomicMint, method: 'cancelBurn' },
-    { chain: 'toChain', abi: AtomicMint, method: 'cancelMint' },
+    { chain: 'fromChain', abi: TunnelContract, method: 'cancelBurn' },
+    { chain: 'toChain', abi: TunnelContract, method: 'cancelMint' },
   ],
 }
 
@@ -37,13 +36,13 @@ export default function ButtonCancel ({ action, id: reqId, created, proposer, ha
   const actionName = capitalize(action.split('-')[step])
 
   const chain = CANCEL_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
   const { abi, method } = CANCEL_INFO[action][step]
 
   const callback = React.useCallback(async hash => {
-    storeRequestAddHash(channel.id, proposer, reqId, { [step ? 'c2' : 'c1']: hash })
-    await updateRequest(channel.id, proposer, reqId, { hash: { [step ? 'c2' : 'c1']: hash } })
-  }, [channel.id, proposer, reqId, storeRequestAddHash, step])
+    storeRequestAddHash(tunnel.id, proposer, reqId, { [step ? 'c2' : 'c1']: hash })
+    await updateRequest(tunnel.id, proposer, reqId, { hash: { [step ? 'c2' : 'c1']: hash } })
+  }, [tunnel.id, proposer, reqId, storeRequestAddHash, step])
 
   const disabled = Date.now() / 1000 < created + EXECUTE_PERIOD
 

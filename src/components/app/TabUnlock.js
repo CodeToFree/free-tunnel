@@ -4,10 +4,9 @@ import { Card, Label, Badge } from 'flowbite-react'
 
 import { ROLES } from '@/lib/const'
 import { useChain, useAddress, useContractQuery } from '@/lib/hooks'
-import Permissions from '@/lib/abis/Permissions.json'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { AppContainer } from '@/components/ui'
 import { ConnectedAddress, TokenSelector } from '@/components/web3'
 import {
@@ -25,18 +24,18 @@ export default function TabUnlock() {
   const router = useRouter()
   const chain = useChain()
   const address = useAddress()
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
 
   React.useEffect(() => {
-    if (!channel.from.length) {
-      router.replace(`/${router.query.channelId}`)
+    if (!tunnel.from.length) {
+      router.replace(`/${router.query.tunnelId}`)
     }
-  }, [router, channel.from.length])
+  }, [router, tunnel.from.length])
 
-  const { result: admin } = useContractQuery(contractAddr, Permissions, 'getAdmin')
-  const { result: vault } = useContractQuery(contractAddr, Permissions, 'getVault')
-  const { result: _proposerIndex } = useContractQuery(contractAddr, Permissions, 'proposerIndex', React.useMemo(() => ([address]), [address]))
-  const { result: exes } = useContractQuery(contractAddr, Permissions, 'getActiveExecutors')
+  const { result: admin } = useContractQuery(contractAddr, TunnelContract, 'getAdmin')
+  const { result: vault } = useContractQuery(contractAddr, TunnelContract, 'getVault')
+  const { result: _proposerIndex } = useContractQuery(contractAddr, TunnelContract, 'proposerIndex', React.useMemo(() => ([address]), [address]))
+  const { result: exes } = useContractQuery(contractAddr, TunnelContract, 'getActiveExecutors')
 
   const [isAdmin, setIsAdmin] = React.useState()
   const [role, setRole] = React.useState()
@@ -59,7 +58,7 @@ export default function TabUnlock() {
     }
   }, [address, vault, proposerIndex, exes])
 
-  const { result: _tokens } = useContractQuery(contractAddr, AtomicMint, 'getSupportedTokens')
+  const { result: _tokens } = useContractQuery(contractAddr, TunnelContract, 'getSupportedTokens')
   const tokens = React.useMemo(() => {
     if (!_tokens) {
       return []
@@ -70,14 +69,14 @@ export default function TabUnlock() {
 
   const [token, setToken] = React.useState()
 
-  if (!channel.from.length) {
+  if (!tunnel.from.length) {
     return <AppContainer Header={FreeHeader} />
   }
 
   return (
     <AppContainer Header={FreeHeader}>
       <div className='w-[480px] max-w-full'>
-        <Tabs isBurnMint={!channel.from.length} isAdmin={isAdmin} />
+        <Tabs isBurnMint={!tunnel.from.length} isAdmin={isAdmin} />
 
         <Card className='mt-4'>
           <div>

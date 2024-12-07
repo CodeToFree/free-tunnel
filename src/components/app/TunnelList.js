@@ -4,24 +4,30 @@ import { HiChevronDoubleDown } from 'react-icons/hi'
 
 import { CHAINS, ADDR_ZERO } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
+import { getTunnelContract } from '@/lib/request'
 import TunnelContract from '@/lib/abis/TunnelContract.json'
 
 import { TokenIcon } from '@/components/ui'
 
-export default function ChannelList ({ channels = [], className, action = 'Launch' }) {
+export default function TunnelList ({ tunnels = [], className, action = 'Launch' }) {
+  const [opened, setOpened] = React.useState()
+  const openAccordion = id => setOpened(prev => prev === id ? null : id)
+
   return (
     <Accordion collapseAll className={className}>
     {
-      channels.map(item => (
+      tunnels.map(item => (
         <Accordion.Panel key={item.id}>
-          <Accordion.Title className='p-3'>
-            <div className='flex items-center'>
-              <img src={item.logo} className='w-6 h-6 mr-3' />
-              {item.name}
-            </div>
-          </Accordion.Title>
+          <div onClick={() => openAccordion(item.id)}>
+            <Accordion.Title className='p-3'>
+              <div className='flex items-center'>
+                <img src={item.logo} className='w-6 h-6 mr-3' />
+                {item.name}
+              </div>
+            </Accordion.Title>
+          </div>
           <Accordion.Content className='p-3'>
-            <ChannelDetail channel={item} />
+            {opened === item.id && <TunnelDetail tunnel={item} />}
             <Button className='mt-4' size='sm' onClick={() => window.location.href = `/${item.id}`}>{action}</Button>
           </Accordion.Content>
         </Accordion.Panel>
@@ -31,32 +37,32 @@ export default function ChannelList ({ channels = [], className, action = 'Launc
   )
 }
 
-export function ChannelDetail ({ channel }) {
+export function TunnelDetail ({ tunnel }) {
   return (
     <div className='grid gap-y-3'>
     {
-      channel.from.map(id => {
+      tunnel.from.map(id => {
         const chain = CHAINS.find(c => c.id === id)
-        return <ChainDetail key={chain.id} chain={chain} contractAddr={channel.contracts[chain.id]} />
+        return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
       })
     }
     {
-      channel.from.length > 0 &&
+      tunnel.from.length > 0 &&
       <div className='mx-auto' >
         <HiChevronDoubleDown />
       </div>
     }
     {
-      channel.to.map(id => {
+      tunnel.to.map(id => {
         const chain = CHAINS.find(c => c.id === id)
-        return <ChainDetail key={chain.id} chain={chain} contractAddr={channel.contracts[chain.id]} />
+        return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
       })
     }
     </div>
   )
 }
 
-export function ChainDetail ({ chain, contractAddr }) {
+function ChainDetail ({ chain, contractAddr }) {
   const { result: version } = useContractQuery(contractAddr, TunnelContract, 'VERSION', null, chain)
   const { result: vault } = useContractQuery(contractAddr, TunnelContract, 'getVault', null, chain)
   const { result: _tokens } = useContractQuery(contractAddr, TunnelContract, 'getSupportedTokens', null, chain)
@@ -83,7 +89,7 @@ export function ChainDetail ({ chain, contractAddr }) {
           {contractAddr}
         </a>
       </div>
-      {version && <div className='flex justify-end text-xs text-gray-500'>v2.{version.toString()}</div>}
+      {version && <div className='flex justify-end text-[10px] text-gray-500'>v2.{version.toString()}</div>}
       {
         vault && vault !== ADDR_ZERO &&
         <div className='ml-9 flex items-center justify-between text-sm'>

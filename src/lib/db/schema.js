@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export const ChannelSchema = mongoose.Schema({
+export const TunnelSchema = mongoose.Schema({
   _id: String,
   priority: Number,
   name: String,
@@ -12,16 +12,7 @@ export const ChannelSchema = mongoose.Schema({
   to: [String],
   contracts: {
     type: Object,
-    get (obj) {
-      return Object.fromEntries(Object.entries(obj).map(([k, v]) => {
-        if (v === 'lock') {
-          return [k, this.lock]
-        } else if (v === 'mint') {
-          return [k, this.mint]
-        }
-        return [k, v]
-      }))
-    },
+    default: null,
   },
   min: Object,
   vault: Object,

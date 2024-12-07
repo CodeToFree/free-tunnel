@@ -1,8 +1,8 @@
 import { ethers } from 'ethers'
 
-import { Channels, Requests } from '@/lib/db'
+import { Tunnels, Requests } from '@/lib/db'
 import { CHAINS } from '@/lib/const'
-import { parseRequest } from '@/lib/request'
+import { getTunnelContract, parseRequest } from '@/lib/request'
 
 const events = {
   // '0xc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2': 'Initialized',
@@ -33,19 +33,19 @@ export default async function handler(req, res) {
 }
 
 async function post(req, res) {
-  const channel = await Channels.findById(req.query.channelId)
-  if (!channel) {
+  const tunnel = await Tunnels.findById(req.query.tunnelId)
+  if (!tunnel) {
     return res.status(404).send()
   }
 
-  await Promise.all([...channel.from, ...channel.to].map(id => refresh(id, channel)))
+  await Promise.all([...tunnel.from, ...tunnel.to].map(id => refresh(id, tunnel)))
 
   res.json({ result: true  })
 }
 
-async function refresh(id, channel) {
+async function refresh(id, tunnel) {
   const chain = CHAINS.find(c => c.id === id)
-  const contractAddr = channel.contracts[id]
+  const contractAddr = getTunnelContract(tunnel, id)?.addr
   if (!chain || !contractAddr) {
     return
   }
@@ -82,7 +82,7 @@ async function refresh(id, channel) {
     const update = {}
     if (['TokenLockProposed', 'TokenBurnProposed'].includes(req.event)) {
       update['hash.p1'] = '^' + req.hash
-      update.channel = channel.name
+      update.channel = tunnel.name
       update.from = req.fromChain.chainId.toString()
       update.to = req.toChain.chainId.toString()
       update.proposer = ethers.utils.getAddress(req.addr)

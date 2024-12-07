@@ -2,7 +2,7 @@ import React from 'react'
 import { Label, TextInput, Checkbox } from 'flowbite-react'
 import { ethers } from 'ethers'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -15,9 +15,8 @@ import {
 import { ADDR_ONE } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
-import { getChannelRequests, getRequests, postRequest } from '@/lib/api'
-import AtomicLock from '@/lib/abis/AtomicLock.json'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
+import { getTunnelRequests, getRequests, postRequest } from '@/lib/api'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
@@ -30,7 +29,7 @@ const METHODS = {
 
 export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const chain = useChain()
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
@@ -39,9 +38,9 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const [balance, setBalance] = React.useState()
   const [recipient, setRecipient] = React.useState('')
 
-  const forceChains = action === 'lock-mint' ? channel.from : channel.to
-  const targetChains = action === 'burn-unlock' ? channel.from : channel.to
-  const tokenPath = channel?.paths?.[token?.index]
+  const forceChains = action === 'lock-mint' ? tunnel.from : tunnel.to
+  const targetChains = action === 'burn-unlock' ? tunnel.from : tunnel.to
+  const tokenPath = tunnel?.paths?.[token?.index]
   const targets = React.useMemo(() => {
     return targetChains.filter(c => c.id !== chain?.id && (tokenPath ? tokenPath.includes(c.hubId) : true))
   }, [chain?.id, targetChains, tokenPath])
@@ -51,7 +50,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     setAmount('')
   }, [token])
 
-  const vaultLimit = channel.vault?.[token?.index] || 0
+  const vaultLimit = tunnel.vault?.[token?.index] || 0
   const useVault = Boolean(vaultLimit) && (Number(amount) >= vaultLimit)
 
   const from = action === 'burn-unlock' ? target?.hubId : chain?.hubId
@@ -60,23 +59,23 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     () => newRequestId(action, amount, token?.index, from, to, useVault),
     [action, amount, token?.index, from, to, useVault]
   )
-  const { storeRequestAdd, storeRequestUpdateForProposer, storeRequestUpdateForChannel } = useRequestsMethods()
+  const { storeRequestAdd, storeRequestUpdateForProposer, storeRequestUpdateForTunnel } = useRequestsMethods()
   React.useEffect(() => {
     if (proposer) {
       if (role) {
-        getChannelRequests(channel.id).then(reqs => storeRequestUpdateForChannel(channel.id, reqs))
+        getTunnelRequests(tunnel.id).then(reqs => storeRequestUpdateForTunnel(tunnel.id, reqs))
       } else {
-        getRequests(channel.id, proposer).then(reqs => storeRequestUpdateForProposer(channel.id, proposer, reqs))
+        getRequests(tunnel.id, proposer).then(reqs => storeRequestUpdateForProposer(tunnel.id, proposer, reqs))
       }
     }
-  }, [channel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateForChannel])
+  }, [tunnel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateForTunnel])
 
-  const abi = action === 'lock-mint' ? AtomicLock : AtomicMint
+  const abi = action === 'lock-mint' ? TunnelContract : TunnelContract
   const method = METHODS[action]
 
   let bridgeFee = '0'
-  if (!role && channel.fee) {
-    const fee = channel.fee
+  if (!role && tunnel.fee) {
+    const fee = tunnel.fee
     bridgeFee = fee[`${chain?.id}>${target?.id}`] || fee[`${chain?.id}>`] || fee[`>${target?.id}`] || fee.default || '0'
   }
   const value = reqId && token?.addr === ADDR_ONE
@@ -89,7 +88,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     return <ConnectButton color='purple' forceChains={forceChains} />
   }
 
-  const min = channel.min?.[token?.index] || 0
+  const min = tunnel.min?.[token?.index] || 0
   const belowAmount = amount && (Number(amount) < min)
 
   return (
@@ -173,11 +172,11 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           disabled={belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
-              await postRequest(channel.id, proposer, reqId, recipient || proposer)
+              await postRequest(tunnel.id, proposer, reqId, recipient || proposer)
               const hash = await call()
               if (hash) {
-                storeRequestAdd(channel.id, proposer, reqId, recipient || proposer, hash)
-                await postRequest(channel.id, proposer, reqId, recipient || proposer, hash)
+                storeRequestAdd(tunnel.id, proposer, reqId, recipient || proposer, hash)
+                await postRequest(tunnel.id, proposer, reqId, recipient || proposer, hash)
               }
             }
           }}

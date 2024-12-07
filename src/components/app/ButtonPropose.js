@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -9,8 +9,7 @@ import {
 
 import { useChain } from '@/lib/hooks'
 import { updateRequest } from '@/lib/api'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
-import AtomicLock from '@/lib/abis/AtomicLock.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
@@ -23,17 +22,17 @@ const METHODS = {
 
 export default function ButtonPropose ({ action, proposer, id: reqId, recipient, fromChain, toChain }) {
   const chain = useChain()
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
   const toActionName = capitalize(action.split('-')[1])
 
   const { storeRequestAddHash } = useRequestsMethods()
 
-  const abi = action === 'burn-unlock' ? AtomicLock : AtomicMint
+  const abi = action === 'burn-unlock' ? TunnelContract : TunnelContract
   const method = METHODS[action]
   const callback = React.useCallback(async hash => {
-    storeRequestAddHash(channel.id, proposer, reqId, { p2: hash })
-    await updateRequest(channel.id, proposer, reqId, { hash: { p2: hash } })
-  }, [channel.id, proposer, reqId, storeRequestAddHash])
+    storeRequestAddHash(tunnel.id, proposer, reqId, { p2: hash })
+    await updateRequest(tunnel.id, proposer, reqId, { hash: { p2: hash } })
+  }, [tunnel.id, proposer, reqId, storeRequestAddHash])
 
   return (
     <ConnectButton color='info' size='xs' forceChains={action === 'burn-unlock' ? [fromChain] : [toChain]}>

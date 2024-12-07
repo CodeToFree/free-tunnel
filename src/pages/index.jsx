@@ -4,16 +4,16 @@ import { Card, Label, Button, Badge } from 'flowbite-react'
 
 import { AppProvider } from '@/components/AppProvider'
 import { AppContainer, PaginationButtons } from '@/components/ui'
-import { ChannelList, RequestItem } from '@/components/app'
+import { TunnelList, RequestItem } from '@/components/app'
 
-import { Channels } from '@/lib/db'
+import { Tunnels } from '@/lib/db'
 import { ADMIN_ADDRS, ROLES } from '@/lib/const'
 import { getAllRequests } from '@/lib/api'
 import { useAllPendingRequests, useRequestsMethods } from '@/stores'
-import { useWeb3ModalFromChannel, useAddress } from '@/lib/hooks'
+import { useWeb3ModalFromTunnel, useAddress } from '@/lib/hooks'
 
-export default function PageHome({ channels }) {
-  const ready = useWeb3ModalFromChannel()
+export default function PageHome({ tunnels }) {
+  const ready = useWeb3ModalFromTunnel()
   if (!ready) {
     return
   }
@@ -24,28 +24,28 @@ export default function PageHome({ channels }) {
         <title>Free Tunnel</title>
         <link rel='icon' href='/free.png' />
       </Head>
-      <Home channels={channels} />
+      <Home tunnels={tunnels} />
     </AppProvider>
   )
 }
 
-function Home ({ channels }) {
+function Home ({ tunnels }) {
   const address = useAddress()
   const isAdmin = ADMIN_ADDRS.includes(address)
 
   return (
     <AppContainer>
       <div className='w-[480px] max-w-full'>
-        <div className='text-white h-[34px] text-lg font-medium'>Select a Channel</div>
-        <ChannelList channels={channels} className='mt-4 text-white' />
+        <div className='text-white h-[34px] text-lg font-medium'>Select a Tunnel</div>
+        <TunnelList tunnels={tunnels} className='mt-4 text-white' />
       </div>
-      {isAdmin && <PendingRequests channels={channels} />}
+      {isAdmin && <PendingRequests tunnels={tunnels} />}
     </AppContainer>
   )
 }
 
-function PendingRequests({ channels }) {
-  const requests = useAllPendingRequests(channels)
+function PendingRequests({ tunnels }) {
+  const requests = useAllPendingRequests(tunnels)
   const { storeRequestUpdateAll } = useRequestsMethods()
 
   React.useEffect(() => {
@@ -107,7 +107,7 @@ function PendingRequests({ channels }) {
 }
 
 export const getServerSideProps = async (req) => {
-  const result = await Channels.find().sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
-  const channels = result.map(({ _id, name, logo, from, to, contracts }) => ({ id: _id, name, logo, from, to, contracts }))
-  return { props: { channels } }
+  const result = await Tunnels.find().sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
+  const tunnels = result.map(({ _id, name, logo, from, to, contracts }) => ({ id: _id, name, logo, from, to, contracts }))
+  return { props: { tunnels } }
 }

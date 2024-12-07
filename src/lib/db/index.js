@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 import {
-  ChannelSchema,
+  TunnelSchema,
   RequestSchema,
   FeeSchema,
 } from './schema'
@@ -12,6 +12,6 @@ const db = mongoose.createConnection(process.env.MONGO_URL)
 db.on('connection', () => console.log('[mongodb] DB Connected!'))
 db.on('error', err => console.warn('[mongodb] DB', err.message))
 
-export const Channels = db.model('free_channels', ChannelSchema)
+export const Tunnels = db.model('free_channels', TunnelSchema)
 export const Requests = db.model('free_reqs', RequestSchema)
 export const Fees = db.model('free_fees', FeeSchema)

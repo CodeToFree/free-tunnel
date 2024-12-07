@@ -7,14 +7,13 @@ import {
   ContractCallButton,
 } from '@/components/web3'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import { useChain, useERC20Query } from '@/lib/hooks'
-import AtomicLock from '@/lib/abis/AtomicLock.json'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 
 export default function SectionAdmin ({ createToken = false }) {
   const chain = useChain()
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
 
   const [step2, setStep2] = React.useState(false)
   const [fixedChain, setFixedChain] = React.useState(null)
@@ -83,10 +82,10 @@ export default function SectionAdmin ({ createToken = false }) {
         </div>
       </div>
 
-      <ConnectButton color='purple' forceChains={createToken && (step2 ? channel.to : channel.from)}>
+      <ConnectButton color='purple' forceChains={createToken && (step2 ? tunnel.to : tunnel.from)}>
         <ContractCallButton
           address={contractAddr}
-          abi={step2 ? AtomicMint : AtomicLock}
+          abi={step2 ? TunnelContract : TunnelContract}
           method={step2 && createToken ? 'createToken' : 'addToken'}
           args={args}
           callback={callback}

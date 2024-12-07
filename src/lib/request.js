@@ -9,6 +9,18 @@ export const ACTION_IDS = {
   'burn-mint': 3
 }
 
+export function getTunnelContract(tunnel, chainId) {
+  if (!tunnel) {
+    return
+  } else if (tunnel.contracts?.[chainId]) {
+    return { addr: tunnel.contracts[chainId] }
+  } else if (tunnel.from.includes(chainId)) {
+    return { v2: true, addr: tunnel.lock }
+  } else if (tunnel.to.includes(chainId)) {
+    return { v2: true, addr: tunnel.mint }
+  }
+}
+
 export function newRequestId(action, amount, tokenIndex, from, to, vault) {
   const value = toValue(amount, 6)
   if (value.lte(0) || !tokenIndex || typeof from !== 'number' || to == undefined) {

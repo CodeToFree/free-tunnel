@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+const { FREE_TUNNEL_HUB_ADDRESS } = process.env
+
 const nextConfig = {
   pageExtensions: ['jsx', 'tsx'],
   reactStrictMode: true,
@@ -22,6 +25,15 @@ const nextConfig = {
         ],
       },
     ]
+  },
+  webpack: (config, { webpack }) => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.FREE_TUNNEL_HUB_ADDRESS': JSON.stringify(FREE_TUNNEL_HUB_ADDRESS),
+      })
+    )
+
+    return config
   }
 }
 

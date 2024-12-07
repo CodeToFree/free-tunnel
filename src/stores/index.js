@@ -7,30 +7,30 @@ import { parseRequest } from '@/lib/request'
 const useStoreRequests = create(persist(
   set => ({
     data: {},
-    storeRequestAdd: (channelId, proposer, reqId, recipient, hash) => (
-      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
-        ...data[channelId],
-        [proposer]: [...(data[channelId]?.[proposer] || []), { id: reqId, recipient, hash: { p1: hash } }],
+    storeRequestAdd: (tunnelId, proposer, reqId, recipient, hash) => (
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [tunnelId]: {
+        ...data[tunnelId],
+        [proposer]: [...(data[tunnelId]?.[proposer] || []), { id: reqId, recipient, hash: { p1: hash } }],
       } } }))
     ),
-    storeRequestUpdateForProposer: (channelId, proposer, reqs) => (
-      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
-        ...data[channelId],
+    storeRequestUpdateForProposer: (tunnelId, proposer, reqs) => (
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [tunnelId]: {
+        ...data[tunnelId],
         [proposer]: reqs,
       } } }))
     ),
-    storeRequestUpdateForChannel: (channelId, requests) => set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: requests } })),
+    storeRequestUpdateForTunnel: (tunnelId, requests) => set(({ data, ...actions }) => ({ ...actions, data: { ...data, [tunnelId]: requests } })),
     storeRequestUpdateAll: requests => set(({ data, ...actions }) => ({ ...actions, data: requests })),
-    storeRequestAddSignature: (channelId, proposer, reqId, { sig, exe }) => (
-      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
-        ...data[channelId],
-        [proposer]: data[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, signatures: [...(req.signatures || []), { sig, exe }] })),
+    storeRequestAddSignature: (tunnelId, proposer, reqId, { sig, exe }) => (
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [tunnelId]: {
+        ...data[tunnelId],
+        [proposer]: data[tunnelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, signatures: [...(req.signatures || []), { sig, exe }] })),
       } } }))
     ),
-    storeRequestAddHash: (channelId, proposer, reqId, hash) => (
-      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [channelId]: {
-        ...data[channelId],
-        [proposer]: data[channelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, hash: { ...req.hash, ...hash } })),
+    storeRequestAddHash: (tunnelId, proposer, reqId, hash) => (
+      set(({ data, ...actions }) => ({ ...actions, data: { ...data, [tunnelId]: {
+        ...data[tunnelId],
+        [proposer]: data[tunnelId]?.[proposer]?.map(req => req.id !== reqId ? req : ({ ...req, hash: { ...req.hash, ...hash } })),
       } } }))
     ),
   }),
@@ -40,24 +40,24 @@ const useStoreRequests = create(persist(
 ))
 
 
-export function useAllPendingRequests (channels) {
+export function useAllPendingRequests (tunnels) {
   const state = useStoreRequests()
   return React.useMemo(() => {
-    if (!channels || !state?.data) {
+    if (!tunnels || !state?.data) {
       return []
     }
     return Object.fromEntries(
       Object.entries(state.data)
-        .filter(([channelId]) => channels.find(c => c.id === channelId))
-        .map(([channelId, reqsByProposer]) => [
-          channelId,
+        .filter(([tunnelId]) => tunnels.find(c => c.id === tunnelId))
+        .map(([tunnelId, reqsByProposer]) => [
+          tunnelId,
           Object.entries(reqsByProposer)
             .map(([proposer, reqs]) => reqs
               .filter(req => (!req.hash?.e1 && !req.hash?.c1) || (!(req.hash?.c1 && !req.hash?.p2) && !req.hash?.e2 && !req.hash?.c2))
               .map(req => {
                 const parsed = parseRequest(req.id)
                 const action =  (parsed.actionId & 0x0f) === 2 ? 'burn-unlock' : 'lock-mint'
-                return { ...req, ...parsed, action, channelId, proposer }
+                return { ...req, ...parsed, action, tunnelId, proposer }
               })
             )
             .flat()
@@ -65,11 +65,11 @@ export function useAllPendingRequests (channels) {
         ])
         .filter(([_, reqs]) => reqs.length > 0)
     )
-  }, [channels, state])
+  }, [tunnels, state])
 }
 
-export function useRequests (channelId, proposer) {
-  const requests = useStoreRequests(state => state.data?.[channelId])
+export function useRequests (tunnelId, proposer) {
+  const requests = useStoreRequests(state => state.data?.[tunnelId])
   return React.useMemo(() => {
     if (!requests) {
       return []
@@ -87,7 +87,7 @@ export function useRequests (channelId, proposer) {
 export function useRequestsMethods () {
   const storeRequestAdd = useStoreRequests(state => state.storeRequestAdd)
   const storeRequestUpdateForProposer = useStoreRequests(state => state.storeRequestUpdateForProposer)
-  const storeRequestUpdateForChannel = useStoreRequests(state => state.storeRequestUpdateForChannel)
+  const storeRequestUpdateForTunnel = useStoreRequests(state => state.storeRequestUpdateForTunnel)
   const storeRequestUpdateAll = useStoreRequests(state => state.storeRequestUpdateAll)
   const storeRequestAddSignature = useStoreRequests(state => state.storeRequestAddSignature)
   const storeRequestAddHash = useStoreRequests(state => state.storeRequestAddHash)
@@ -95,7 +95,7 @@ export function useRequestsMethods () {
   return {
     storeRequestAdd,
     storeRequestUpdateForProposer,
-    storeRequestUpdateForChannel,
+    storeRequestUpdateForTunnel,
     storeRequestUpdateAll,
     storeRequestAddSignature,
     storeRequestAddHash,

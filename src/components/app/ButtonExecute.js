@@ -1,7 +1,7 @@
 import React from 'react'
 import { ethers } from 'ethers'
 
-import { useFreeChannel } from '@/components/AppProvider'
+import { useFreeTunnel } from '@/components/AppProvider'
 import {
   ConnectButton,
 } from '@/components/web3'
@@ -9,24 +9,23 @@ import {
 import { ROLES } from '@/lib/const'
 import { useAddress, useProvider, useContractCall } from '@/lib/hooks'
 import { updateRequest } from '@/lib/api'
-import AtomicMint from '@/lib/abis/AtomicMint.json'
-import AtomicLock from '@/lib/abis/AtomicLock.json'
+import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
 import { capitalize } from './lib'
 
 const EXECUTE_INFO = {
   'lock-mint': [
-    { chain: 'fromChain', abi: AtomicLock, method: 'executeLock' },
-    { chain: 'toChain', abi: AtomicMint, method: 'executeMint' },
+    { chain: 'fromChain', abi: TunnelContract, method: 'executeLock' },
+    { chain: 'toChain', abi: TunnelContract, method: 'executeMint' },
   ],
   'burn-unlock': [
-    { chain: 'toChain', abi: AtomicMint, method: 'executeBurn' },
-    { chain: 'fromChain', abi: AtomicLock, method: 'executeUnlock' },
+    { chain: 'toChain', abi: TunnelContract, method: 'executeBurn' },
+    { chain: 'fromChain', abi: TunnelContract, method: 'executeUnlock' },
   ],
   'burn-mint': [
-    { chain: 'fromChain', abi: AtomicMint, method: 'executeBurn' },
-    { chain: 'toChain', abi: AtomicMint, method: 'executeMint' },
+    { chain: 'fromChain', abi: TunnelContract, method: 'executeBurn' },
+    { chain: 'toChain', abi: TunnelContract, method: 'executeMint' },
   ],
 }
 
@@ -66,17 +65,17 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], un
 
   const step = (hash.e1 || !hash.p1) ? 1 : 0
   const chain = EXECUTE_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
-  const { channel, contractAddr } = useFreeChannel(chain)
+  const { tunnel, contractAddr } = useFreeTunnel(chain)
   const { abi, method } = EXECUTE_INFO[action][step]
   const { pending, call } = useContractCall(contractAddr, abi, method)
 
   const sign = React.useCallback(async () => {
     const fullReqId = reqId.padEnd(66, '0')
-    const sig = await provider.getSigner().signMessage(`[${channel.name}]\nSign to execute a ${action}:\n${fullReqId}`)
+    const sig = await provider.getSigner().signMessage(`[${tunnel.name}]\nSign to execute a ${action}:\n${fullReqId}`)
     const { compact } = ethers.utils.splitSignature(sig)
-    storeRequestAddSignature(channel.id, proposer, reqId, { sig: compact, exe: executor })
-    await updateRequest(channel.id, proposer, reqId, { signature: { sig: compact, exe: executor } })
-  }, [channel.id, channel.name, reqId, action, provider, storeRequestAddSignature, proposer, executor])
+    storeRequestAddSignature(tunnel.id, proposer, reqId, { sig: compact, exe: executor })
+    await updateRequest(tunnel.id, proposer, reqId, { signature: { sig: compact, exe: executor } })
+  }, [tunnel.id, tunnel.name, reqId, action, provider, storeRequestAddSignature, proposer, executor])
 
   const exeIndex = exes?.exeIndex.toNumber()
   const execute = React.useCallback(async () => {
@@ -89,14 +88,14 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], un
     const hash = await call([fullReqId, sigs.map(s => s.r), sigs.map(s => s.s), sigs.map(s => s.exe), exeIndex])
     if (hash) {
       if (!step) {
-        storeRequestAddHash(channel.id, proposer, reqId, { e1: hash })
-        await updateRequest(channel.id, proposer, reqId, { hash: { e1: hash } })
+        storeRequestAddHash(tunnel.id, proposer, reqId, { e1: hash })
+        await updateRequest(tunnel.id, proposer, reqId, { hash: { e1: hash } })
       } else {
-        storeRequestAddHash(channel.id, proposer, reqId, { e2: hash })
-        await updateRequest(channel.id, proposer, reqId, { hash: { e2: hash } })
+        storeRequestAddHash(tunnel.id, proposer, reqId, { e2: hash })
+        await updateRequest(tunnel.id, proposer, reqId, { hash: { e2: hash } })
       }
     }
-  }, [channel.id, reqId, proposer, signatures, exeIndex, call, step, storeRequestAddHash])
+  }, [tunnel.id, reqId, proposer, signatures, exeIndex, call, step, storeRequestAddHash])
 
   const signed = signatures.find(({ exe }) => exe === executor)
   return (

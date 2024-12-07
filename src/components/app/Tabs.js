@@ -7,30 +7,30 @@ export default function Tabs ({ isBurnMint, isAdmin }) {
   const buttons = [
     <Button
       key='lock'
-      color={router.route === '/[channelId]' ? 'purple' : 'gray'}
+      color={router.route === '/[tunnelId]' ? 'purple' : 'gray'}
       size='sm'
       className='flex-1'
-      onClick={() => router.push(`/${router.query.channelId}`)}
+      onClick={() => router.push(`/${router.query.tunnelId}`)}
     >
       {isBurnMint ? 'Burn-Mint' : 'Lock-Mint'}
     </Button>,
     !isBurnMint &&
     <Button
       key='unlock'
-      color={router.route === '/[channelId]/unlock' ? 'purple' : 'gray'}
+      color={router.route === '/[tunnelId]/unlock' ? 'purple' : 'gray'}
       size='sm'
       className='flex-1'
-      onClick={() => router.push(`/${router.query.channelId}/unlock`)}
+      onClick={() => router.push(`/${router.query.tunnelId}/unlock`)}
     >
       Burn-Unlock
     </Button>,
     isAdmin &&
     <Button
       key='admin'
-      color={router.route === '/[channelId]/admin' ? 'purple' : 'gray'}
+      color={router.route === '/[tunnelId]/admin' ? 'purple' : 'gray'}
       size='sm'
       className='flex-1'
-      onClick={() => router.push(`/${router.query.channelId}/admin`)}
+      onClick={() => router.push(`/${router.query.tunnelId}/admin`)}
     >
       Admin
     </Button>
