@@ -6,8 +6,14 @@ export const TunnelSchema = mongoose.Schema({
   name: String,
   homepage: String,
   logo: String,
-  lock: String,
-  mint: String,
+  lock: {
+    type: String,
+    default: null,
+  },
+  mint: {
+    type: String,
+    default: null,
+  },
   from: [String],
   to: [String],
   contracts: {

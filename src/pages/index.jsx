@@ -108,6 +108,6 @@ function PendingRequests({ tunnels }) {
 
 export const getServerSideProps = async (req) => {
   const result = await Tunnels.find().sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
-  const tunnels = result.map(({ _id, name, logo, from, to, contracts }) => ({ id: _id, name, logo, from, to, contracts }))
+  const tunnels = result.map(({ _id, name, logo, lock, mint, from, to, contracts }) => ({ id: _id, name, logo, lock, mint, from, to, contracts }))
   return { props: { tunnels } }
 }
