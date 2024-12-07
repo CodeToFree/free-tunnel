@@ -9,6 +9,7 @@ import {
 import { ROLES } from '@/lib/const'
 import { useAddress, useProvider, useContractCall } from '@/lib/hooks'
 import { updateRequest } from '@/lib/api'
+import FreeTunnelHub from '@/lib/abis/FreeTunnelHub.json'
 import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
@@ -16,16 +17,16 @@ import { capitalize } from './lib'
 
 const EXECUTE_INFO = {
   'lock-mint': [
-    { chain: 'fromChain', abi: TunnelContract, method: 'executeLock' },
-    { chain: 'toChain', abi: TunnelContract, method: 'executeMint' },
+    { chain: 'fromChain', method: 'executeLock' },
+    { chain: 'toChain', method: 'executeMint' },
   ],
   'burn-unlock': [
-    { chain: 'toChain', abi: TunnelContract, method: 'executeBurn' },
-    { chain: 'fromChain', abi: TunnelContract, method: 'executeUnlock' },
+    { chain: 'toChain', method: 'executeBurn' },
+    { chain: 'fromChain', method: 'executeUnlock' },
   ],
   'burn-mint': [
-    { chain: 'fromChain', abi: TunnelContract, method: 'executeBurn' },
-    { chain: 'toChain', abi: TunnelContract, method: 'executeMint' },
+    { chain: 'fromChain', method: 'executeBurn' },
+    { chain: 'toChain', method: 'executeMint' },
   ],
 }
 
@@ -65,9 +66,11 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], un
 
   const step = (hash.e1 || !hash.p1) ? 1 : 0
   const chain = EXECUTE_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
-  const { tunnel, contractAddr } = useFreeTunnel(chain)
-  const { abi, method } = EXECUTE_INFO[action][step]
-  const { pending, call } = useContractCall(contractAddr, abi, method)
+  const { tunnel, contractAddr, v2 } = useFreeTunnel(chain)
+  const callAddress = v2 ? process.env.FREE_TUNNEL_HUB_ADDRESS : contractAddr
+  const abi = v2 ? FreeTunnelHub : TunnelContract
+  const { method } = EXECUTE_INFO[action][step]
+  const { pending, call } = useContractCall(callAddress, abi, method)
 
   const sign = React.useCallback(async () => {
     const fullReqId = reqId.padEnd(66, '0')
@@ -85,7 +88,11 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], un
     })
 
     const fullReqId = reqId.padEnd(66, '0')
-    const hash = await call([fullReqId, sigs.map(s => s.r), sigs.map(s => s.s), sigs.map(s => s.exe), exeIndex])
+    const args = [fullReqId, sigs.map(s => s.r), sigs.map(s => s.s), sigs.map(s => s.exe), exeIndex]
+    if (v2) {
+      args.unshift(tunnel.name)
+    }
+    const hash = await call(args)
     if (hash) {
       if (!step) {
         storeRequestAddHash(tunnel.id, proposer, reqId, { e1: hash })
@@ -95,7 +102,7 @@ function ButtonExecute ({ action, exes, id: reqId, proposer, signatures = [], un
         await updateRequest(tunnel.id, proposer, reqId, { hash: { e2: hash } })
       }
     }
-  }, [tunnel.id, reqId, proposer, signatures, exeIndex, call, step, storeRequestAddHash])
+  }, [tunnel.id, v2, tunnel.name, reqId, proposer, signatures, exeIndex, call, step, storeRequestAddHash])
 
   const signed = signatures.find(({ exe }) => exe === executor)
   return (

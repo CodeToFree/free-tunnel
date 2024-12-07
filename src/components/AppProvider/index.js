@@ -17,7 +17,7 @@ export const useFreeTunnel = chain => {
     const to = tunnel.to.map(id => CHAINS.find(c => c.id === id))
 
     const contract = getTunnelContract(tunnel, chainId)
-    return { tunnel: { ...tunnel, from, to }, contractAddr: contract?.addr }
+    return { tunnel: { ...tunnel, from, to }, contractAddr: contract?.addr, v2: contract?.v2 }
   }, [tunnel, chainId])
 }
 

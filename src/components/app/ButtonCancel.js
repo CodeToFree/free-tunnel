@@ -9,6 +9,7 @@ import {
 
 import { EXECUTE_PERIOD } from '@/lib/const'
 import { updateRequest } from '@/lib/api'
+import FreeTunnelHub from '@/lib/abis/FreeTunnelHub.json'
 import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
@@ -16,16 +17,16 @@ import { capitalize } from './lib'
 
 const CANCEL_INFO = {
   'lock-mint': [
-    { chain: 'fromChain', abi: TunnelContract, method: 'cancelLock' },
-    { chain: 'toChain', abi: TunnelContract, method: 'cancelMint' },
+    { chain: 'fromChain', method: 'cancelLock' },
+    { chain: 'toChain', method: 'cancelMint' },
   ],
   'burn-unlock': [
-    { chain: 'toChain', abi: TunnelContract, method: 'cancelBurn' },
-    { chain: 'fromChain', abi: TunnelContract, method: 'cancelUnlock' },
+    { chain: 'toChain', method: 'cancelBurn' },
+    { chain: 'fromChain', method: 'cancelUnlock' },
   ],
   'burn-mint': [
-    { chain: 'fromChain', abi: TunnelContract, method: 'cancelBurn' },
-    { chain: 'toChain', abi: TunnelContract, method: 'cancelMint' },
+    { chain: 'fromChain', method: 'cancelBurn' },
+    { chain: 'toChain', method: 'cancelMint' },
   ],
 }
 
@@ -36,8 +37,17 @@ export default function ButtonCancel ({ action, id: reqId, created, proposer, ha
   const actionName = capitalize(action.split('-')[step])
 
   const chain = CANCEL_INFO[action][step].chain === 'fromChain' ? fromChain : toChain
-  const { tunnel, contractAddr } = useFreeTunnel(chain)
-  const { abi, method } = CANCEL_INFO[action][step]
+  const { tunnel, contractAddr, v2 } = useFreeTunnel(chain)
+  const callAddress = v2 ? process.env.FREE_TUNNEL_HUB_ADDRESS : contractAddr
+  const abi = v2 ? FreeTunnelHub : TunnelContract
+  const { method } = CANCEL_INFO[action][step]
+  const args = React.useMemo(() => {
+    if (v2) {
+      return [tunnel.name, reqId.padEnd(66, '0')]
+    } else {
+      return [reqId.padEnd(66, '0')]
+    }
+  }, [v2, tunnel.name, reqId])
 
   const callback = React.useCallback(async hash => {
     storeRequestAddHash(tunnel.id, proposer, reqId, { [step ? 'c2' : 'c1']: hash })
@@ -49,10 +59,10 @@ export default function ButtonCancel ({ action, id: reqId, created, proposer, ha
   return (
     <ConnectButton color='info' size='xs' forceChains={[chain]} disabled={disabled}>
       <ContractCallButton
-        address={contractAddr}
+        address={callAddress}
         abi={abi}
         method={method}
-        args={[reqId.padEnd(66, '0')]}
+        args={args}
         callback={callback}
       >
         Cancel {actionName} on <TokenIcon size='sm' token={chain?.icon} className='mx-1' /> {chain?.name}

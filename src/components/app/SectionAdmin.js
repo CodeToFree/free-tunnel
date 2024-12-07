@@ -85,7 +85,7 @@ export default function SectionAdmin ({ createToken = false }) {
       <ConnectButton color='purple' forceChains={createToken && (step2 ? tunnel.to : tunnel.from)}>
         <ContractCallButton
           address={contractAddr}
-          abi={step2 ? TunnelContract : TunnelContract}
+          abi={TunnelContract}
           method={step2 && createToken ? 'createToken' : 'addToken'}
           args={args}
           callback={callback}

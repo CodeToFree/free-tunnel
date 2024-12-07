@@ -16,6 +16,7 @@ import { ADDR_ONE } from '@/lib/const'
 import { useChain, useAddress, useContractCall } from '@/lib/hooks'
 import { newRequestId, parseRequest } from '@/lib/request'
 import { getTunnelRequests, getRequests, postRequest } from '@/lib/api'
+import FreeTunnelHub from '@/lib/abis/FreeTunnelHub.json'
 import TunnelContract from '@/lib/abis/TunnelContract.json'
 import { useRequestsMethods } from '@/stores'
 
@@ -29,7 +30,7 @@ const METHODS = {
 
 export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const chain = useChain()
-  const { tunnel, contractAddr } = useFreeTunnel(chain)
+  const { tunnel, contractAddr, v2 } = useFreeTunnel(chain)
   const fromActionName = capitalize(action.split('-')[0])
   const toActionName = capitalize(action.split('-')[1])
 
@@ -70,7 +71,6 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
     }
   }, [tunnel.id, proposer, role, storeRequestUpdateForProposer, storeRequestUpdateForTunnel])
 
-  const abi = action === 'lock-mint' ? TunnelContract : TunnelContract
   const method = METHODS[action]
 
   let bridgeFee = '0'
@@ -81,7 +81,17 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const value = reqId && token?.addr === ADDR_ONE
     ? ethers.utils.parseEther(parseRequest(reqId).value)
     : ethers.utils.parseEther(bridgeFee)
-  const { pending, call } = useContractCall(contractAddr, abi, method, [reqId.padEnd(66, '0'), { value }])
+
+  const callAddress = v2 ? process.env.FREE_TUNNEL_HUB_ADDRESS : contractAddr
+  const abi = v2 ? FreeTunnelHub : TunnelContract
+  const args = React.useMemo(() => {
+    if (v2) {
+      return [tunnel.name, reqId.padEnd(66, '0'), { value }]
+    } else {
+      return [reqId.padEnd(66, '0'), { value }]
+    }
+  }, [v2, tunnel.name, reqId, value])
+  const { pending, call } = useContractCall(callAddress, abi, method, args)
   const coreCheck = React.useMemo(() => ({ require: bridgeFee, alert: `Low ${chain?.currency} for Bridge Fee` }), [bridgeFee, chain?.currency])
 
   if (!proposer) {
