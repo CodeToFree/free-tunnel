@@ -36,6 +36,9 @@ Button.defaultProps = {
       light: 'text-gray-900 bg-white border border-gray-300 enabled:hover:bg-gray-100 focus:!ring-0 dark:text-gray-400 dark:bg-gray-900 dark:border-gray-700 dark:hover:text-gray-200 dark:enabled:hover:bg-gray-800/60'
     },
     disabled: 'cursor-not-allowed opacity-60',
+    inner: {
+      base: 'flex items-center transition-all duration-200',
+    },
   }
 }
 
