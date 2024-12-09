@@ -2,7 +2,7 @@ import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
 import '@matterlabs/hardhat-zksync-deploy'
 import '@matterlabs/hardhat-zksync-solc'
-import "@matterlabs/hardhat-zksync-verify"
+import '@matterlabs/hardhat-zksync-verify'
 
 import { task } from 'hardhat/config'
 
@@ -79,130 +79,130 @@ const hardhatConfig = {
   defaultNetwork: 'eth',
   networks: {
     eth: {
-      url: "https://rpc.ankr.com/eth",
+      url: 'https://rpc.ankr.com/eth',
     },
     arb: {
-      url: "https://arb1.arbitrum.io/rpc",
+      url: 'https://arb1.arbitrum.io/rpc',
     },
     bnb: {
-      url: "https://rpc.ankr.com/bsc",
+      url: 'https://rpc.ankr.com/bsc',
     },
     polygon: {
-      url: "https://polygon-rpc.com",
+      url: 'https://polygon-rpc.com',
     },
     opt: {
-      url: "https://rpc.ankr.com/optimism",
+      url: 'https://rpc.ankr.com/optimism',
     },
     avax: {
-      url: "https://api.avax.network/ext/bc/C/rpc",
+      url: 'https://api.avax.network/ext/bc/C/rpc',
     },
     base: {
-      url: "https://mainnet.base.org",
+      url: 'https://mainnet.base.org',
     },
     linea: {
-      url: "https://rpc.linea.build",
+      url: 'https://rpc.linea.build',
     },
     zksync: {
-      url: "https://mainnet.era.zksync.io",
+      url: 'https://mainnet.era.zksync.io',
       zksync: true,
       ethNetwork: 'eth',
       verifyURL: 'https://zksync2-mainnet-explorer.zksync.io/contract_verification',
     },
     scroll: {
-      url: "https://rpc.scroll.io",
+      url: 'https://rpc.scroll.io',
     },
     mode: {
-      url: "https://mainnet.mode.network",
+      url: 'https://mainnet.mode.network',
     },
     manta: {
-      url: "https://pacific-rpc.manta.network/http",
+      url: 'https://pacific-rpc.manta.network/http',
     },
     zklink: {
-      url: "https://rpc.zklink.io",
+      url: 'https://rpc.zklink.io',
       zksync: true,
       ethNetwork: 'eth',
       verifyURL: 'https://explorer.zklink.io/contract_verification',
     },
     core: {
-      url: "https://rpc.coredao.org",
+      url: 'https://rpc.coredao.org',
     },
     xlayer: {
-      url: "https://rpc.xlayer.tech",
+      url: 'https://rpc.xlayer.tech',
     },
     mantle: {
-      url: "https://rpc.mantle.xyz",
+      url: 'https://rpc.mantle.xyz',
     },
     merlin: {
-      url: "https://rpc.merlinchain.io",
+      url: 'https://rpc.merlinchain.io',
     },
     b2: {
-      url: "https://rpc.bsquared.network",
+      url: 'https://rpc.bsquared.network',
     },
     bitlayer: {
-      url: "https://rpc.bitlayer.org",
+      url: 'https://rpc.bitlayer.org',
     },
     bevm: {
-      url: "https://rpc-mainnet-1.bevm.io",
+      url: 'https://rpc-mainnet-1.bevm.io',
     },
     bb: {
-      url: "https://fullnode-mainnet.bouncebitapi.com",
+      url: 'https://fullnode-mainnet.bouncebitapi.com',
     },
     bob: {
-      url: "https://rpc.gobob.xyz",
+      url: 'https://rpc.gobob.xyz',
     },
     opbnb: {
-      url: "https://opbnb-mainnet-rpc.bnbchain.org",
+      url: 'https://opbnb-mainnet-rpc.bnbchain.org',
     },
     neox: {
-      url: "https://mainnet-1.rpc.banelabs.org",
+      url: 'https://mainnet-1.rpc.banelabs.org',
     },
     kava: {
-      url: "https://evm.kava.io",
+      url: 'https://evm.kava.io',
     },
     kroma: {
-      url: "https://api.kroma.network",
+      url: 'https://api.kroma.network',
     },
     kaia: {
-      url: "https://public-en.node.kaia.io",
+      url: 'https://public-en.node.kaia.io',
     },
     ailayer: {
-      url: "https://mainnet-rpc.ailayer.xyz",
+      url: 'https://mainnet-rpc.ailayer.xyz',
     },
     zircuit: {
-      url: "https://zircuit-mainnet.drpc.org",
+      url: 'https://zircuit-mainnet.drpc.org',
     },
     iotex: {
-      url: "https://babel-api.mainnet.iotex.io",
+      url: 'https://babel-api.mainnet.iotex.io',
     },
     zeta: {
-      url: "https://zetachain-evm.blockpi.network:443/v1/rpc/public"
+      url: 'https://zetachain-evm.blockpi.network:443/v1/rpc/public'
     },
     taiko: {
-      url: "https://rpc.mainnet.taiko.xyz"
+      url: 'https://rpc.mainnet.taiko.xyz'
     },
     sei: {
-      url: "https://evm-rpc.sei-apis.com"
+      url: 'https://evm-rpc.sei-apis.com'
     },
     duck: {
-      url: "https://rpc.duckchain.io"
+      url: 'https://rpc.duckchain.io'
     },
     morph: {
-      url: "https://rpc.morphl2.io"
+      url: 'https://rpc.morphl2.io'
     },
     exsat: {
-      url: "https://evm.exsat.network"
+      url: 'https://evm.exsat.network'
     },
     hemi: {
-      url: "https://7e57304f.rpc.hemi.network/rpc"
+      url: 'https://7e57304f.rpc.hemi.network/rpc'
     },
     sepolia: {
-      url: "https://eth-sepolia.public.blastapi.io",
+      url: 'https://eth-sepolia.public.blastapi.io',
     },
     merlin_testnet: {
-      url: "https://testnet-rpc.merlinchain.io",
+      url: 'https://testnet-rpc.merlinchain.io',
     },
     b2_testnet: {
-      url: "https://haven-rpc.bsquared.network",
+      url: 'https://haven-rpc.bsquared.network',
     },
   }
 }
