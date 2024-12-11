@@ -38,6 +38,7 @@ const { deployContract } = require('./lib')
 // 0x2a: morph
 // 0x2b: exsat
 // 0x2c: hemi
+// 0x2d: corn
 // 0xa0: (non-evm) sui
 // 0xf0: sepolia
 // 0xf1: merlin-testnet

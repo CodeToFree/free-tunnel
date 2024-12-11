@@ -195,6 +195,9 @@ const hardhatConfig = {
     hemi: {
       url: 'https://7e57304f.rpc.hemi.network/rpc'
     },
+    corn: {
+      url: 'https://maizenet-rpc.usecorn.com'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },

@@ -1,0 +1,11 @@
+{
+  "chainId": 21000000,
+  "name": "Corn",
+  "icon": "corn",
+  "currency": "BTCN",
+  "rpcUrl": "https://maizenet-rpc.usecorn.com",
+  "explorerUrl": "https://maizenet-explorer.usecorn.com",
+  "tokens": {
+  },
+  "hubId": 45
+}
