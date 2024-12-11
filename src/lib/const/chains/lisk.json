@@ -1,0 +1,11 @@
+{
+  "chainId": 1135,
+  "name": "Lisk",
+  "icon": "lisk",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.api.lisk.com",
+  "explorerUrl": "https://blockscout.lisk.com",
+  "tokens": {
+  },
+  "hubId": 46
+}

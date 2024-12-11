@@ -198,6 +198,9 @@ const hardhatConfig = {
     corn: {
       url: 'https://maizenet-rpc.usecorn.com'
     },
+    lisk: {
+      url: 'https://rpc.api.lisk.com'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },
