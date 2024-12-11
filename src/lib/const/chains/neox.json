@@ -1,6 +1,6 @@
 {
   "chainId": 47763,
-  "name": "NeoX",
+  "name": "Neo X",
   "icon": "neox",
   "currency": "GAS",
   "rpcUrl": "https://mainnet-1.rpc.banelabs.org",
