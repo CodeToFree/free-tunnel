@@ -37,7 +37,7 @@ const { deployContract } = require('./lib')
 // 0x29: duck
 // 0x2a: ✅ morph 20241206
 // 0x2b: ✅ exsat 20241206
-// 0x2c: ✅ hemi (not verified) 20241206
+// 0x2c: ✅ hemi 20241206
 // 0x2d: ✅ corn 20241206
 // 0x2e: ✅ lisk 20241206
 // 0x2f: ✅ taker 20241218
