@@ -13,7 +13,7 @@ import ButtonCancel from './ButtonCancel'
 const defaultTokens = {
   1: 'USDC',
   2: 'USDT',
-  64: 'M-BTC',
+  64: 'BTC',
   65: 'ETH',
   66: 'MERL',
   67: 'STONE',
@@ -29,8 +29,10 @@ const defaultTokens = {
   79: 'SolvBTC.BBN',
   80: 'SolvBTC.ENA',
   83: 'iBTC',
+  192: 'WBTC',
   193: 'pumpBTC',
   194: 'uniBTC',
+  195: 'cbBTC',
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {

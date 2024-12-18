@@ -201,6 +201,9 @@ const hardhatConfig = {
     lisk: {
       url: 'https://rpc.api.lisk.com'
     },
+    taker: {
+      url: 'https://rpc-mainnet.taker.xyz'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },

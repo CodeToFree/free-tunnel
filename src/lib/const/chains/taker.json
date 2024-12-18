@@ -1,0 +1,17 @@
+{
+  "chainId": 1125,
+  "name": "Taker",
+  "icon": "taker",
+  "currency": "TAKER",
+  "rpcUrl": "https://rpc-mainnet.taker.xyz",
+  "explorerUrl": "https://mainnet-explorer.taker.xyz",
+  "tokens": {
+    "0xaAd3bDD2cC21e263Bdf8C0b9d87E2522F0D2499c": "USDC",
+    "0x0826984FABfA951816dC368Ef99228A956828C15": "USDT",
+    "0x4a12f9Aa8cE0D0817a4eCC70754d824a6aD69a25": "WBTC",
+    "0x8dDB62dF254FaC70fE7De12570745aD12872Cfb2": "ETH",
+    "0x86a91245b13bE5b54cB74b0f2cb19e4DcF85fbF0": "BTCB",
+    "0x1edbB511dE687fcA482933CCF4510CDCe7DD8f14": "cbBTC"
+  },
+  "hubId": 47
+}

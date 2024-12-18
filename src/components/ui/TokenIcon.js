@@ -8,7 +8,7 @@ export default function TokenIcon ({ size, token, className }) {
 
   if (token === 'eth' || token === 'beth') {
     return <img src='/tokens/eth.png' className={_className} />
-  } else if (token === 'btc' || token === 'btcb' || token === 'fbtc') {
+  } else if (token === 'btc' || token === 'btcb' || token === 'wbtc' || token === 'fbtc') {
     return <img src='/tokens/btc.png' className={_className} />
   } else if (token === 'm-btc') {
     return <img src='/tokens/mbtc.png' className={_className} />
@@ -24,6 +24,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/solvbtc_a.png' className={_className} />
   } else if (token?.includes('solvbtc')) {
     return <img src='/tokens/solvbtc.png' className={_className} />
+  } else if (token === 'cbbtc') {
+    return <img src='/tokens/cbbtc.png' className={_className} />
   } else if (token === 'bbtc') {
     return <img src='/tokens/bbtc.png' className={_className} />
   } else if (token === 'usdc' || token === 'm-usdc' || token === 'busdc') {
@@ -118,6 +120,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/corn.png' className={_className} />
   } else if (token === 'lisk') {
     return <img src='/tokens/lisk.png' className={_className} />
+  } else if (token === 'taker') {
+    return <img src='/tokens/taker.png' className={_className} />
   } else if (token === 'sui') {
     return <img src='/tokens/sui.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {

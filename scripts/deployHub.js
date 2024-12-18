@@ -2,12 +2,12 @@ const { deployContract } = require('./lib')
 
 // List of hubId
 // 0x00: ethereum
-// 0x01: arbitrum
-// 0x02: bnb smart chain
+// 0x01: ✅ arbitrum 20241206
+// 0x02: ✅ bnb smart chain 20241206
 // 0x03: polygon
 // 0x04: optimism
 // 0x05: avalanche
-// 0x06: base
+// 0x06: ✅ base 20241218
 // 0x07: linea
 // 0x08: zksync
 // 0x09: scroll
@@ -19,7 +19,7 @@ const { deployContract } = require('./lib')
 // 0x0f: mantle
 // 0x10: merlin
 // 0x11: b2
-// 0x12: bitlayer
+// 0x12: ✅ bitlayer 20241206
 // 0x13: bevm
 // 0x14: bb
 // 0x15: bob
@@ -32,14 +32,15 @@ const { deployContract } = require('./lib')
 // 0x24: zircuit
 // 0x25: iotex
 // 0x26: zeta
-// 0x27: taiko
+// 0x27: ✅ taiko 20241206
 // 0x28: sei
 // 0x29: duck
-// 0x2a: morph
-// 0x2b: exsat
-// 0x2c: hemi
-// 0x2d: corn
-// 0x2e: lisk
+// 0x2a: ✅ morph 20241206
+// 0x2b: ✅ exsat 20241206
+// 0x2c: ✅ hemi (not verified) 20241206
+// 0x2d: ✅ corn 20241206
+// 0x2e: ✅ lisk 20241206
+// 0x2f: ✅ taker 20241218
 // 0xa0: (non-evm) sui
 // 0xf0: sepolia
 // 0xf1: merlin-testnet
