@@ -6,6 +6,7 @@
   "rpcUrl": "https://rpc.api.lisk.com",
   "explorerUrl": "https://blockscout.lisk.com",
   "tokens": {
+    "0x9BFA177621119e64CecbEabE184ab9993E2ef727": "M-BTC"
   },
   "hubId": 46
 }
