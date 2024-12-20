@@ -6,8 +6,8 @@ export default async function handler(req, res) {
     return await get(req, res)
   } else if (req.method === 'POST') {
     return await post(req, res)
-  } else if (req.method === 'OPTIOINS') {
-    return res.end()
+  } else if (req.method === 'OPTIONS') {
+    return await res.end()
   }
   res.status(404).send()
 }

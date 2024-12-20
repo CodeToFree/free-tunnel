@@ -5,10 +5,11 @@ const { FREE_TUNNEL_HUB_ADDRESS } = process.env
 const nextConfig = {
   pageExtensions: ['jsx', 'tsx'],
   reactStrictMode: true,
+  poweredByHeader: false,
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: '/api/:path*',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
