@@ -47,106 +47,106 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const tokenSymbol = fromChain.tokens[token?.addr] || toChain.tokens[token?.addr] || defaultTokens[tokenIndex]
 
   return (
-    <Card className='mt-2 overflow-hidden'>
-      <div className='-m-2 flex flex-col'>
-        <div className='flex justify-between text-gray-500'>
-          <div className='text-xs'>{id}</div>
-          <div className='text-xs'>{new Date(created * 1000).toLocaleString()}</div>
-        </div>
-        <div className='mt-1.5 mb-1 flex items-center text-sm whitespace-nowrap overflow-hidden'>
-          <TokenIcon token={tokenSymbol?.toLowerCase()} className='shrink-0 mr-1.5' />
-          <div className='flex items-end text-gray-400 overflow-hidden'>
-            <div className='text-white text-xl'>{value}</div>
-            <div className='mb-[2.5px] overflow-hidden text-ellipsis'>
-              <span className='ml-1 text-white'>{tokenSymbol}</span>
-              <span className='mx-1 whitespace-nowrap'>{`->`}</span>
-              <a
-                className='cursor-pointer hover:text-cyan-500 hover:underline'
-                href={`${chain2.explorerUrl}/address/${recipient}`}
-                target='_blank'
-              >
-                {recipient}
-              </a>
-            </div>
-          </div>
-        </div>
-        {
-          role === ROLES.Executor &&
-          <div className='mt-1 text-gray-400 text-xs whitespace-nowrap overflow-hidden text-ellipsis'>
-            <span className='text-white'>Proposer:{' '}</span>
+    <div className='bg-gray-800 p-3 pt-2 flex flex-col rounded-xl overflow-hidden mb-3'>
+      <div className='flex justify-between text-gray-500'>
+        <div className='text-xs text-ellipsis overflow-hidden'>{id}</div>
+        <div className='text-xs ml-2 text-nowrap '>{new Date(created * 1000).toLocaleString()}</div>
+      </div>
+      <div className='mt-1.5 flex items-center text-sm whitespace-nowrap overflow-hidden'>
+        {/* <TokenIcon token={tokenSymbol?.toLowerCase()} className='shrink-0 mr-1.5' /> */}
+        <div className='flex items-center text-gray-500 h-6 overflow-hidden'>
+          <h3 className='text-white text-xl font-medium'>
+            {`${value} ${tokenSymbol}`}
+          </h3>
+          <div className='mt-0.5 overflow-hidden text-ellipsis'>
+            {/* <span className='ml-1 text-white font-medium'>{tokenSymbol}</span> */}
+            <span className='mx-1 whitespace-nowrap'>{`->`}</span>
             <a
               className='cursor-pointer hover:text-cyan-500 hover:underline'
-              href={`${chain1.explorerUrl}/address/${proposer}`}
+              href={`${chain2.explorerUrl}/address/${recipient}`}
               target='_blank'
-            >{proposer}</a>
+            >
+              {recipient}
+            </a>
           </div>
-        }
-
-        <div className='mt-1 flex items-center'>
-          <TokenIcon size='sm' token={chain1?.icon} className='mr-1.5' />
-          <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
-          {
-            hash?.p1
-            ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1.replace('^', '')}`, '_blank')}>
-                {hash.p1.startsWith('^') && '🟢 '}Proposed
-              </Badge>
-            : <Badge color='gray'>Not Proposed</Badge>
-          }
-          {
-            hash?.p1 && hash?.p2 && !hash?.c1 &&
-            <>
-              <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
-              {
-                hash.e1
-                ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1.replace('^', '')}`, '_blank')}>
-                    {hash.e1.startsWith('^') && '🟢 '}Executed
-                  </Badge>
-                : <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
-              }
-            </>
-          }
-          {
-            hash?.p1 && hash?.c1 &&
-            <>
-              <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
-              <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.c1.replace('^', '')}`, '_blank')}>
-                {hash.c1.startsWith('^') && '🟢 '}Cancelled
-              </Badge>
-            </>
-          }
         </div>
-        <div className='mt-1 flex items-center'>
-          <TokenIcon size='sm' token={chain2?.icon} className='mr-1.5' />
-          <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{toActionName}:</div>
-          {
-            hash?.p2
-            ? <>
-                <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.p2.replace('^', '')}`, '_blank')}>
-                  {hash.p2.startsWith('^') && '🟢 '}Proposed
-                </Badge>
-                <div className='text-gray-400 mx-2 whitespace-nowrap'>{'->'}</div>
-              </>
-            : role === ROLES.Executor
-              ? <Badge color='red'>Not Proposed</Badge>
-              : Date.now() > (created + PROPOSE_PERIOD) * 1000
-                ? <Badge color='red'>Expired at {new Date((created + PROPOSE_PERIOD) * 1000).toLocaleString()}</Badge>
-                : <Badge color='warning'>Before {new Date((created + PROPOSE_PERIOD) * 1000).toLocaleString()}</Badge>
-          }
-          {
-            hash?.e2
-            ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2.replace('^', '')}`, '_blank')}>
-                {hash.e2.startsWith('^') && '🟢 '}Executed
-              </Badge>
-            : hash?.c2
-              ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2.replace('^', '')}`, '_blank')}>
-                  {hash.c2.startsWith('^') && '🟢 '}Cancelled
-                </Badge>
-              : hash?.p2 && <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
-          }
-        </div>
-        <RequestActionButton role={role} action={action} exes={exes} {...req} />
       </div>
-    </Card>
+      {
+        role === ROLES.Executor &&
+        <div className='my-1 text-gray-500 text-xs whitespace-nowrap overflow-hidden text-ellipsis'>
+          <span className='text-white'>Proposer:{' '}</span>
+          <a
+            className='cursor-pointer hover:text-cyan-500 hover:underline'
+            href={`${chain1.explorerUrl}/address/${proposer}`}
+            target='_blank'
+          >{proposer}</a>
+        </div>
+      }
+
+      <div className='mt-2 flex items-center'>
+        <TokenIcon token={chain1?.icon} className='mr-2' />
+        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
+        {
+          hash?.p1
+          ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1.replace('^', '')}`, '_blank')}>
+              {hash.p1.startsWith('^') && '🟢 '}Proposed
+            </Badge>
+          : <Badge color='gray'>Not Proposed</Badge>
+        }
+        {
+          hash?.p1 && hash?.p2 && !hash?.c1 &&
+          <>
+            <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
+            {
+              hash.e1
+              ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1.replace('^', '')}`, '_blank')}>
+                  {hash.e1.startsWith('^') && '🟢 '}Executed
+                </Badge>
+              : <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
+            }
+          </>
+        }
+        {
+          hash?.p1 && hash?.c1 &&
+          <>
+            <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
+            <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.c1.replace('^', '')}`, '_blank')}>
+              {hash.c1.startsWith('^') && '🟢 '}Cancelled
+            </Badge>
+          </>
+        }
+      </div>
+      <div className='mt-2 flex items-center'>
+        <TokenIcon token={chain2?.icon} className='mr-2' />
+        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{toActionName}:</div>
+        {
+          hash?.p2
+          ? <>
+              <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.p2.replace('^', '')}`, '_blank')}>
+                {hash.p2.startsWith('^') && '🟢 '}Proposed
+              </Badge>
+              <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
+            </>
+          : role === ROLES.Executor
+            ? <Badge color='red'>Not Proposed</Badge>
+            : Date.now() > (created + PROPOSE_PERIOD) * 1000
+              ? <Badge color='red'>Expired at {new Date((created + PROPOSE_PERIOD) * 1000).toLocaleString()}</Badge>
+              : <Badge color='warning'>Before {new Date((created + PROPOSE_PERIOD) * 1000).toLocaleString()}</Badge>
+        }
+        {
+          hash?.e2
+          ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2.replace('^', '')}`, '_blank')}>
+              {hash.e2.startsWith('^') && '🟢 '}Executed
+            </Badge>
+          : hash?.c2
+            ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2.replace('^', '')}`, '_blank')}>
+                {hash.c2.startsWith('^') && '🟢 '}Cancelled
+              </Badge>
+            : hash?.p2 && <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
+        }
+      </div>
+      <RequestActionButton role={role} action={action} exes={exes} {...req} />
+    </div>
   )
 }
 

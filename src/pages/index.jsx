@@ -77,7 +77,7 @@ function PendingRequests({ tunnels, tunnelId }) {
 
   return (
     <div className='flex flex-col h-full'> 
-      <h3 className='text-xl font-semibold p-4 pb-2'>
+      <h3 className='text-xl font-semibold p-4'>
         Pending Requests
       </h3>
       {!nReqs && <div className='flex justify-center px-4 py-10 text-gray-500'>(None)</div>}
