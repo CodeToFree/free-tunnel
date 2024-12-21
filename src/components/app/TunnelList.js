@@ -115,7 +115,7 @@ function ChainDetail ({ chain, contractAddr }) {
 
   return (
     <div className='rounded-xl overflow-hidden'>
-      <div className='bg-gray-800 px-3 pt-4 pb-2'>
+      <div className='bg-gray-800 p-3 pb-2'>
         <div className='flex items-end justify-between'>
           <div className='flex items-center text-nowrap shrink-0'>
             <TokenIcon token={chain.icon} className='mr-2' />
@@ -154,7 +154,7 @@ function ChainDetail ({ chain, contractAddr }) {
           }
         </div>
       </div>
-      <div className='bg-gray-700 px-4 py-2 min-h-9 flex items-center flex-wrap gap-x-4 gap-y-1'>
+      <div className='bg-gray-700 px-3 py-2 min-h-9 flex items-center flex-wrap gap-x-4 gap-y-1'>
       {
         tokens?.map(t => (
           <a
