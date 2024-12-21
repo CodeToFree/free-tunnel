@@ -26,7 +26,7 @@ const events = {
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
+  if (req.method === 'POST') {
     return await post(req, res)
   }
   res.status(404).send()
