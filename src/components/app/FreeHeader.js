@@ -24,10 +24,10 @@ export default function FreeHeader () {
         <div className='text-black text-lg font-medium'>{tunnel.name}</div>
         <Button size='xs' color='gray' className='ml-2' onClick={() => setOpenModal(true)}>Switch</Button>
       </div>
-      <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
+      <Modal dismissible size='6xl' show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header>Switch Tunnel</Modal.Header>
         <Modal.Body>
-          <TunnelList tunnels={data} action='Switch' className='text-black' />
+          <TunnelList tunnels={data} current={tunnel.id} action='Switch' className='w-full' />
         </Modal.Body>
       </Modal>
     </Header>

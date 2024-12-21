@@ -1,5 +1,6 @@
 import React from 'react'
-import { Accordion, Button } from 'flowbite-react'
+import classnames from 'classnames'
+import { ListGroup, Button, Badge, Tooltip } from 'flowbite-react'
 import { HiChevronDoubleDown } from 'react-icons/hi'
 
 import { CHAINS, ADDR_ZERO } from '@/lib/const'
@@ -9,56 +10,94 @@ import TunnelContract from '@/lib/abis/TunnelContract.json'
 
 import { TokenIcon } from '@/components/ui'
 
-export default function TunnelList ({ tunnels = [], className, action = 'Launch' }) {
-  const [opened, setOpened] = React.useState()
-  const openAccordion = id => setOpened(prev => prev === id ? null : id)
+export default function TunnelList ({ tunnels = [], badges, current, action = 'Launch', SidePanel, className }) {
+  const [selected, setSelected] = React.useState(null)
+
+  React.useEffect(() => {
+    const match = tunnels.find(t => t.id === current)
+    setSelected(match || tunnels[0])
+  }, [tunnels, current])
+
+  if (!selected) {
+    return (
+      <div className={classnames('flex flex-row min-w-[480px] min-h-80 overflow-hidden', className)}>
+        <div className='w-full h-full flex items-center justify-center text-gray-400'>Loading...</div>
+      </div>
+    )
+  }
 
   return (
-    <Accordion collapseAll className={className}>
-    {
-      tunnels.map(item => (
-        <Accordion.Panel key={item.id}>
-          <div onClick={() => openAccordion(item.id)}>
-            <Accordion.Title className='p-3'>
-              <div className='flex items-center'>
-                <img src={item.logo} className='w-6 h-6 mr-3' />
-                {item.name}
+    <div className={classnames('relative flex flex-row min-w-[480px] min-h-80 overflow-hidden', className)}>
+      <ListGroup className='h-full w-[280px] min-w-[160px] py-4 bg-gray-800 overflow-auto'>
+      {
+        tunnels.map(item => (
+          <ListGroup.Item key={item.id} active={item === selected} onClick={() => setSelected(item)}>
+            <div className='w-full flex items-center justify-between'>
+              <div className='flex items-center overflow-hidden'>
+                <img src={item.logo} className='w-6 h-6 mr-2' />
+                <div className='overflow-hidden text-nowrap text-ellipsis'>{item.name}</div>
               </div>
-            </Accordion.Title>
+              {
+                item.id === current &&
+                <div>✅</div>
+              }
+              {
+                badges?.[item.id] &&
+                <div className='ml-2 h-5 px-1.5 py-0.5 bg-yellow-200 text-yellow-800 rounded-md text-sm leading-none'>{badges[item.id]}</div>
+              }
+            </div>
+          </ListGroup.Item>
+        ))
+      }
+      </ListGroup>
+      <div className='flex-1 min-w-[320px] flex flex-col text-white'>
+        <div className='flex items-center justify-between my-3.5 px-4'>
+          <div className='overflow-hidden text-nowrap text-ellipsis text-gray-500 mr-3'>
+            <h3 className='inline-block text-xl text-white font-semibold'>{selected.name}</h3>
+            <span className='ml-1 text-sm'>({selected.from.length ? 'Lock-Mint' : 'Burn-Mint'})</span>
           </div>
-          <Accordion.Content className='p-3'>
-            {opened === item.id && <TunnelDetail tunnel={item} />}
-            <Button className='mt-4' size='sm' onClick={() => window.location.href = `/${item.id}`}>{action}</Button>
-          </Accordion.Content>
-        </Accordion.Panel>
-      ))
-    }
-    </Accordion>
+          <Button size='sm' onClick={() => window.location.href = `/${selected.id}`}>{action}</Button>
+        </div>
+        <div className='flex-1 px-4 pb-4 overflow-y-auto'>
+          <TunnelDetail tunnel={selected} singleCol={!!SidePanel} />
+        </div>
+      </div>
+      {
+        SidePanel &&
+        <div className='flex-1 min-w-[320px] flex flex-col border-l border-gray-500 text-white'>
+          <SidePanel tunnels={tunnels} tunnelId={selected?.id} />
+        </div>
+      }
+    </div>
   )
 }
 
-export function TunnelDetail ({ tunnel }) {
+export function TunnelDetail ({ tunnel, singleCol }) {
   return (
-    <div className='grid gap-y-3'>
-    {
-      tunnel.from.map(id => {
-        const chain = CHAINS.find(c => c.id === id)
-        return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
-      })
-    }
-    {
-      tunnel.from.length > 0 &&
-      <div className='mx-auto' >
-        <HiChevronDoubleDown />
+    <>
+      <div className={classnames('grid grid-cols-1 gap-x-4 gap-y-3', !singleCol && 'lg:grid-cols-2')}>
+      {
+        tunnel.from.map(id => {
+          const chain = CHAINS.find(c => c.id === id)
+          return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
+        })
+      }
       </div>
-    }
-    {
-      tunnel.to.map(id => {
-        const chain = CHAINS.find(c => c.id === id)
-        return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
-      })
-    }
-    </div>
+      {
+        tunnel.from.length > 0 &&
+        <div className={classnames('my-4 w-full flex justify-center', !singleCol && 'lg:w-1/2 ')}>
+          <HiChevronDoubleDown />
+        </div>
+      }
+      <div className={classnames('grid grid-cols-1 gap-x-4 gap-y-3', !singleCol && 'lg:grid-cols-2')}>
+      {
+        tunnel.to.map(id => {
+          const chain = CHAINS.find(c => c.id === id)
+          return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
+        })
+      }
+      </div>
+    </>
   )
 }
 
@@ -75,33 +114,47 @@ function ChainDetail ({ chain, contractAddr }) {
   }, [_tokens])
 
   return (
-    <div className='overflow-hidden'>
-      <div className='flex items-end justify-between'>
-        <div className='flex items-center text-lg text-nowrap shrink-0'>
-          <TokenIcon token={chain.icon} className='mr-3' />
-          {chain.name}
+    <div className='rounded-xl overflow-hidden'>
+      <div className='bg-gray-800 px-3 pt-4 pb-2'>
+        <div className='flex items-end justify-between'>
+          <div className='flex items-center text-nowrap shrink-0'>
+            <TokenIcon token={chain.icon} className='mr-2' />
+            <h4 className='font-semibold'>{chain.name}</h4>
+          </div>
+          {
+            vault && vault !== ADDR_ZERO &&
+            <Tooltip content={
+              <a
+                className='text-sm cursor-pointer hover:underline hover:text-cyan-600'
+                href={`${chain.explorerUrl}/address/${vault}`}
+                target='_blank'
+              >{vault}</a>
+            }>
+              <div className='ml-4 flex justify-center items-center h-5 w-6 px-1 bg-gray-700 rounded text-xs text-white cursor-pointer'>
+                🗳️
+              </div>
+            </Tooltip>
+          }
         </div>
-        <a
-          className='ml-2 mb-0.5 overflow-hidden text-ellipsis text-xs font-mono text-gray-500 hover:underline hover:text-cyan-600'
-          href={`${chain.explorerUrl}/address/${contractAddr}`}
-          target='_blank'
-        >
-          {contractAddr}
-        </a>
-      </div>
-      {version && <div className='flex justify-end text-[10px] text-gray-500'>v2.{version.toString()}</div>}
-      {
-        vault && vault !== ADDR_ZERO &&
-        <div className='ml-9 flex items-center justify-between text-sm'>
-          <div>Vault</div>
+        <div className='mt-2 flex items-center justify-between'>
           <a
-            className='text-xs font-mono text-gray-500 cursor-pointer hover:underline hover:text-cyan-600'
-            href={`${chain.explorerUrl}/address/${vault}`}
+            className='overflow-hidden text-ellipsis text-sm text-gray-500 hover:underline hover:text-cyan-600'
+            href={`${chain.explorerUrl}/address/${contractAddr}`}
             target='_blank'
-          >{vault}</a>
+          >
+            {contractAddr}
+          </a>
+          {
+            version &&
+            <Tooltip content={version.toString()}>
+              <div className='ml-4 flex justify-center items-center h-4 w-5 bg-yellow-400 rounded text-xs text-white font-bold cursor-pointer'>
+                v2
+              </div>
+            </Tooltip>
+          }
         </div>
-      }
-      <div className='mt-1 ml-9 flex items-center flex-wrap gap-x-3 gap-y-1'>
+      </div>
+      <div className='bg-gray-700 px-4 py-2 min-h-9 flex items-center flex-wrap gap-x-4 gap-y-1'>
       {
         tokens?.map(t => (
           <a

@@ -1,4 +1,4 @@
-import { Card, Dropdown, Button, TextInput, Label, Badge, Spinner } from 'flowbite-react'
+import { Card, Dropdown, ListGroup, Modal, Button, TextInput, Label, Badge, Spinner } from 'flowbite-react'
 
 Card.defaultProps = {
   ...Card.defaultProps,
@@ -18,6 +18,48 @@ Dropdown.defaultProps = {
       style: {
         auto: 'bg-white/80 dark:bg-gray-900/50 backdrop-blur border border-white dark:border-gray-700',
       }
+    }
+  }
+}
+
+ListGroup.defaultProps = {
+  ...ListGroup.defaultProps,
+  theme: {
+    root: 'list-none text-left text-sm font-medium',
+  }
+}
+
+ListGroup.Item.defaultProps = {
+  ...ListGroup.Item.defaultProps,
+  theme: {
+    base: 'text-white',
+    link: {
+      base: 'flex w-full items-center px-4 py-3',
+      active: {
+        off: 'hover:bg-gray-700',
+        on: 'bg-gray-600'
+      },
+    }
+  }
+}
+
+Modal.defaultProps = {
+  ...Modal.defaultProps,
+  theme: {
+    content: {
+      // base: 'relative h-full w-full md:h-auto',
+      inner: 'relative flex max-h-[90dvh] flex-col rounded-2xl bg-white shadow overflow-hidden'
+    },
+    header: {
+      base: 'flex items-start justify-between rounded-t pl-6 pr-4 py-4 bg-gray-900 border-b border-gray-700',
+      title: 'text-xl h-6 font-semibold text-white',
+      close: {
+        base: 'ml-auto inline-flex items-center rounded bg-transparent p-1 text-sm text-gray-400 hover:bg-gray-600 hover:text-gray-200',
+        icon: 'w-4 h-4'
+      }
+    },
+    body: {
+      base: 'flex flex-1 overflow-hidden bg-gray-900'
     }
   }
 }

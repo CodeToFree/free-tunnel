@@ -33,75 +33,69 @@ function Home ({ tunnels }) {
   const address = useAddress()
   const isAdmin = ADMIN_ADDRS.includes(address)
 
+  const pendingRequests = usePendingRequests(isAdmin, tunnels)
+
   return (
-    <AppContainer>
-      <div className='w-[480px] max-w-full'>
-        <div className='text-white h-[34px] text-lg font-medium'>Select a Tunnel</div>
-        <TunnelList tunnels={tunnels} className='mt-4 text-white' />
-      </div>
-      {isAdmin && <PendingRequests tunnels={tunnels} />}
+    <AppContainer fullscreen>
+      <TunnelList
+        tunnels={tunnels}
+        badges={pendingRequests}
+        className='-my-[10px] w-[1188px] max-w-full max-h-[calc(100vh-120px)] border border-gray-500 rounded-2xl'
+        SidePanel={isAdmin && PendingRequests}
+      />
     </AppContainer>
   )
 }
 
-function PendingRequests({ tunnels }) {
+
+function usePendingRequests(isAdmin, tunnels) {
   const requests = useAllPendingRequests(tunnels)
   const { storeRequestUpdateAll } = useRequestsMethods()
 
   React.useEffect(() => {
-    getAllRequests().then(reqs => storeRequestUpdateAll(reqs))
-  }, [storeRequestUpdateAll])
+    if (isAdmin) {
+      getAllRequests().then(reqs => storeRequestUpdateAll(reqs))
+    }
+  }, [isAdmin, storeRequestUpdateAll])
 
-
-  const [tab, setTab] = React.useState('')
-  const { keys, nReqs } = React.useMemo(() => {
+  return React.useMemo(() => {
+    if (!isAdmin) {
+      return
+    }
     const keys = Object.keys(requests)
-    const nReqs = Object.fromEntries(keys.map(k => [k, requests[k].length]))
-    return { keys, nReqs }
-  }, [requests])
+    return Object.fromEntries(keys.map(k => [k, requests[k].length]))
+  }, [isAdmin, requests])
+}
+
+function PendingRequests({ tunnels, tunnelId }) {
+  const requests = useAllPendingRequests(tunnels)
+
+  const nReqs = requests[tunnelId]?.length || 0
 
   const size = 10
   const [page, setPage] = React.useState(0)
 
-  const onChangeTab = React.useCallback(tab => {
-    setPage(0)
-    setTab(tab)
-  }, [])
-
   return (
-    <div className='w-[480px] max-w-full shrink-0 lg:mt-[50px]'>
-      <Card>
-        <div>
-          <div className='mb-2 flex items-center justify-between'>
-            <Label value='Requests' />
-          </div>
-          <div className='mb-3'>
-            <Button.Group className='w-auto'>
-            {
-              keys.map(k => (
-                <Button key={k} size='xs' color={tab === k ? 'info' : 'gray'} className='pr-0' onClick={() => onChangeTab(k)}>
-                  {k} {nReqs[k] > 0 && <Badge color='warning' className='ml-1 -mr-0.5 px-1 py-0 rounded-xl text-[10px]'>{nReqs[k]}</Badge>}
-                </Button>
-              ))
-            }
-            </Button.Group>
-          </div>
-          {!nReqs[tab] && <div className='text-gray-500'>(None)</div>}
-          {
-            requests[tab]?.slice(page * size, (page + 1) * size)
-              .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={[]} role={ROLES.Proposer} />)
-          }
-          {
-            nReqs[tab] > 10 &&
-            <PaginationButtons
-              page={page}
-              pages={Math.ceil(nReqs[tab].length / 10)}
-              total={nReqs[tab]}
-              onPageChange={setPage}
-            />
-          }
-        </div>
-      </Card>
+    <div className='flex flex-col h-full'> 
+      <h3 className='text-xl font-semibold p-4 pb-2'>
+        Pending Requests
+      </h3>
+      {!nReqs && <div className='flex justify-center px-4 py-10 text-gray-500'>(None)</div>}
+      <div className='flex-1 px-4 pb-4 overflow-y-auto'>
+      {
+        requests[tunnelId]?.slice(page * size, (page + 1) * size)
+          .map(req => <RequestItem key={`req-${req.id}`} {...req} tokens={[]} role={ROLES.Proposer} />)
+      }
+      {
+        nReqs > 10 &&
+        <PaginationButtons
+          page={page}
+          pages={Math.ceil(nReqs.length / 10)}
+          total={nReqs}
+          onPageChange={setPage}
+        />
+      }
+      </div>
     </div>
   )
 }
