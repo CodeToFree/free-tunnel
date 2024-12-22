@@ -40,7 +40,7 @@ function Home ({ tunnels }) {
       <TunnelList
         tunnels={tunnels}
         badges={pendingRequests}
-        className='-my-[10px] w-[1188px] max-w-full max-h-[calc(100vh-120px)] border border-gray-500 rounded-2xl'
+        className='-my-[10px] w-[1188px] max-w-full h-[802px] md:max-h-[calc(100vh-120px)] border border-gray-500 rounded-2xl'
         SidePanel={isAdmin && PendingRequests}
       />
     </AppContainer>
