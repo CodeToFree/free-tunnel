@@ -50,24 +50,26 @@ export default function TunnelList ({ tunnels = [], badges, current, action = 'L
         ))
       }
       </ListGroup>
-      <div className='flex-1 min-w-[320px] flex flex-col text-white'>
-        <div className='flex items-center justify-between my-3.5 px-4'>
-          <div className='overflow-hidden text-nowrap text-ellipsis text-gray-500 mr-3'>
-            <h3 className='inline-block text-xl text-white font-semibold'>{selected.name}</h3>
-            <span className='ml-1 text-sm'>({selected.from.length ? 'Lock-Mint' : 'Burn-Mint'})</span>
+      <div className='flex-1 w-[320px] md:min-w-[580px] flex flex-col md:flex-row text-white'>
+        <div className='flex-1 flex flex-col h-0 md:h-auto md:w-0 overflow-hidden'>
+          <div className='flex items-center justify-between my-3.5 px-4'>
+            <div className='overflow-hidden text-nowrap text-ellipsis text-gray-500 mr-3'>
+              <h3 className='inline-block text-xl text-white font-semibold'>{selected.name}</h3>
+              <span className='ml-1 text-sm'>({selected.from.length ? 'Lock-Mint' : 'Burn-Mint'})</span>
+            </div>
+            <Button size='sm' onClick={() => window.location.href = `/${selected.id}`}>{action}</Button>
           </div>
-          <Button size='sm' onClick={() => window.location.href = `/${selected.id}`}>{action}</Button>
+          <div className='flex-1 px-4 pb-4 overflow-y-auto'>
+            <TunnelDetail tunnel={selected} singleCol={!!SidePanel} />
+          </div>
         </div>
-        <div className='flex-1 px-4 pb-4 overflow-y-auto'>
-          <TunnelDetail tunnel={selected} singleCol={!!SidePanel} />
-        </div>
+        {
+          SidePanel &&
+          <div className='flex-1 h-0 md:h-auto md:w-0 border-t md:border-l border-gray-500 overflow-hidden'>
+            <SidePanel tunnels={tunnels} tunnelId={selected?.id} />
+          </div>
+        }
       </div>
-      {
-        SidePanel &&
-        <div className='flex-1 min-w-[320px] flex flex-col border-l border-gray-500 text-white'>
-          <SidePanel tunnels={tunnels} tunnelId={selected?.id} />
-        </div>
-      }
     </div>
   )
 }
