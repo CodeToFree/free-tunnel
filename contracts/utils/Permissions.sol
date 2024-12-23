@@ -56,12 +56,6 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
 
     event VaultTransferred(address indexed prevVault, address indexed newVault);
 
-    function _initVault(address vault) internal onlyInitializing {
-        PermissionsStorage storage $ = _getPermissionsStorage();
-        $._vault = vault;
-        emit VaultTransferred(address(0), vault);
-    }
-
     function getVault() public view returns (address) {
         PermissionsStorage storage $ = _getPermissionsStorage();
         return $._vault;
