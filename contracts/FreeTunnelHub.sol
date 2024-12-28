@@ -19,6 +19,8 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     event TunnelOpenned(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
     event TunnelUpgraded(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
 
+    constructor() initializer {}
+
     function initialize(uint8 hubId) public initializer {
         __Ownable_init(msg.sender);
         HUB_ID = hubId;

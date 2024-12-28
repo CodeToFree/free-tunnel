@@ -8,7 +8,7 @@ import "./LockContract.sol";
 import "./MintContract.sol";
 
 contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
-    constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) {}
+    constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) initializer() {}
 
     function initConfigs(
         address admin,
