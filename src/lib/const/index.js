@@ -38,6 +38,7 @@ import hemi from './chains/hemi.json'
 import corn from './chains/corn.json'
 import lisk from './chains/lisk.json'
 import taker from './chains/taker.json'
+import rsk from './chains/rsk.json'
 import sui from './chains/sui.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
@@ -61,6 +62,7 @@ const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet } : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
   merlin, b2, bitlayer, bevm, bb, bob, opbnb, neox,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
+  rsk,
   sui,
 }
 

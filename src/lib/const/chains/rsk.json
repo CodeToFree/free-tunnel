@@ -1,0 +1,11 @@
+{
+  "chainId": 30,
+  "name": "Rootstock",
+  "icon": "rsk",
+  "currency": "RBTC",
+  "rpcUrl": "https://public-node.rsk.co",
+  "explorerUrl": "https://explorer.rootstock.io",
+  "tokens": {
+  },
+  "hubId": 48
+}

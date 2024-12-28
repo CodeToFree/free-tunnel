@@ -204,6 +204,9 @@ const hardhatConfig = {
     taker: {
       url: 'https://rpc-mainnet.taker.xyz'
     },
+    rsk: {
+      url: 'https://public-node.rsk.co'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },
