@@ -81,7 +81,7 @@ export function TunnelDetail ({ tunnel, singleCol }) {
       {
         tunnel.from.map(id => {
           const chain = CHAINS.find(c => c.id === id)
-          return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
+          return <ChainDetail key={chain?.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
         })
       }
       </div>
@@ -95,7 +95,7 @@ export function TunnelDetail ({ tunnel, singleCol }) {
       {
         tunnel.to.map(id => {
           const chain = CHAINS.find(c => c.id === id)
-          return <ChainDetail key={chain.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
+          return <ChainDetail key={chain?.id} chain={chain} contractAddr={getTunnelContract(tunnel, id)?.addr} />
         })
       }
       </div>
@@ -114,6 +114,10 @@ function ChainDetail ({ chain, contractAddr }) {
     const { supportedTokens, indexes } = _tokens
     return supportedTokens.map((addr, i) => ({ addr, index: indexes[i] }))
   }, [_tokens])
+
+  if (!chain) {
+    return
+  }
 
   return (
     <div className='rounded-xl overflow-hidden'>

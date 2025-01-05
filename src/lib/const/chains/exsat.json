@@ -6,7 +6,8 @@
   "rpcUrl": "https://evm.exsat.network",
   "explorerUrl": "https://scan.exsat.network",
   "tokens": {
-    "0xC237fd3a90400082aD729fCc1cD88D179cb86e2b": "iBTC"
+    "0xC237fd3a90400082aD729fCc1cD88D179cb86e2b": "iBTC",
+    "0x7b0357510434a2428aF3c9304E207CAFc0CA42b3": "oBTC.x"
   },
   "hubId": 43
 }

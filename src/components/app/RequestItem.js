@@ -33,6 +33,7 @@ const defaultTokens = {
   193: 'pumpBTC',
   194: 'uniBTC',
   195: 'cbBTC',
+  196: 'oBTC.x'
 }
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
