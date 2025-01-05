@@ -43,16 +43,9 @@ abstract contract MintContract is Permissions, ReqHelpers {
     }
 
     function proposeMint(bytes32 reqId, address recipient) external onlyHubOrProposer isMintMode hubIsMintSideOf(reqId) {
-        require(_actionFrom(reqId) & 0x0f == 1, "Invalid action; not lock-mint");
-        _proposeMint(reqId, recipient);
-    }
+        uint8 specificAction = _actionFrom(reqId) & 0x0f;
+        require(specificAction == 1 || specificAction == 3, "Invalid action; not lock-mint or burn-mint");
 
-    function proposeMintFromBurn(bytes32 reqId, address recipient) external onlyHubOrProposer isMintMode hubIsMintSideOf(reqId) {
-        require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
-        _proposeMint(reqId, recipient);
-    }
-
-    function _proposeMint(bytes32 reqId, address recipient) private {
         _createdTimeFrom(reqId, true);
         MintContractStorage storage $ = _getMintContractStorage();
         require($.proposedMint[reqId] == address(0), "Invalid reqId");
@@ -107,27 +100,24 @@ abstract contract MintContract is Permissions, ReqHelpers {
     event TokenBurnExecuted(bytes32 indexed reqId, address indexed proposer);
     event TokenBurnCancelled(bytes32 indexed reqId, address indexed proposer);
 
-    function proposeBurn(bytes32 reqId) external payable isMintMode hubIsMintSideOf(reqId) {
-        require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
+    function proposeBurn(bytes32 reqId) external payable {
         _proposeBurn(reqId, msg.sender);
     }
 
-    function proposeBurnFromHub(bytes32 reqId, address proposer) external payable onlyHub isMintMode hubIsMintSideOf(reqId) {
-        require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
+    function proposeBurnFromHub(bytes32 reqId, address proposer) external payable onlyHub {
         _proposeBurn(reqId, proposer);
     }
 
-    function proposeBurnForMint(bytes32 reqId) external payable isMintMode hubIsMintOppositeSideOf(reqId) {
-        require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
-        _proposeBurn(reqId, msg.sender);
-    }
+    function _proposeBurn(bytes32 reqId, address proposer) private isMintMode {
+        uint8 specificAction = _actionFrom(reqId) & 0x0f;
+        if (specificAction == 2) { // burn-unlock
+            require(HUB_ID == uint8(uint256(reqId) >> 112), "Current hub is not the mint side of reqId");
+        } else if (specificAction == 3) { // burn-mint
+            require(HUB_ID == uint8(uint256(reqId) >> 120), "Current hub is not the mint-opposite side of reqId");
+        } else {
+            revert("Invalid action; not burn-unlock or burn-mint");
+        }
 
-    function proposeBurnForMintFromHub(bytes32 reqId, address proposer) external payable onlyHub isMintMode hubIsMintOppositeSideOf(reqId) {
-        require(_actionFrom(reqId) & 0x0f == 3, "Invalid action; not burn-mint");
-        _proposeBurn(reqId, proposer);
-    }
-
-    function _proposeBurn(bytes32 reqId, address proposer) private {
         _createdTimeFrom(reqId, true);
         MintContractStorage storage $ = _getMintContractStorage();
         require($.proposedBurn[reqId] == address(0), "Invalid reqId");

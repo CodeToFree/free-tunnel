@@ -10,7 +10,7 @@ import "../DelayedERC1967Proxy.sol";
 import "../utils/MultiControlERC20.sol";
 
 contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
-    constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) initializer() {}
+    constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) initializer {}
 
     function initConfigs(
         address admin,

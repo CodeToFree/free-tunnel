@@ -171,7 +171,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     function proposeMintFromBurn(string memory tunnelName, bytes32 reqId, address recipient) external {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
         require(tunnel.proposerIndex(msg.sender) > 0, "Require a proposer");
-        tunnel.proposeMintFromBurn(reqId, recipient);
+        tunnel.proposeMint(reqId, recipient);
     }
 
     function executeMint(
@@ -199,7 +199,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
 
     function proposeBurnForMint(string memory tunnelName, bytes32 reqId) external payable {
         TunnelContract tunnel = _getTunnelContract(tunnelName, false);
-        tunnel.proposeBurnForMintFromHub(reqId, msg.sender);
+        tunnel.proposeBurnFromHub(reqId, msg.sender);
     }
 
     function executeBurn(
