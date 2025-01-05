@@ -4,6 +4,8 @@ pragma solidity ^0.8.28;
 interface ITunnelHub {
     function HUB_ID() external view returns (uint8);
     function upgradeTunnel(string memory, bool, uint64) external returns (address);
+    function getProxyBytecode() external pure returns (bytes memory);
+    function getMultiControlERC20Bytecode() external pure returns (bytes memory);
 }
 
 contract Constants {

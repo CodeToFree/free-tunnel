@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./DelayedERC1967Proxy.sol";
 import "./TunnelBoringMachine.sol";
 import "./Tunnel/TunnelContract.sol";
+import "./utils/MultiControlERC20.sol";
 import "./utils/SigVerifier.sol";
 
 contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
@@ -103,7 +104,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
 
         address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
 
-        bytes memory proxyBytecode = type(DelayedERC1967Proxy).creationCode;
+        bytes memory proxyBytecode = getProxyBytecode();
         bytes32 tunnelHash = getTunnelHash(tunnelName, isLockMode);
         address proxyAddress;
         assembly {
@@ -111,7 +112,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
         }
         require(proxyAddress != address(0), "Proxy contract failed to deploy");
 
-        bytes memory data = abi.encodeCall(TunnelContract.initConfigs, (admin, executors, threshold, exeIndex, proposer, address(0)));
+        bytes memory data = abi.encodeCall(TunnelContract.initConfigs, (admin, executors, threshold, exeIndex, proposer));
         DelayedERC1967Proxy(payable(proxyAddress)).initImplementation(implAddress, data);
 
         addressOfTunnel[tunnelHash] = proxyAddress;
@@ -126,6 +127,15 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
         implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
         emit TunnelUpgraded(address(tunnel), currentTBMVersion(), implAddress, tunnelName);
     }
+
+    function getProxyBytecode() public pure returns (bytes memory) {
+        return type(DelayedERC1967Proxy).creationCode;
+    }
+
+    function getMultiControlERC20Bytecode() external pure returns (bytes memory) {
+        return type(MultiControlERC20).creationCode;
+    }
+
 
     // Lock methods
     function proposeLock(string memory tunnelName, bytes32 reqId) external payable {
