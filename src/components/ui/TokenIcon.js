@@ -126,6 +126,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/taker.png' className={_className} />
   } else if (token === 'rsk') {
     return <img src='/tokens/rsk.png' className={_className} />
+  } else if (token === 'hype') {
+    return <img src='/tokens/hype.png' className={_className} />
   } else if (token === 'sui') {
     return <img src='/tokens/sui.png' className={_className} />
   } else if (token === 'tron' || token === 'trx') {

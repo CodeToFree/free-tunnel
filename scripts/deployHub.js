@@ -1,8 +1,8 @@
 const { deployContract } = require('./lib')
 
 // List of hubId
-// 0x00: ✅ ethereum 20241220
-// 0x01: ✅ arbitrum 20241220
+// 0x00: ✅ ethereum 20250105
+// 0x01: ✅ arbitrum 20250105
 // 0x02: ✅ bnb smart chain 20241220
 // 0x03: polygon
 // 0x04: optimism
@@ -24,7 +24,7 @@ const { deployContract } = require('./lib')
 // 0x14: bb
 // 0x15: bob
 // 0x16: opbnb
-// 0x1a: neox
+// 0x1a: ✅ neox 20250105
 // 0x20: kava
 // 0x21: kroma
 // 0x22: kaia
@@ -44,8 +44,9 @@ const { deployContract } = require('./lib')
 // 0x30: ✅ rsk 20241220
 // 0xa0: (non-evm) sui
 // 0xf0: sepolia
-// 0xf1: merlin-testnet
-// 0xf2: b2-testnet
+// 0xf1: merlin_testnet
+// 0xf2: b2_testnet
+// 0xf3: ✅ hype_testnet 20250105
 
 module.exports = async function deployHub() {
   await hre.run('compile')

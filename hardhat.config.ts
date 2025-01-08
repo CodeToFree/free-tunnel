@@ -216,6 +216,9 @@ const hardhatConfig = {
     b2_testnet: {
       url: 'https://haven-rpc.bsquared.network',
     },
+    hype_testnet: {
+      url: 'https://api.hyperliquid-testnet.xyz/evm',
+    },
   }
 }
 
