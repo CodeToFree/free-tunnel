@@ -6,7 +6,9 @@
   "rpcUrl": "https://mainnet-1.rpc.banelabs.org",
   "explorerUrl": "https://xexplorer.neo.org",
   "tokens": {
-    "0x242D405a58F2358eC2810De195b31FbD0508bb18": "USDT"
+    "0xEC85a7Cc8CD0F4142d1007FA50C28e96a65A9452": "USDC",
+    "0x242D405a58F2358eC2810De195b31FbD0508bb18": "USDT",
+    "0x3cacb38f6f4c2718d16788d23687801633d1e03b": "ETH"
   },
   "hubId": 26
 }
