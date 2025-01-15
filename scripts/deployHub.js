@@ -1,13 +1,13 @@
 const { deployContract } = require('./lib')
 
 // List of hubId
-// 0x00: ✅ ethereum 20241220
-// 0x01: ✅ arbitrum 20241220
-// 0x02: ✅ bnb smart chain 20241220
+// 0x00: ✅ ethereum 20250105
+// 0x01: ✅ arbitrum 20250105
+// 0x02: ✅ bnb smart chain 20250105
 // 0x03: polygon
 // 0x04: optimism
 // 0x05: avalanche
-// 0x06: ✅ base 20241220
+// 0x06: ✅ base 20250105
 // 0x07: linea
 // 0x08: zksync
 // 0x09: scroll
@@ -27,14 +27,14 @@ const { deployContract } = require('./lib')
 // 0x1a: neox
 // 0x20: kava
 // 0x21: kroma
-// 0x22: kaia
+// 0x22: ✅ kaia 20250105
 // 0x23: ailayer
 // 0x24: zircuit
 // 0x25: iotex
 // 0x26: zeta
 // 0x27: ✅ taiko 20241206
 // 0x28: ✅ sei 20241220
-// 0x29: ✅ duck 20241220
+// 0x29: ✅ duck 20250105
 // 0x2a: ✅ morph 20241220
 // 0x2b: ✅ exsat 20241206
 // 0x2c: ✅ hemi 20241220

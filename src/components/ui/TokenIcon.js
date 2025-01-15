@@ -34,6 +34,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/usdt.png' className={_className} />
   } else if (token === 'unibtc') {
     return <img src='/tokens/unibtc.png' className={_className} />
+  } else if (token === 'stbtc') {
+    return <img src='/tokens/stbtc.png' className={_className} />
   } else if (token === 'pumpbtc') {
     return <img src='/tokens/pumpbtc.png' className={_className} />
   } else if (token === 'ubtc') {
@@ -110,6 +112,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/taiko.png' className={_className} />
   } else if (token === 'sei') {
     return <img src='/tokens/sei.png' className={_className} />
+  } else if (token === 'duckchain') {
+    return <img src='/tokens/duckchain.png' className={_className} />
   } else if (token === 'duck') {
     return <img src='/tokens/duck.png' className={_className} />
   } else if (token === 'morph') {

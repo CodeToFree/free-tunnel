@@ -7,7 +7,8 @@
   "explorerUrl": "https://basescan.org",
   "tokens": {
     "0xF469fBD2abcd6B9de8E169d128226C0Fc90a012e": "pumpBTC",
-    "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf": "cbBTC"
+    "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf": "cbBTC",
+    "0xBC855f68bCe67CDC9EeA416211Dc7Edf05a72a57": "DUCK"
   },
   "hubId": 6
 }

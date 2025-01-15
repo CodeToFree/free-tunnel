@@ -1,13 +1,15 @@
 {
   "chainId": 5545,
   "name": "DuckChain",
-  "icon": "duck",
+  "icon": "duckchain",
   "currency": "TON",
   "rpcUrl": "https://rpc.duckchain.io",
   "explorerUrl": "https://scan.duckchain.io",
   "tokens": {
     "0x9BFA177621119e64CecbEabE184ab9993E2ef727": "M-BTC",
-    "0x93919784C523f39CACaa98Ee0a9d96c3F32b593e": "uniBTC"
+    "0x93919784C523f39CACaa98Ee0a9d96c3F32b593e": "uniBTC",
+    "0xf6718b2701D4a6498eF77D7c152b2137Ab28b8A3": "stBTC",
+    "0xdA65892eA771d3268610337E9964D916028B7dAD": "DUCK"
   },
   "hubId": 41
 }
