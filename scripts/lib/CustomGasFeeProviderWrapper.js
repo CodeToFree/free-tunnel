@@ -32,7 +32,7 @@ module.exports = class CustomGasFeeProviderWrapper extends EthersProviderWrapper
     }
 
     const sorted = eip1559Transactions.sort((tx1, tx2) => tx1.maxFeePerGas.lt(tx2.maxFeePerGas) ? -1 : 1)
-    const index = Math.ceil(sorted.length * 0.5)
+    const index = Math.floor(sorted.length * 0.5)
     const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = sorted[index]
     this._eip1559FeeData = { gasPrice, maxFeePerGas, maxPriorityFeePerGas }
 
