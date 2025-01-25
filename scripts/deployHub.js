@@ -12,7 +12,7 @@ const { deployContract } = require('./lib')
 // 0x08: zksync
 // 0x09: scroll
 // 0x0a: ✅ mode 20241220
-// 0x0b: manta
+// 0x0b: ✅ manta 20250105
 // 0x0c: zklink
 // 0x0d: ✅ core 20250105
 // 0x0e: xlayer
