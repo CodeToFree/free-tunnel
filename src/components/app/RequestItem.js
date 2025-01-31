@@ -44,6 +44,10 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const toActionName = capitalize(action.split('-')[1])
   const { id, proposer, value, tokenIndex, created, fromChain, toChain, vault, recipient, hash } = req
 
+  if (!fromChain || !toChain) {
+    return null
+  }
+
   const chain1 = action === 'burn-unlock' ? toChain : fromChain
   const chain2 = action === 'burn-unlock' ? fromChain : toChain
 
