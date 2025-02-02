@@ -20,7 +20,9 @@ export default function ApprovalGuard ({ tokenAddr, input, balance, decimals, sp
     }
   }, [call, refresh])
 
-  if (!input) {
+  if (typeof disabled === 'string' && disabled) {
+    return <Wrapper disabled>{disabled}</Wrapper>
+  } else if (!input) {
     return <Wrapper disabled>Enter Amount</Wrapper>
   } else if (isNaN(input)) {
     return <Wrapper disabled>Invalid Amount</Wrapper>

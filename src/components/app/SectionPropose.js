@@ -101,6 +101,8 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const min = tunnel.min?.[token?.index] || 0
   const belowAmount = amount && (Number(amount) < min)
 
+  const disabled = from === 16 && token?.index === 79 && 'SolvBTC.BBN from Merlin Disabled'
+
   return (
     <>
       <div>
@@ -179,7 +181,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           spender={contractAddr}
           coreCheck={coreCheck}
           pending={pending}
-          disabled={belowAmount}
+          disabled={disabled || belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
               await postRequest(tunnel.id, proposer, reqId, recipient || proposer)
