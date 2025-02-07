@@ -36,6 +36,7 @@ const defaultTokens = {
   194: 'uniBTC',
   195: 'cbBTC',
   196: 'oBTC.x',
+  197: 'brBTC',
   224: 'DUCK',
 }
 
