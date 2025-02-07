@@ -41,7 +41,7 @@ const { deployContract } = require('./lib')
 // 0x2d: ✅ corn 20241206
 // 0x2e: ✅ lisk 20241206
 // 0x2f: ✅ taker 20241220
-// 0x30: ✅ rsk 20241220
+// 0x30: ✅ rsk 20250105
 // 0xa0: (non-evm) sui
 // 0xf0: sepolia
 // 0xf1: merlin_testnet
