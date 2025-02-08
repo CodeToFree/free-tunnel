@@ -16,7 +16,7 @@ const events = {
   '0x0947081fc739b6bd9d04e8351b71b85c9da260db9da35c8f1e7b6a00e3239d4e': 'TokenLockCancelled',
   '0x71db1cdc4627ec462d4505bcdc558ed71e5df98157dc0d54ae5404fa41e84dcb': 'TokenMintProposed',
   '0xd8cf6b5491e7c90a12dfa30c1e953e502e1f88ed615826fc4d92e578d0b18f16': 'TokenMintExecuted',
-  '': 'TokenMintCancelled',
+  '0x50b4e60af041aafbb7c9d87342fcb375330b69151dfbfe74ba4d0bfc87d16839': 'TokenMintCancelled',
   '0x7633f64cfde7bf6cb57b1c425c9bb7b5ff97200a9e50028232edb2b951acf4f8': 'TokenBurnProposed',
   '0x3176f0038ab9592a2c2714382347b46a56d7463637897f96da7bc7422da58410': 'TokenBurnExecuted',
   '0x1ddac62124b119ca03938d470a086327983c6af84d0a692542c6afdf6c30202b': 'TokenBurnCancelled',
