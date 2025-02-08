@@ -10,6 +10,7 @@ const {
   PK_ADMIN,
   PROPOSER,
   EXECUTORS,
+  EXE_INDEX = 0,
 } = process.env
 
 module.exports = async function openTunnel() {
@@ -49,7 +50,7 @@ module.exports = async function openTunnel() {
 
   const hubContract = await ethers.getContractAt('FreeTunnelHub', FREE_TUNNEL_HUB_ADDRESS, adminWallet)
   const { r, yParityAndS } = ethers.utils.splitSignature(signature)
-  const tx = await hubContract.openNewTunnel(TUNNEL_NAME, isLockMode, r, yParityAndS, until, executors, threshold, 0, proposer)
+  const tx = await hubContract.openNewTunnel(TUNNEL_NAME, isLockMode, r, yParityAndS, until, executors, threshold, Number(EXE_INDEX), proposer)
   await tx.wait(1)
 
   console.log('Tunnel opened:', await hubContract.getTunnelAddress(TUNNEL_NAME, isLockMode))
