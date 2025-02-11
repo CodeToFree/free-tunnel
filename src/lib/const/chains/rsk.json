@@ -3,8 +3,8 @@
   "name": "Rootstock",
   "icon": "rsk",
   "currency": "RBTC",
-  "rpcUrl": "https://public-node.rsk.co",
-  "explorerUrl": "https://explorer.rootstock.io",
+  "rpcUrl": "https://rootstock-mainnet.public.blastapi.io",
+  "explorerUrl": "https://rootstock.blockscout.com",
   "tokens": {
     "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77": "SolvBTC",
     "0xCC0966D8418d412c599A6421b760a847eB169A8c": "SolvBTC.BBN"
