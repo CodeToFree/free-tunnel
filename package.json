@@ -21,8 +21,11 @@
     ".next/cache"
   ],
   "dependencies": {
+    "@mysten/sui": "1.21.0",
+    "@roochnetwork/rooch-sdk": "^0.2.9",
     "@safe-global/safe-apps-provider": "^0.18.5",
     "@safe-global/safe-apps-react-sdk": "^4.7.2",
+    "@wallet-standard/core": "^1.1.0",
     "@web3modal/ethers5": "^4.2.3",
     "ethers": "^5.7.2",
     "flowbite": "^2.3.0",

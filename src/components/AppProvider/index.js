@@ -3,7 +3,7 @@ import React from 'react'
 import { CHAINS } from '@/lib/const'
 import { getTunnelContract } from '@/lib/request'
 import Toasts, { useToast } from './Toasts'
-import useTronLink from './useTronLink'
+import useNonEthersWallets from './useNonEthersWallets'
 
 const AppContext = React.createContext()
 
@@ -23,11 +23,11 @@ export const useFreeTunnel = chain => {
 
 export function AppProvider ({ tunnel, children }) {
   const { toasts, addToast, removeToast } = useToast()
-  const tronlink = useTronLink(addToast)
+  const wallets = useNonEthersWallets(addToast)
 
   const value = React.useMemo(() => ({
-    tunnel, addToast, removeToast, tronlink
-  }), [tunnel, addToast, removeToast, tronlink])
+    tunnel, addToast, removeToast, wallets
+  }), [tunnel, addToast, removeToast, wallets])
 
   return (
     <AppContext.Provider value={value}>

@@ -134,10 +134,14 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/rsk.png' className={_className} />
   } else if (token === 'hype') {
     return <img src='/tokens/hype.png' className={_className} />
+  }  else if (token === 'tron' || token === 'trx') {
+    return <img src='/tokens/tron.png' className={_className} />
   } else if (token === 'sui') {
     return <img src='/tokens/sui.png' className={_className} />
-  } else if (token === 'tron' || token === 'trx') {
-    return <img src='/tokens/tron.png' className={_className} />
+  } else if (token === 'rooch') {
+    return <img src='/tokens/rooch.png' className={_className} />
+  } else if (token === 'rgas') {
+    return <img src='/tokens/rgas.jpg' className={_className} />
   } else if (token === 'm-stone') {
     return <img src='/tokens/stone_merlin.png' className={_className} />
   } else if (token === 'bstone') {

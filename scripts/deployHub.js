@@ -42,7 +42,13 @@ const { deployContract } = require('./lib')
 // 0x2e: ✅ lisk 20241206
 // 0x2f: ✅ taker 20241220
 // 0x30: ✅ rsk 20250105
-// 0xa0: (non-evm) sui
+// 0xa0: (non-evm) bitcoin
+// 0xa1: (non-evm) solana
+// 0xa2: (non-evm) tron
+// 0xa3: (non-evm) ton
+// 0xa4: (non-evm) sui
+// 0xa5: (non-evm) aptos
+// 0xb0: (non-evm) rooch
 // 0xf0: sepolia
 // 0xf1: merlin_testnet
 // 0xf2: b2_testnet

@@ -40,14 +40,16 @@ import lisk from './chains/lisk.json'
 import taker from './chains/taker.json'
 import rsk from './chains/rsk.json'
 import sui from './chains/sui.json'
+import rooch from './chains/rooch.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
 import b2_testnet from './chains/b2_testnet.json'
 import hype_testnet from './chains/hype_testnet.json'
+import rooch_testnet from './chains/rooch_testnet.json'
 
 export const DARK_MODE = process.env.NEXT_PUBLIC_DARK_MODE
 export const TESTNET = process.env.NEXT_PUBLIC_TESTNET
-export const TRONLINK = process.env.NEXT_PUBLIC_TRONLINK
+export const NON_ETHERS_WALLETS = process.env.NEXT_PUBLIC_NON_ETHERS_WALLETS
 
 export const ADDR_ONE = '0x0000000000000000000000000000000000000001'
 export const ADDR_ZERO = '0x0000000000000000000000000000000000000000'
@@ -59,12 +61,12 @@ export const ROLES = {
   Vault: 'vault',
 }
 
-const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet, hype_testnet } : {
+const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet, hype_testnet, rooch_testnet } : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
   merlin, b2, bitlayer, bevm, bb, bob, opbnb, neox,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
   rsk,
-  sui,
+  sui, rooch, rooch_testnet,
   hype_testnet,
 }
 

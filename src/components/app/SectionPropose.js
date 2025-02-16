@@ -2,7 +2,7 @@ import React from 'react'
 import { Label, TextInput, Checkbox } from 'flowbite-react'
 import { ethers } from 'ethers'
 
-import { useFreeTunnel } from '@/components/AppProvider'
+import { useAppHooks, useFreeTunnel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
 import {
   ConnectButton,
@@ -29,6 +29,7 @@ const METHODS = {
 }
 
 export default function SectionPropose ({ action = 'lock-mint', role, token }) {
+  const { addToast } = useAppHooks()
   const chain = useChain()
   const { tunnel, contractAddr, v2 } = useFreeTunnel(chain)
   const fromActionName = capitalize(action.split('-')[0])
@@ -101,6 +102,10 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const min = tunnel.min?.[token?.index] || 0
   const belowAmount = amount && (Number(amount) < min)
 
+  const differentAddressFormat = target && target.addressFormat !== chain?.addressFormat
+  const recipientLabel = differentAddressFormat
+    ? `Recipient Address (${target.name})`
+    : 'Recipient Address'
   const disabled = from === 16 && token?.index === 79 && 'SolvBTC.BBN from Merlin Disabled'
 
   return (
@@ -140,7 +145,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
 
       <div>
         <div className='mb-2 flex justify-between'>
-          <Label value='Recipient Address' />
+          <Label value={recipientLabel} />
         </div>
         <div className='relative'>
           <TextInput
@@ -148,7 +153,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
             type='text'
             value={recipient}
             onChange={evt => setRecipient(evt.target.value)}
-            placeholder={`Default: ${proposer}`}
+            placeholder={differentAddressFormat ? '' : `Default: ${proposer}`}
           />
         </div>
       </div>
@@ -184,6 +189,10 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           disabled={disabled || belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
+              if (differentAddressFormat && !recipient) {
+                addToast({ type: 'error', content: 'Please enter the recipient address' })
+                return
+              }
               await postRequest(tunnel.id, proposer, reqId, recipient || proposer)
               const hash = await call()
               if (hash) {

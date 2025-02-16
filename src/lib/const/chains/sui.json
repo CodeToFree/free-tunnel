@@ -2,10 +2,12 @@
   "chainId": "sui",
   "name": "Sui",
   "icon": "sui",
+  "addressFormat": "sui",
   "currency": "SUI",
+  "coreDecimals": 9,
   "rpcUrl": "https://fullnode.mainnet.sui.io:443",
   "explorerUrl": "https://suiscan.xyz/mainnet",
   "tokens": {
   },
-  "hubId": 160
+  "hubId": 164
 }
