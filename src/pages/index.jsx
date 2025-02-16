@@ -1,6 +1,5 @@
 import React from 'react'
 import Head from 'next/head'
-import { Card, Label, Button, Badge } from 'flowbite-react'
 
 import { AppProvider } from '@/components/AppProvider'
 import { AppContainer, PaginationButtons } from '@/components/ui'
@@ -11,6 +10,8 @@ import { ADMIN_ADDRS, ROLES } from '@/lib/const'
 import { getAllRequests } from '@/lib/api'
 import { useAllPendingRequests, useRequestsMethods } from '@/stores'
 import { useWeb3ModalFromTunnel, useAddress } from '@/lib/hooks'
+
+const { NON_EVM } = process.env
 
 export default function PageHome({ tunnels }) {
   const ready = useWeb3ModalFromTunnel()
@@ -101,7 +102,11 @@ function PendingRequests({ tunnels, tunnelId }) {
 }
 
 export const getServerSideProps = async (req) => {
-  const result = await Tunnels.find().sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
+  const query = {}
+  if (NON_EVM) {
+    query.to = { $in: ['sui', 'rooch'] }
+  }
+  const result = await Tunnels.find(query).sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
   const tunnels = result.map(({ _id, name, logo, lock, mint, from, to, contracts }) => ({ id: _id, name, logo, lock, mint, from, to, contracts }))
   return { props: { tunnels } }
 }
