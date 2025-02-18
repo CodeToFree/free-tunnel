@@ -103,7 +103,17 @@ export default class RoochProvider {
               if (prop === 'initExecutors') {
                 payload.args = [
                   Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[0].map(addr => vectorize(addr)))),
-                  Args.u64(args[1])
+                  Args.u64(args[1]),
+                ]
+              } else if (prop === 'updateExecutors') {
+                payload.args = [
+                  Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[0].map(addr => vectorize(addr)))),
+                  Args.u64(args[1]),
+                  Args.u64(args[2]),
+                  Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(r => vectorize(r)))),
+                  Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[4].map(yParityAndS => vectorize(yParityAndS)))),
+                  Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[5].map(exe => vectorize(exe)))),
+                  Args.u64(args[6]),
                 ]
               } else {
                 const reqId = args[0]
@@ -210,7 +220,7 @@ export default class RoochProvider {
     // '0x3cf04c5602fbd9a8cb410174c3e46cf2c60d100431848d8f25375eef4f413480::hello_rooch3::FSC'
     // '0x701c21bf1c8cd5af8c42983890d8ca55e7a820171b8e744c13f2d9998bf76cc3::grow_bitcoin::GROW'
 
-    for (const i of [76]) {
+    for (const i of [1, 2]) {
       const tokenDecimals = await this._readTable(storage.tokenDecimals, 'u8', Args.u8(i))
       if (typeof tokenDecimals !== 'undefined') {
         const { value: { account_address, module_name, struct_name } } = await this._readTable(storage.tokens, 'u8', Args.u8(i))
@@ -239,6 +249,7 @@ function findModuleName(method) {
     ],
     permissions: [
       'initExecutors',
+      'updateExecutors',
     ],
   }
 
