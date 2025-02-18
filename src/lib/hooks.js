@@ -151,7 +151,7 @@ export function useContract(address, abi, chain) {
       return
     } else if (provider.getContract) { // Non-EVM
       return provider.getContract(address, abi)
-    } else if (provider.getSigner) {
+    } else if (provider instanceof ethers.providers.Web3Provider) {
       return new ethers.Contract(address, abi, provider.getSigner())
     } else {
       return new ethers.Contract(address, abi, provider)
@@ -273,7 +273,7 @@ export function useContractQuery(address, abi, method, args, chain, refreshTrigg
     contractInstance[method](...(args || [])).then(result => {
       setPending(false)
       setResult(result)
-    }).catch(e => {})
+    }).catch(e => console.warn(e))
   }, [contractInstance, method, args])
 
   React.useEffect(() => {
