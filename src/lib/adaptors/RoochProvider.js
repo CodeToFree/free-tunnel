@@ -16,6 +16,10 @@ import { parseRequest } from '@/lib/request'
 
 import { vectorize, formatMoveAddress } from './utils'
 
+const TREASURY_CAP_MANAGERS = {
+  2: '0x978fd0319eb401f9a03748b4aa93fe8623c62392336c5272171cbc7b0270c086'
+}
+
 export default class RoochProvider {
   #client
   #signer
@@ -129,6 +133,7 @@ export default class RoochProvider {
                     Args.address(args[1]),
                   ]
                 } else if (prop === 'executeMint') {
+                  console.log(req.tokenIndex)
                   payload.typeArgs = [tokenAddr]
                   payload.args = [
                     Args.vec('u8', vectorize(reqId)),
@@ -136,7 +141,7 @@ export default class RoochProvider {
                     Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[2].map(yParityAndS => vectorize(yParityAndS)))),
                     Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(exe => vectorize(exe)))),
                     Args.u64(args[4]),
-                    Args.objectId('0xa85e6ce3f56a2088460cded2da2279924acabe2fc3493dc02782ff4a34fb76f1'),
+                    Args.objectId(TREASURY_CAP_MANAGERS[req.tokenIndex]),
                   ]
                 } else if (prop === 'cancelMint') {
                   payload.typeArgs = [tokenAddr]
@@ -156,7 +161,7 @@ export default class RoochProvider {
                     Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[2].map(yParityAndS => vectorize(yParityAndS)))),
                     Args.struct(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(exe => vectorize(exe)))),
                     Args.u64(args[4]),
-                    Args.objectId('0xa85e6ce3f56a2088460cded2da2279924acabe2fc3493dc02782ff4a34fb76f1'),
+                    Args.objectId(TREASURY_CAP_MANAGERS[req.tokenIndex]),
                   ]
                 } else if (prop === 'cancelBurn') {
                   payload.typeArgs = [tokenAddr]
