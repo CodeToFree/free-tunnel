@@ -17,7 +17,7 @@ import { parseRequest } from '@/lib/request'
 import { vectorize, formatMoveAddress } from './utils'
 
 const TREASURY_CAP_MANAGERS = {
-  2: '0x978fd0319eb401f9a03748b4aa93fe8623c62392336c5272171cbc7b0270c086'
+  2: '0xcaa1151606c423a4e9e903f85893c063b4180f9dea188705e287bfd9877c0f0a'
 }
 
 export default class RoochProvider {
