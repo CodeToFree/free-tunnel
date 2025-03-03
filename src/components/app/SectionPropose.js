@@ -1,6 +1,6 @@
 import React from 'react'
 import { Label, TextInput, Checkbox } from 'flowbite-react'
-import { ethers } from 'ethers'
+import { ethers, utils } from 'ethers'
 
 import { useAppHooks, useFreeTunnel } from '@/components/AppProvider'
 import { TokenIcon } from '@/components/ui'
@@ -189,9 +189,16 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
           disabled={disabled || belowAmount}
           onClick={async () => {
             if (proposer && reqId) {
-              if (differentAddressFormat && !recipient) {
-                addToast({ type: 'error', content: 'Please enter the recipient address' })
-                return
+              if (differentAddressFormat) {
+                if (!recipient) {
+                  addToast({ type: 'error', content: 'Please enter the recipient address' })
+                  return
+                } else if (target.addressFormat === 'aptos') {
+                  if (!utils.isHexString(recipient, 32)) {
+                    addToast({ type: 'error', content: 'Invalid recipient address' })
+                    return
+                  }
+                }
               }
               await postRequest(tunnel.id, proposer, reqId, recipient || proposer)
               const hash = await call()

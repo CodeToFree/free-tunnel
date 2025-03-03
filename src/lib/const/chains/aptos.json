@@ -1,0 +1,13 @@
+{
+  "chainId": "aptos:1",
+  "name": "Aptos",
+  "icon": "aptos",
+  "addressFormat": "aptos",
+  "currency": "APTOS",
+  "coreDecimals": 8,
+  "rpcUrl": "https://fullnode.mainnet.aptoslabs.com",
+  "explorerUrl": "https://explorer.aptoslabs.com",
+  "tokens": {
+  },
+  "hubId": 165
+}

@@ -37,6 +37,7 @@ export default function ConnectedAddress() {
         >
           <Dropdown.Item onClick={() => open()}>EVM Wallets</Dropdown.Item>
           <Dropdown.Item onClick={() => wallets.connect('sui')}>Sui Wallet</Dropdown.Item>
+          <Dropdown.Item onClick={() => wallets.connect('aptos')}>Aptos Wallet</Dropdown.Item>
           <Dropdown.Item onClick={() => wallets.connect('rooch')}>Rooch Wallet</Dropdown.Item>
         </Dropdown>
       )

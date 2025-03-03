@@ -48,11 +48,13 @@ const { deployContract } = require('./lib')
 // 0xa3: (non-evm) ton
 // 0xa4: (non-evm) sui
 // 0xa5: (non-evm) aptos
+// 0xa6: (non-evm) movement
 // 0xb0: (non-evm) rooch
 // 0xf0: sepolia
 // 0xf1: merlin_testnet
 // 0xf2: b2_testnet
 // 0xf3: ✅ hype_testnet 20250105
+// 0xff: aptos_testnet, rooch_testnet
 
 module.exports = async function deployHub() {
   await hre.run('compile')

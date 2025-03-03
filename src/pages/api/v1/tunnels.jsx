@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 async function get(req, res) {
   const query = {}
   if (NON_EVM) {
-    query.to = { $in: ['sui', 'rooch'] }
+    query.to = { $in: ['sui', 'aptos', 'movement', 'rooch'] }
   }
   const result = await Tunnels.find(query).sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
   res.json({ result: result.map(({ _id, name, logo, lock, mint, from, to, contracts }) => ({ id: _id, name, logo, lock, mint, from, to, contracts })) })

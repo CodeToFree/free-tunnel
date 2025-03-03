@@ -1,5 +1,8 @@
 import React from 'react'
+import { utils } from 'ethers'
 import { getWallets as getSuiWallets } from '@wallet-standard/core'
+import { MartianWalletAdapter } from '@mesonfi/aptos-wallet-adapter/dist/WalletAdapters/MartianWallet'
+
 import {
   Signer as _RoochSigner,
   Authenticator,
@@ -39,9 +42,11 @@ export default function useNonEthersWallets(addToast) {
 
   const disconnect = React.useCallback(() => {
     setAccount(account => {
-      if (account.nonEvmChain === 'sui') {
-        account.ext.features['standard:disconnect']?.disconnect()
-      } else if (account.nonEvmChain === 'rooch' || account.nonEvmChain === 'rooch_testnet') {
+      if (account.chainId === 'sui') {
+        account.signer.features['standard:disconnect']?.disconnect()
+      } else if (account.chainId.startsWith('aptos')) {
+        account.signer.removeAllListeners()
+      } else if (account.chainId.startsWith('rooch')) {
       }
       return null
     })
@@ -65,7 +70,17 @@ export default function useNonEthersWallets(addToast) {
       await ext.features['standard:connect'].connect()
       const account = ext.accounts[0]
       const address = '0x' + account.address?.replace('0x', '').padStart(64, '0')
-      setAccount({ address, nonEvmChain, signer: ext })
+      setAccount({ address, chainId: nonEvmChain, signer: ext })
+    } if (nonEvmChain === 'aptos') {
+      const aptosWallet = new MartianWalletAdapter()
+
+      aptosWallet.on('connect', () => {
+        const address = utils.hexZeroPad(aptosWallet.publicAccount.address, 32)
+        const chainId = aptosWallet.network.chainId
+        setAccount({ address, chainId: `aptos:${Number(chainId)}`, signer: aptosWallet })
+      })
+
+      await aptosWallet.connect()
     } else if (nonEvmChain === 'rooch' || nonEvmChain === 'rooch_testnet') {
       const roochWallets = []
       if (window.okxwallet?.bitcoin) {
@@ -94,7 +109,7 @@ export default function useNonEthersWallets(addToast) {
       const publicKey = account.compressedPublicKey
       const roochAddress = btcAddress.genRoochAddress()
       const address = roochAddress.toBech32Address()
-      setAccount({ address, nonEvmChain, signer: new RoochSigner(ext, btcAddress, publicKey) })
+      setAccount({ address, chainId: nonEvmChain, signer: new RoochSigner(ext, btcAddress, publicKey) })
     }
 
     return

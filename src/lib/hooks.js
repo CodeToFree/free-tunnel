@@ -11,6 +11,7 @@ import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
 
 import SuiProvider from './adaptors/SuiProvider'
+import AptosProvider from './adaptors/AptosProvider'
 import RoochProvider from './adaptors/RoochProvider'
 
 export function useWeb3ModalFromTunnel(tunnel) {
@@ -75,7 +76,7 @@ export function useChain(_chain) {
   const { isConnected, chainId } = useWeb3ModalAccount()
 
   const match = _chain?.chainId ||
-    wallets.account?.nonEvmChain || // account.nonEvmChain -> chainId
+    wallets.account?.chainId ||
     (connected ? safe.chainId : (ready && isConnected && chainId))
   return React.useMemo(() => CHAINS.find(c => c.chainId === match), [match])
 }
@@ -133,6 +134,10 @@ export function useProvider(_chain) {
       switch (chain.chainId) {
         case 'sui':
           return new SuiProvider(chain.rpcUrl, signer)
+        case 'aptos:1':
+        case 'aptos:2':
+        case 'aptos:250':
+          return new AptosProvider(chain.rpcUrl, signer)
         case 'rooch':
         case 'rooch_testnet':
           return new RoochProvider(chain.rpcUrl, signer)
@@ -320,7 +325,7 @@ export function useContractCall(address, abi, method, args) {
       content: 'Waiting transaction...',
       buttons: [{
         text: 'View on Explorer',
-        onClick: () => openInExplorer(tx, chain)
+        onClick: () => openInExplorer(tx.hash, chain)
       }]
     })
     try {
@@ -336,7 +341,7 @@ export function useContractCall(address, abi, method, args) {
       content: 'Transaction executed!',
       buttons: [{
         text: 'View on Explorer',
-        onClick: () => openInExplorer(tx, chain)
+        onClick: () => openInExplorer(tx.hash, chain)
       }]
     })
     setPending(false)

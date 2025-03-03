@@ -29,6 +29,7 @@ export default function ConnectButton ({ pill, size, color, forceChains, disable
         <Dropdown pill={pill} size={size} color={color} arrowIcon={false} label='Connect Wallet'>
           <Dropdown.Item onClick={() => open()}>EVM Wallets</Dropdown.Item>
           <Dropdown.Item onClick={() => wallets.connect('sui')}>Sui Wallet</Dropdown.Item>
+          <Dropdown.Item onClick={() => wallets.connect('aptos')}>Aptos Wallet</Dropdown.Item>
           <Dropdown.Item onClick={() => wallets.connect('rooch')}>Rooch Wallet</Dropdown.Item>
         </Dropdown>
       )
@@ -61,7 +62,12 @@ export default function ConnectButton ({ pill, size, color, forceChains, disable
     return (
       <Dropdown
         pill={pill} size={size} color={color} arrowIcon={false}
-        label={abbreviateAddress(address)}
+        label={(
+          <div>
+            {abbreviateAddress(address)}
+            <div className='-mt-1 text-xs text-white/50'>{chain.name}</div>
+          </div>
+        )}
       >
         <Dropdown.Item onClick={() => wallets.disconnect()}>Disconnect</Dropdown.Item>
       </Dropdown>

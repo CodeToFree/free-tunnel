@@ -1,0 +1,14 @@
+{
+  "chainId": "aptos:2",
+  "name": "Aptos Testnet",
+  "icon": "aptos",
+  "addressFormat": "aptos",
+  "currency": "APTOS",
+  "coreDecimals": 8,
+  "rpcUrl": "https://api.testnet.aptoslabs.com/v1",
+  "explorerUrl": "https://explorer.aptoslabs.com",
+  "tokens": {
+    "0x248f94f71f95e797096e880eb3c6debb5b2515936b7e8d51d177b952f3c02d7": "USDa"
+  },
+  "hubId": 255
+}

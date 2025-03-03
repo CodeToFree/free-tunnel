@@ -1,0 +1,13 @@
+{
+  "chainId": "aptos:250",
+  "name": "Movement",
+  "icon": "move",
+  "addressFormat": "aptos",
+  "currency": "MOVE",
+  "coreDecimals": 8,
+  "rpcUrl": "https://aptos.testnet.bardock.movementlabs.xyz/v1",
+  "explorerUrl": "https://explorer.movementlabs.xyz",
+  "tokens": {
+  },
+  "hubId": 166
+}
