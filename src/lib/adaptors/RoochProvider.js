@@ -78,6 +78,14 @@ export default class RoochProvider {
                 const storage = await that._getResource(contractAddr, `${contractAddr}::permissions::PermissionsStorage`)
                 // console.log(storage)
                 const exeIndex = storage._exeActiveSinceForIndex.length - 1
+                if (exeIndex < 0) {
+                  return {
+                    exeIndex: BigNumber.from(0),
+                    activeSince: BigNumber.from(0),
+                    executors: [],
+                    threshold: BigNumber.from(0),
+                  }
+                }
                 return {
                   exeIndex: BigNumber.from(exeIndex),
                   activeSince: BigNumber.from(storage._exeActiveSinceForIndex[exeIndex]),
@@ -133,7 +141,6 @@ export default class RoochProvider {
                     Args.address(args[1]),
                   ]
                 } else if (prop === 'executeMint') {
-                  console.log(req.tokenIndex)
                   payload.typeArgs = [tokenAddr]
                   payload.args = [
                     Args.vec('u8', vectorize(reqId)),
@@ -222,8 +229,6 @@ export default class RoochProvider {
     const indexes = []
     const decimals = []
     const supportedTokens = []
-    // '0x3cf04c5602fbd9a8cb410174c3e46cf2c60d100431848d8f25375eef4f413480::hello_rooch3::FSC'
-    // '0x701c21bf1c8cd5af8c42983890d8ca55e7a820171b8e744c13f2d9998bf76cc3::grow_bitcoin::GROW'
 
     for (const i of [1, 2]) {
       const tokenDecimals = await this._readTable(storage.tokenDecimals, 'u8', Args.u8(i))

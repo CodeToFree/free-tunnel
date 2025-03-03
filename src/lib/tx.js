@@ -1,8 +1,27 @@
-export function openInExplorer(tx, chain) {
-  if (chain.chainId === 'tron') {
-    window.open(`${chain.explorerUrl}/#/transaction/${tx.hash.replace('^', '')}`, '_blank')
-  } else {
-    window.open(`${chain.explorerUrl}/tx/${tx.hash.replace('^', '')}`, '_blank')
+export function openInExplorer(hash, chain) {
+  switch (chain.chainId) {
+    case 'aptos:1':
+      return window.open(`${chain.explorerUrl}/txn/${hash}?network=mainnet`, '_blank')
+    case 'aptos:2':
+      return window.open(`${chain.explorerUrl}/txn/${hash}?network=testnet`, '_blank')
+    case 'tron':
+      return window.open(`${chain.explorerUrl}/#/transaction/${hash}`, '_blank')
+    default:
+      window.open(`${chain.explorerUrl}/tx/${hash}`, '_blank')
+  }
+}
+
+export function addressLinkInExplorer(address, chain, isContract) {
+  switch (chain.chainId) {
+    case 'aptos:1':
+      return `${chain.explorerUrl}/account/${address}?network=mainnet`
+    case 'aptos:2':
+      return `${chain.explorerUrl}/account/${address}?network=testnet`
+    case 'rooch':
+    case 'rooch_testnet':
+      return `${chain.explorerUrl}/account/${address}`
+    default:
+      return `${chain.explorerUrl}/address/${address}`
   }
 }
 

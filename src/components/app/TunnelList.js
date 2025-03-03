@@ -6,6 +6,7 @@ import { HiChevronDoubleDown } from 'react-icons/hi'
 import { CHAINS, ADDR_ZERO } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
 import { getTunnelContract } from '@/lib/request'
+import { addressLinkInExplorer } from '@/lib/tx'
 import TunnelContract from '@/lib/abis/TunnelContract.json'
 
 import { TokenIcon } from '@/components/ui'
@@ -132,7 +133,7 @@ function ChainDetail ({ chain, contractAddr }) {
             <Tooltip content={
               <a
                 className='text-sm cursor-pointer hover:underline hover:text-cyan-600'
-                href={`${chain.explorerUrl}/address/${vault}`}
+                href={addressLinkInExplorer(valut, chain)}
                 target='_blank'
               >{vault}</a>
             }>
@@ -145,7 +146,7 @@ function ChainDetail ({ chain, contractAddr }) {
         <div className='mt-2 flex items-center justify-between'>
           <a
             className='overflow-hidden text-ellipsis text-sm text-gray-500 hover:underline hover:text-cyan-600'
-            href={`${chain.explorerUrl}/address/${contractAddr}`}
+            href={addressLinkInExplorer(contractAddr, chain, true)}
             target='_blank'
           >
             {contractAddr}
