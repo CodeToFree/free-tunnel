@@ -33,7 +33,7 @@ const { deployContract } = require('./lib')
 // 0x25: iotex
 // 0x26: zeta
 // 0x27: ✅ taiko 20241206
-// 0x28: ✅ sei 20241220
+// 0x28: ✅ sei 20250105
 // 0x29: ✅ duck 20250105
 // 0x2a: ✅ morph 20241220
 // 0x2b: ✅ exsat 20241206
