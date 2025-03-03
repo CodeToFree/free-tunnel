@@ -14,11 +14,14 @@ export function openInExplorer(hash, chain) {
 export function addressLinkInExplorer(address, chain, isContract) {
   switch (chain.chainId) {
     case 'aptos:1':
-      return `${chain.explorerUrl}/account/${address}?network=mainnet`
+      return `${chain.explorerUrl}/account/${address}${isContract ? '/modules' : ''}?network=mainnet`
     case 'aptos:2':
-      return `${chain.explorerUrl}/account/${address}?network=testnet`
+      return `${chain.explorerUrl}/account/${address}${isContract ? '/modules' : ''}?network=testnet`
     case 'rooch':
     case 'rooch_testnet':
+      if (isContract) {
+        return `${chain.explorerUrl}/object/${address}`
+      }
       return `${chain.explorerUrl}/account/${address}`
     default:
       return `${chain.explorerUrl}/address/${address}`
