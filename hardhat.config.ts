@@ -72,7 +72,7 @@ const hardhatConfig = {
     },
   },
   zksolc: {
-    version: '1.5.7',
+    version: '1.5.11',
     compilerSource: 'binary',
     settings: {},
   },

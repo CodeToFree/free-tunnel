@@ -37,9 +37,9 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@matterlabs/hardhat-zksync-deploy": "^1.6.0",
-    "@matterlabs/hardhat-zksync-solc": "^1.2.5",
-    "@matterlabs/hardhat-zksync-verify": "^1.7.1",
+    "@matterlabs/hardhat-zksync-deploy": "^0.11.0",
+    "@matterlabs/hardhat-zksync-solc": "^1.2.6",
+    "@matterlabs/hardhat-zksync-verify": "^0.7.0",
     "@nomicfoundation/hardhat-verify": "^2.0.12",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
