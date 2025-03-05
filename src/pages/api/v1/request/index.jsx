@@ -8,6 +8,13 @@ export default async function handler(req, res) {
 }
 
 async function get(req, res) {
+  const reqId = req.query.reqId
+  if (reqId) {
+    const req = await Requests.findById(reqId.substring(0, 38))
+    res.json({ result: req })
+    return
+  }
+
   const tunnels = await Tunnels.find()
   const tunnelByName = Object.fromEntries(tunnels.map(c => ([c.name, c._id])))
 
