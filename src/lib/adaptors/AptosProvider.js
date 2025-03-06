@@ -58,7 +58,7 @@ export default class AptosProvider {
                 return metadata.decimals
               } else if (prop === 'balanceOf') {
                 const payload = {
-                  function: "0x1::primary_fungible_store::balance",
+                  function: '0x1::primary_fungible_store::balance',
                   typeArguments: ['0x1::fungible_asset::Metadata'],
                   functionArguments: [args[0], contractAddr],
                 }
