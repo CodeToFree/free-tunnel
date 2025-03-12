@@ -153,6 +153,9 @@ const hardhatConfig = {
     opbnb: {
       url: 'https://opbnb-mainnet-rpc.bnbchain.org',
     },
+    cfx: {
+      url: 'https://evm.confluxrpc.com',
+    },
     neox: {
       url: 'https://mainnet-1.rpc.banelabs.org',
     },

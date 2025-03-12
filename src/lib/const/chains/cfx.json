@@ -1,0 +1,12 @@
+{
+  "chainId": 1030,
+  "name": "Conflux eSpace",
+  "icon": "cfx",
+  "currency": "CFX",
+  "rpcUrl": "https://evm.confluxrpc.com",
+  "explorerUrl": "https://evm.confluxscan.net",
+  "tokens": {
+    "0x55eC3bF08A1D4C812cae1219216053A31e8BFfC9": "WUSD"
+  },
+  "hubId": 24
+}
