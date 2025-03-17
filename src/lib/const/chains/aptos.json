@@ -5,7 +5,7 @@
   "addressFormat": "aptos",
   "currency": "APTOS",
   "coreDecimals": 8,
-  "rpcUrl": "https://fullnode.mainnet.aptoslabs.com",
+  "rpcUrl": "https://api.mainnet.aptoslabs.com/v1",
   "explorerUrl": "https://explorer.aptoslabs.com",
   "tokens": {
   },
