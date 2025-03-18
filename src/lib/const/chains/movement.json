@@ -8,7 +8,8 @@
   "rpcUrl": "https://mainnet.movementnetwork.xyz/v1",
   "explorerUrl": "https://explorer.movementlabs.xyz",
   "tokens": {
-    "0x5ae1fb7eeac6caae588c4297b37893f2c29d1782e69ff21e541e1e96f622882b": "USDa"
+    "0x5ae1fb7eeac6caae588c4297b37893f2c29d1782e69ff21e541e1e96f622882b": "USDa",
+    "0x18476fde61c653f45e8de6269c069b7ba5e6cc614b095b2eb2593c3aab6a36cb": "sUSDa"
   },
   "hubId": 166
 }
