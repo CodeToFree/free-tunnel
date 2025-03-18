@@ -38,7 +38,7 @@ export default function CardRequestsForProposer ({ action = 'lock-mint', tokens,
   const { reqs, nPending, nPropose, nSign, nExecute, nFinished, nCancelled } = React.useMemo(() => {
     const pending = allReqs.filter(req => (!req.hash?.e2 && !req.hash?.c2 && req.hash?.p2) || (!req.hash?.e1 && !req.hash?.c1 && req.hash?.p1))
     const propose = allReqs.filter(req => !req.hash?.p2 && !req.hash?.c1)
-    const sign = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && req.hash?.p2 && req.signatures?.length < threshold)
+    const sign = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && !(req.hash?.e2 && req.hash?.e1) && req.hash?.p2 && req.signatures?.length < threshold)
     const execute = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && !(req.hash?.e2 && req.hash?.e1) && req.signatures?.length >= threshold)
     const finished = allReqs.filter(req => req.hash?.e2 && req.hash?.e1)
     const cancelled = allReqs.filter(req => (req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1))
