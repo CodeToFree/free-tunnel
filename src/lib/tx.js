@@ -4,6 +4,8 @@ export function openInExplorer(hash, chain) {
       return window.open(`${chain.explorerUrl}/txn/${hash}?network=mainnet`, '_blank')
     case 'aptos:2':
       return window.open(`${chain.explorerUrl}/txn/${hash}?network=testnet`, '_blank')
+    case 'aptos:250':
+      return window.open(`${chain.explorerUrl}/txn/${hash}?network=mainnet`, '_blank')
     case 'tron':
       return window.open(`${chain.explorerUrl}/#/transaction/${hash}`, '_blank')
     default:
@@ -17,6 +19,8 @@ export function addressLinkInExplorer(address, chain, isContract) {
       return `${chain.explorerUrl}/account/${address}${isContract ? '/modules' : ''}?network=mainnet`
     case 'aptos:2':
       return `${chain.explorerUrl}/account/${address}${isContract ? '/modules' : ''}?network=testnet`
+    case 'aptos:250':
+      return `${chain.explorerUrl}/account/${address}${isContract ? '/modules' : ''}?network=mainnet`
     case 'rooch':
     case 'rooch_testnet':
       if (isContract) {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { utils } from 'ethers'
 import { getWallets as getSuiWallets } from '@wallet-standard/core'
-import { MartianWalletAdapter } from '@mesonfi/aptos-wallet-adapter/dist/WalletAdapters/MartianWallet'
+import { AptosWalletAdapter } from '@mesonfi/aptos-wallet-adapter/dist/WalletAdapters/PetraWallet'
 
 import {
   Signer as _RoochSigner,
@@ -72,11 +72,12 @@ export default function useNonEthersWallets(addToast) {
       const address = '0x' + account.address?.replace('0x', '').padStart(64, '0')
       setAccount({ address, chainId: nonEvmChain, signer: ext })
     } if (nonEvmChain === 'aptos') {
-      const aptosWallet = new MartianWalletAdapter()
+      const aptosWallet = new AptosWalletAdapter()
 
       aptosWallet.on('connect', () => {
         const address = utils.hexZeroPad(aptosWallet.publicAccount.address, 32)
-        const chainId = aptosWallet.network.chainId
+        console.log(aptosWallet.network)
+        const chainId = aptosWallet.network.chainId || 250
         setAccount({ address, chainId: `aptos:${Number(chainId)}`, signer: aptosWallet })
       })
 
