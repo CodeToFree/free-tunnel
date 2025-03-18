@@ -15,6 +15,10 @@ import {
   fromHEX,
 } from '@roochnetwork/rooch-sdk'
 
+const CHAIN_ID_BY_NAME = {
+  'Mainnet': 1,
+  'Movement Mainnet': 250
+}
 
 export default function useNonEthersWallets(addToast) {
   const [account, setAccount] = React.useState(null)
@@ -76,8 +80,7 @@ export default function useNonEthersWallets(addToast) {
 
       aptosWallet.on('connect', () => {
         const address = utils.hexZeroPad(aptosWallet.publicAccount.address, 32)
-        console.log(aptosWallet.network)
-        const chainId = aptosWallet.network.chainId || 250
+        const chainId = aptosWallet.network.chainId || CHAIN_ID_BY_NAME[aptosWallet.network.name]
         setAccount({ address, chainId: `aptos:${Number(chainId)}`, signer: aptosWallet })
       })
 
