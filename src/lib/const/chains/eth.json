@@ -3,7 +3,7 @@
   "name": "Ethereum",
   "icon": "eth",
   "currency": "ETH",
-  "rpcUrl": "https://rpc.ankr.com/eth",
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "explorerUrl": "https://etherscan.io",
   "tokens": {
     "0x0000000000000000000000000000000000000001": "ETH",
