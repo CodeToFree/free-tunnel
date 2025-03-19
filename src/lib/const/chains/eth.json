@@ -3,7 +3,7 @@
   "name": "Ethereum",
   "icon": "eth",
   "currency": "ETH",
-  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "rpcUrl": "https://eth.llamarpc.com",
   "explorerUrl": "https://etherscan.io",
   "tokens": {
     "0x0000000000000000000000000000000000000001": "ETH",
