@@ -30,7 +30,7 @@ export default function CardRequestsForExecutor ({ action = 'lock-mint', tokens,
   const [tab, setTab] = React.useState('sign')
   const { reqs, nSign, nExecute, nFinished, nCancelled } = React.useMemo(() => {
     const propose = allReqs.filter(req => !req.hash?.p2 && !req.hash?.c1)
-    const sign = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && req.hash?.p2 && req.signatures?.length < threshold)
+    const sign = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && !(req.hash?.e2 && req.hash?.e1) && req.hash?.p2 && req.signatures?.length < threshold)
     const execute = allReqs.filter(req => !((req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1)) && !(req.hash?.e2 && req.hash?.e1) && req.signatures?.length >= threshold)
     const finished = allReqs.filter(req => req.hash?.e2 && req.hash?.e1)
     const cancelled = allReqs.filter(req => (req.hash?.c2 || !req.hash?.p2) && (req.hash?.c1 || !req.hash?.p1))
