@@ -79,13 +79,13 @@ const hardhatConfig = {
   defaultNetwork: 'eth',
   networks: {
     eth: {
-      url: 'https://rpc.ankr.com/eth',
+      url: 'https://eth.llamarpc.com',
     },
     arb: {
       url: 'https://arb1.arbitrum.io/rpc',
     },
     bnb: {
-      url: 'https://rpc.ankr.com/bsc',
+      url: 'https://binance.llamarpc.com',
     },
     polygon: {
       url: 'https://polygon-rpc.com',

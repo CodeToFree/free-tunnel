@@ -31,6 +31,7 @@ const defaultTokens = {
   83: 'iBTC',
   84: 'stBTC',
   86: 'WUSD',
+  87: 'PUMP',
   173: 'TESTSV',
   192: 'WBTC',
   193: 'pumpBTC',
