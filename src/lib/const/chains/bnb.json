@@ -3,7 +3,7 @@
   "name": "BNB Smart Chain",
   "icon": "bnb",
   "currency": "BNB",
-  "rpcUrl": "https://binance.llamarpc.com",
+  "rpcUrl": "https://bsc-mainnet.public.blastapi.io",
   "explorerUrl": "https://bscscan.com",
   "tokens": {
     "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c": "BTCB",
