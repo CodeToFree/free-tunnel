@@ -98,10 +98,14 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/bb.png' className={_className} />
   } else if (token === 'bob') {
     return <img src='/tokens/bob.png' className={_className} />
+  } else if (token === 'sonic') {
+    return <img src='/tokens/sonic.png' className={_className} />
   } else if (token === 'cfx') {
     return <img src='/tokens/cfx.png' className={_className} />
   } else if (token === 'neox') {
     return <img src='/tokens/neox.png' className={_className} />
+  } else if (token === 'soneium') {
+    return <img src='/tokens/soneium.png' className={_className} />
   } else if (token === 'kava') {
     return <img src='/tokens/kava.png' className={_className} />
   } else if (token === 'kroma') {

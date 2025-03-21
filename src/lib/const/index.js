@@ -21,8 +21,10 @@ import bevm from './chains/bevm.json'
 import bb from './chains/bb.json'
 import bob from './chains/bob.json'
 import opbnb from './chains/opbnb.json'
+import sonic from './chains/sonic.json'
 import cfx from './chains/cfx.json'
 import neox from './chains/neox.json'
+import soneium from './chains/soneium.json'
 import kava from './chains/kava.json'
 import kroma from './chains/kroma.json'
 import kaia from './chains/kaia.json'
@@ -62,7 +64,7 @@ export const ROLES = {
 
 const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet, hype_testnet } : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
-  merlin, b2, bitlayer, bevm, bb, bob, opbnb, cfx, neox,
+  merlin, b2, bitlayer, bevm, bb, bob, opbnb, sonic, cfx, neox, soneium,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
   rsk,
   sui,

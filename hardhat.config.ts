@@ -153,11 +153,17 @@ const hardhatConfig = {
     opbnb: {
       url: 'https://opbnb-mainnet-rpc.bnbchain.org',
     },
+    sonic: {
+      url: 'https://rpc.soniclabs.com',
+    },
     cfx: {
       url: 'https://evm.confluxrpc.com',
     },
     neox: {
       url: 'https://mainnet-1.rpc.banelabs.org',
+    },
+    soneium: {
+      url: 'https://rpc.soneium.org',
     },
     kava: {
       url: 'https://evm.kava.io',

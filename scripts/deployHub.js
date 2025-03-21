@@ -24,8 +24,10 @@ const { deployContract } = require('./lib')
 // 0x14: bb
 // 0x15: bob
 // 0x16: opbnb
+// 0x17: ✅ sonic 20250105
 // 0x18: ✅ cfx 20250105
 // 0x1a: ✅ neox 20250105
+// 0x1b: ✅ soneium 20250105
 // 0x20: kava
 // 0x21: kroma
 // 0x22: ✅ kaia 20250105

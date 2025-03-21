@@ -1,0 +1,11 @@
+{
+  "chainId": 146,
+  "name": "Sonic",
+  "icon": "sonic",
+  "currency": "S",
+  "rpcUrl": "https://rpc.soniclabs.com",
+  "explorerUrl": "https://sonicscan.org",
+  "tokens": {
+  },
+  "hubId": 23
+}

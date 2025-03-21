@@ -1,0 +1,11 @@
+{
+  "chainId": 1868,
+  "name": "Soneium",
+  "icon": "soneium",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.soneium.org",
+  "explorerUrl": "https://www.okx.com/web3/explorer/soneium",
+  "tokens": {
+  },
+  "hubId": 27
+}
