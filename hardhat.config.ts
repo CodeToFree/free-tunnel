@@ -85,7 +85,7 @@ const hardhatConfig = {
       url: 'https://arb1.arbitrum.io/rpc',
     },
     bnb: {
-      url: 'https://bsc-mainnet.public.blastapi.io',
+      url: 'https://binance.llamarpc.com',
     },
     polygon: {
       url: 'https://polygon-rpc.com',
