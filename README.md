@@ -46,6 +46,8 @@ Each tunnel manager should review the code of FreeTunnelHub and TunnelBoringMach
 
 After a TBM update, each tunnel `admin` should independently verify the new code and initiate TunnelContract upgrades.
 
+![](./diagrams/multichain_structure.svg)
+
 
 ## Workflow
 
