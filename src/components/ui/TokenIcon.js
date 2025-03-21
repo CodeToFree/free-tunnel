@@ -16,6 +16,8 @@ export default function TokenIcon ({ size, token, className }) {
     return <img src='/tokens/solvbtc_bbn.png' className={_className} />
   } else if (token?.includes('solvbtc.ena')) {
     return <img src='/tokens/solvbtc_ena.png' className={_className} />
+  } else if (token?.includes('solvbtc.jup')) {
+    return <img src='/tokens/solvbtc_jup.png' className={_className} />
   } else if (token?.includes('solvbtc.m')) {
     return <img src='/tokens/solvbtc_m.png' className={_className} />
   } else if (token?.includes('solvbtc.b')) {

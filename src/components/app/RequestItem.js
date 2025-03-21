@@ -28,6 +28,7 @@ const defaultTokens = {
   78: 'SolvBTC',
   79: 'SolvBTC.BBN',
   80: 'SolvBTC.ENA',
+  81: 'SolvBTC.JUP',
   83: 'iBTC',
   84: 'stBTC',
   86: 'WUSD',
