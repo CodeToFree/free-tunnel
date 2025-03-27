@@ -101,7 +101,12 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const min = tunnel.min?.[token?.index] || 0
   const belowAmount = amount && (Number(amount) < min)
 
-  const disabled = (from === 16 || to === 16) && token?.index === 79 && 'SolvBTC.BBN from/to Merlin Disabled'
+  let disabled
+  if ((from === 16 || to === 16) && token?.index === 79) {
+    disabled = 'SolvBTC.BBN from/to Merlin Disabled'
+  } else if (to === 10 && token?.index === 64) {
+    disabled = 'M-BTC from/to Mode Disabled'
+  }
 
   return (
     <>
