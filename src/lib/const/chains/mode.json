@@ -1,7 +1,7 @@
 {
   "chainId": 34443,
-  "name": "Mode",
-  "icon": "mode",
+  "name": "Linea",
+  "icon": "linea",
   "currency": "ETH",
   "rpcUrl": "https://mainnet.mode.network",
   "explorerUrl": "https://explorer.mode.network",
