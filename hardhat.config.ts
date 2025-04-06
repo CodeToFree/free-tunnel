@@ -228,6 +228,9 @@ const hardhatConfig = {
     hype_testnet: {
       url: 'https://api.hyperliquid-testnet.xyz/evm',
     },
+    memecore_testnet: {
+      url: 'https://rpc.formicarium.memecore.net',
+    },
   }
 }
 

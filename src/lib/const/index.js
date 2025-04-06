@@ -47,6 +47,7 @@ import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
 import b2_testnet from './chains/b2_testnet.json'
 import hype_testnet from './chains/hype_testnet.json'
+import memecore_testnet from './chains/memecore_testnet.json'
 
 export const DARK_MODE = process.env.NEXT_PUBLIC_DARK_MODE
 export const TESTNET = process.env.NEXT_PUBLIC_TESTNET
@@ -62,13 +63,15 @@ export const ROLES = {
   Vault: 'vault',
 }
 
-const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet, hype_testnet } : {
+const chains = TESTNET ? {
+  sepolia, merlin_testnet, b2_testnet, hype_testnet, memecore_testnet
+} : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
   merlin, b2, bitlayer, bevm, bb, bob, opbnb, sonic, cfx, neox, soneium,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
   rsk,
   sui,
-  hype_testnet,
+  hype_testnet, memecore_testnet,
 }
 
 export const CHAINS = Object.entries(chains).map(([id, c]) => ({ ...c, id }))

@@ -50,6 +50,7 @@ const { deployContract } = require('./lib')
 // 0xf1: merlin_testnet
 // 0xf2: b2_testnet
 // 0xf3: ✅ hype_testnet 20250105
+// 0xf4: ✅ memecore_testnet 20250105
 
 module.exports = async function deployHub() {
   await hre.run('compile')
