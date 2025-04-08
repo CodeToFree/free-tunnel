@@ -26,7 +26,7 @@ const defaultTokens = {
   76: 'BBUSD',
   77: 'uBTC',
   78: 'SolvBTC',
-  79: 'SolvBTC.BBN',
+  79: 'xSolvBTC',
   80: 'SolvBTC.ENA',
   81: 'SolvBTC.JUP',
   83: 'iBTC',
