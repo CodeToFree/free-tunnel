@@ -6,7 +6,7 @@ import { HiChevronDoubleDown } from 'react-icons/hi'
 import { CHAINS, ADDR_ZERO } from '@/lib/const'
 import { useContractQuery } from '@/lib/hooks'
 import { getTunnelContract } from '@/lib/request'
-import { addressLinkInExplorer } from '@/lib/tx'
+import { addressLinkInExplorer, tokenLinkInExplorer } from '@/lib/tx'
 import TunnelContract from '@/lib/abis/TunnelContract.json'
 
 import { TokenIcon } from '@/components/ui'
@@ -167,7 +167,7 @@ function ChainDetail ({ chain, contractAddr }) {
           <a
             key={t.addr}
             className='flex items-center text-sm cursor-pointer hover:underline hover:text-cyan-600'
-            href={`${chain.explorerUrl}/${['zksync', 'zklink', 'zircuit', 'duck', 'morph', 'hemi', 'taker'].includes(chain.id) ? 'address' : 'token'}/${t.addr}`}
+            href={tokenLinkInExplorer(t.addr, chain)}
             target='_blank'
           >
             <TokenIcon size='sm' className='mr-1' token={t.icon || chain?.tokens[t.addr]?.toLowerCase()} />

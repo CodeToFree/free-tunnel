@@ -32,6 +32,30 @@ export function addressLinkInExplorer(address, chain, isContract) {
   }
 }
 
+export function tokenLinkInExplorer(tokenAddr, chain) {
+  switch (chain.chainId) {
+    case 'aptos:1':
+      return `${chain.explorerUrl}/fungible_asset/${tokenAddr}?network=mainnet`
+    case 'aptos:2':
+      return `${chain.explorerUrl}/fungible_asset/${tokenAddr}?network=testnet`
+    case 'aptos:250':
+      return `${chain.explorerUrl}/fungible_asset/${tokenAddr}?network=mainnet`
+    case 'rooch':
+    case 'rooch_testnet':
+      return `${chain.explorerUrl}/object/${tokenAddr.split('::')[0]}`
+    case 'zksync':
+    case 'zklink':
+    case 'zircuit':
+    case 'duck':
+    case 'morph':
+    case 'hemi':
+    case 'taker':
+      return `${chain.explorerUrl}/address/${tokenAddr}`
+    default:
+      return `${chain.explorerUrl}/token/${tokenAddr}`
+  }
+}
+
 export async function wait(tx, timeout = 90) {
   if (tx.wait) {
     return await tx.wait(1)
