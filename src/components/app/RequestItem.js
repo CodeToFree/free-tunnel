@@ -97,7 +97,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
 
       <div className='mt-2 flex items-center'>
         <TokenIcon token={chain1?.icon} className='mr-2' />
-        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
+        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{chain1?.name}:</div>
         {
           hash?.p1
           ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1.replace('^', '')}`, '_blank')}>
@@ -130,7 +130,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
       </div>
       <div className='mt-2 flex items-center'>
         <TokenIcon token={chain2?.icon} className='mr-2' />
-        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{toActionName}:</div>
+        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{chain2?.name}:</div>
         {
           hash?.p2
           ? <>
