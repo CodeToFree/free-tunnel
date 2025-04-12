@@ -8,8 +8,8 @@
   "rpcUrl": "https://api.mainnet.aptoslabs.com/v1",
   "explorerUrl": "https://explorer.aptoslabs.com",
   "tokens": {
-    "0xade1ce925436aca040b67469607115af0acca608a490b7da5a0f9146315c25f7": "USDa",
-    "0xbf233dcb32c01f094e4b7d1449eb559c576cb962af121ffb6aae7bf621dee523": "sUSDa"
+    "0xace541cbd9b5d60f38cf545ac27738353f70b4f9b970c37a54cf7acfd19dad76": "USDa",
+    "0xda3e4d44156dce34efda861201eab1164c88b18c49c928a97caa2904be985ebf": "sUSDa"
   },
   "hubId": 165
 }
