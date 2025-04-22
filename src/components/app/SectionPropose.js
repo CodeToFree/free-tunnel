@@ -198,7 +198,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
             }
           }}
         >
-          Propose {fromActionName} on <TokenIcon token={chain?.icon} className='mx-2' /> {chain?.name}
+          Propose {fromActionName} on <TokenIcon chain={chain} className='mx-2' /> {chain?.name}
         </ApprovalGuard>
       </ConnectButton>
     </>

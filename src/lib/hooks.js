@@ -36,7 +36,7 @@ export function useWeb3ModalFromTunnel(tunnel) {
       projectId,
       themeMode: DARK_MODE ? 'dark' : 'light',
       chains: chains.filter(c => typeof c.chainId === 'number'),
-      chainImages: Object.fromEntries(chains.map(c => [c.chainId, `/tokens/${c.icon}.png`])),
+      chainImages: Object.fromEntries(chains.map(c => [c.chainId, `https://static.meson.fi/icon/network/${c.icon}_2x.png`])),
       ethersConfig: defaultConfig({ metadata }),
       excludeWalletIds: [
         'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'

@@ -43,7 +43,7 @@ export default function ConnectedAddress() {
       btn = <Button pill size='md' color='light' onClick={() => open()}>{label}</Button>
     }
   } else if (connected) {
-    btn = <Button pill size='md' color='light'><TokenIcon token={chain?.icon} />{chain?.name}</Button>
+    btn = <Button pill size='md' color='light'><TokenIcon chain={chain} />{chain?.name}</Button>
   } else if (chain) {
     btn = <w3m-network-button />
   } else {
