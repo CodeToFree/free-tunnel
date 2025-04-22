@@ -3,8 +3,8 @@
   "name": "Hemi",
   "icon": "hemi",
   "currency": "ETH",
-  "rpcUrl": "https://7e57304f.rpc.hemi.network/rpc",
-  "explorerUrl": "https://explorer-b81c3bd8.hemi.xyz",
+  "rpcUrl": "https://rpc.hemi.network/rpc",
+  "explorerUrl": "https://explorer.hemi.xyz",
   "tokens": {
     "0x9BFA177621119e64CecbEabE184ab9993E2ef727": "M-BTC",
     "0xF469fBD2abcd6B9de8E169d128226C0Fc90a012e": "pumpBTC",
