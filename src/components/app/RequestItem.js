@@ -96,12 +96,12 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
       }
 
       <div className='mt-2 flex items-center'>
-        <TokenIcon chain={chain1} className='mr-2' />
-        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{chain1?.name}:</div>
+        <TokenIcon chain={chain1} className='mr-1.5' />
+        <div className='text-white whitespace-nowrap mr-1.5'>{chain1?.name}</div>
         {
           hash?.p1
           ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1.replace('^', '')}`, '_blank')}>
-              {hash.p1.startsWith('^') && '🟢 '}Proposed
+              {hash.p1.startsWith('^') && '🟢 '}{vault && '🗳️ '}Proposed
             </Badge>
           : <Badge color='gray'>Not Proposed</Badge>
         }
@@ -112,7 +112,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             {
               hash.e1
               ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1.replace('^', '')}`, '_blank')}>
-                  {hash.e1.startsWith('^') && '🟢 '}Executed
+                  {hash.e1.startsWith('^') && '🟢 '}{vault && '🗳️ '}Executed
                 </Badge>
               : <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
             }
@@ -129,13 +129,13 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         }
       </div>
       <div className='mt-2 flex items-center'>
-        <TokenIcon chain={chain2} className='mr-2' />
-        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{chain2?.name}:</div>
+        <TokenIcon chain={chain2} className='mr-1.5' />
+        <div className='text-white whitespace-nowrap mr-1.5'>{chain2?.name}</div>
         {
           hash?.p2
           ? <>
               <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.p2.replace('^', '')}`, '_blank')}>
-                {hash.p2.startsWith('^') && '🟢 '}Proposed
+                {hash.p2.startsWith('^') && '🟢 '}{vault && '🗳️ '}Proposed
               </Badge>
               <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
             </>
@@ -148,7 +148,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         {
           hash?.e2
           ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2.replace('^', '')}`, '_blank')}>
-              {hash.e2.startsWith('^') && '🟢 '}Executed
+              {hash.e2.startsWith('^') && '🟢 '}{vault && '🗳️ '}Executed
             </Badge>
           : hash?.c2
             ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2.replace('^', '')}`, '_blank')}>
