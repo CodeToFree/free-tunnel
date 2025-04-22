@@ -6,7 +6,7 @@ export default function TokenIcon ({ size, chain, token, className }) {
     className || 'mr-2',
   )
 
-  if (chain) {
+  if (chain?.icon) {
     return <img src={`https://static.meson.fi/icon/network/${chain.icon}.png`} className={_className} />
   }
   

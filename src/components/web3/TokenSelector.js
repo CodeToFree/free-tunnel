@@ -39,7 +39,7 @@ export default function TokenSelector({ options, noSelect, onChange }) {
           className='pr-2'
           onClick={() => onChangeOption(opt)}
         >
-          <TokenIcon chain={opt.chain} token={chain?.tokens[opt.addr]?.toLowerCase()} />{opt.name || chain?.tokens[opt.addr]}
+          <TokenIcon chain={opt} token={chain?.tokens[opt.addr]?.toLowerCase()} />{opt.name || chain?.tokens[opt.addr]}
         </Button>
       ))
     }

@@ -140,7 +140,7 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
         <div className='mb-2 flex'>
           <Label value={`Receive ${toActionName} on`} />
         </div>
-        <TokenSelector options={targets.map(chain => ({ id: chain.hubId, chain, name: chain.name }))} onChange={setTarget} />
+        <TokenSelector options={targets} onChange={setTarget} />
       </div>
 
       <div>
