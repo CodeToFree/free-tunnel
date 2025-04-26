@@ -44,6 +44,8 @@ export default function TokenIcon ({ size, chain, token, className }) {
     return <img src='/tokens/obtcx.png' className={_className} />
   } else if (token === 'brbtc') {
     return <img src='/tokens/brbtc.png' className={_className} />
+  } else if (token === 'b2') {
+    return <img src='https://static.meson.fi/icon/network/b2.png' className={_className} />
   }
   
   // if (token === 'hype') {

@@ -33,6 +33,7 @@ const defaultTokens = {
   84: 'stBTC',
   86: 'WUSD',
   87: 'PUMP',
+  88: 'B2',
   173: 'TESTSV',
   192: 'WBTC',
   193: 'pumpBTC',

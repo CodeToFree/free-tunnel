@@ -18,7 +18,7 @@ const { deployContract } = require('./lib')
 // 0x0e: xlayer
 // 0x0f: mantle
 // 0x10: merlin
-// 0x11: b2
+// 0x11: ✅ b2 20250105
 // 0x12: ✅ bitlayer 20241206
 // 0x13: bevm
 // 0x14: bb
@@ -57,11 +57,9 @@ module.exports = async function deployHub() {
 
   const chainConfig = require(`../src/lib/const/chains/${hre.network.name}.json`)
   const impl = await deployContract('FreeTunnelHub')
-  await impl.deployed()
 
   const data = impl.interface.encodeFunctionData('initialize', [chainConfig.hubId])
   const proxy = await deployContract('ERC1967Proxy', [impl.address, data])
-  await proxy.deployed()
 
   return proxy.address
 }
