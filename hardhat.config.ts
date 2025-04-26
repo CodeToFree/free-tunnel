@@ -216,6 +216,9 @@ const hardhatConfig = {
     rsk: {
       url: 'https://rootstock-mainnet.public.blastapi.io'
     },
+    bera: {
+      url: 'https://rpc.berachain.com'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },
