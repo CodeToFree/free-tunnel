@@ -28,6 +28,8 @@ export default function TokenIcon ({ size, chain, token, className }) {
     return <img src='https://static.meson.fi/icon/token/solvbtc-ena.png' className={_className} />
   } else if (token === 'solvbtc.jup') {
     return <img src='https://static.meson.fi/icon/token/solvbtc-jup.png' className={_className} />
+  } else if (token === 'solvbtc.bera') {
+    return <img src='https://static.meson.fi/icon/token/solvbtc-bera.png' className={_className} />
   } else if (token === 'm-stone') {
     return <img src='/tokens/stone_merlin.png' className={_className} />
   } else if (token === 'bstone') {
