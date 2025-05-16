@@ -214,7 +214,7 @@ const hardhatConfig = {
       url: 'https://rpc-mainnet.taker.xyz'
     },
     rsk: {
-      url: 'https://rootstock-mainnet.public.blastapi.io'
+      url: 'https://rsk-live.sovryn.app/rpc'
     },
     bera: {
       url: 'https://rpc.berachain.com'
