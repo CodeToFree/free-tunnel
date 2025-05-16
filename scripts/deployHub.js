@@ -6,23 +6,23 @@ const { deployContract } = require('./lib')
 // 0x02: ✅ bnb smart chain 20250105
 // 0x03: polygon
 // 0x04: optimism
-// 0x05: avalanche
+// 0x05: ✅ avalanche 20250105
 // 0x06: ✅ base 20250105
 // 0x07: linea
 // 0x08: zksync
 // 0x09: scroll
-// 0x0a: ✅ mode 20241220
+// 0x0a: ✅ mode 20250105
 // 0x0b: ✅ manta 20250105
 // 0x0c: zklink
 // 0x0d: ✅ core 20250105
 // 0x0e: xlayer
 // 0x0f: mantle
-// 0x10: merlin
+// 0x10: ✅ merlin 20250105
 // 0x11: ✅ b2 20250105
-// 0x12: ✅ bitlayer 20241206
+// 0x12: ✅ bitlayer 20250105
 // 0x13: bevm
 // 0x14: bb
-// 0x15: bob
+// 0x15: ✅ bob 20250105
 // 0x16: opbnb
 // 0x17: ✅ sonic 20250105
 // 0x18: ✅ cfx 20250105
@@ -35,7 +35,7 @@ const { deployContract } = require('./lib')
 // 0x24: zircuit
 // 0x25: iotex
 // 0x26: zeta
-// 0x27: ✅ taiko 20241206
+// 0x27: ✅ taiko 20250105
 // 0x28: ✅ sei 20250105
 // 0x29: ✅ duck 20250105
 // 0x2a: ✅ morph 20241220
