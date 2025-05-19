@@ -104,8 +104,6 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   let disabled
   if ((from === 16 || to === 16) && token?.index === 79) {
     disabled = 'xSolvBTC from/to Merlin Disabled'
-  } else if (to === 10 && token?.index === 64) {
-    disabled = 'M-BTC from/to Mode Disabled'
   }
 
   return (
