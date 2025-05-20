@@ -43,6 +43,7 @@ import lisk from './chains/lisk.json'
 import taker from './chains/taker.json'
 import rsk from './chains/rsk.json'
 import bera from './chains/bera.json'
+import memecore from './chains/memecore.json'
 import sui from './chains/sui.json'
 import sepolia from './chains/sepolia.json'
 import merlin_testnet from './chains/merlin_testnet.json'
@@ -70,7 +71,7 @@ const chains = TESTNET ? {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
   merlin, b2, bitlayer, bevm, bb, bob, opbnb, sonic, cfx, neox, soneium,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
-  rsk, bera,
+  rsk, bera, memecore,
   sui,
   hype_testnet, memecore_testnet,
 }

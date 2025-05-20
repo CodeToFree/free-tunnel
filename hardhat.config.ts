@@ -219,6 +219,9 @@ const hardhatConfig = {
     bera: {
       url: 'https://rpc.berachain.com'
     },
+    memecore: {
+      url: 'https://rpc.memecore.net'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },
