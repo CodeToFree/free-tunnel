@@ -133,7 +133,7 @@ function ChainDetail ({ chain, contractAddr }) {
             <Tooltip content={
               <a
                 className='text-sm cursor-pointer hover:underline hover:text-cyan-600'
-                href={addressLinkInExplorer(valut, chain)}
+                href={addressLinkInExplorer(vault, chain)}
                 target='_blank'
               >{vault}</a>
             }>
