@@ -1,0 +1,11 @@
+{
+  "chainId": 98866,
+  "name": "Plume",
+  "icon": "plume",
+  "currency": "PLUME",
+  "rpcUrl": "https://rpc.plume.org",
+  "explorerUrl": "https://explorer.plume.org",
+  "tokens": {
+  },
+  "hubId": 52
+}

@@ -48,6 +48,7 @@ const { deployContract } = require('./lib')
 // 0x31: ✅ bera 20250105
 // 0x32: ✅ memecore 20250105
 // 0x33: ✅ goat 20250105
+// 0x34: ✅ plume 20250105
 // 0xa0: (non-evm) sui
 // 0xf0: sepolia
 // 0xf1: merlin_testnet

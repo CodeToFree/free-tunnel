@@ -225,6 +225,9 @@ const hardhatConfig = {
     goat: {
       url: 'https://rpc.goat.network'
     },
+    plume: {
+      url: 'https://rpc.plume.org'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },
