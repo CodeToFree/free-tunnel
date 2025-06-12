@@ -222,6 +222,9 @@ const hardhatConfig = {
     memecore: {
       url: 'https://rpc.memecore.net'
     },
+    goat: {
+      url: 'https://rpc.goat.network'
+    },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
     },

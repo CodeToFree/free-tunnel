@@ -17,7 +17,7 @@ function getWallet(privateKey) {
 }
 exports.getWallet = getWallet
 
-exports.deployContract = async function deployContract(contractName, args = []) {
+exports.deployContract = async function deployContract(contractName, args = [], opt) {
   const wallet = getWallet()
   console.log(`Deploying ${contractName} by ${wallet.address}...`)
 
@@ -25,10 +25,10 @@ exports.deployContract = async function deployContract(contractName, args = []) 
   if (['zksync', 'zklink'].includes(hre.network.name)) {
     const deployer = new Deployer(hre, wallet)
     const artifact = await deployer.loadArtifact(contractName)
-    deployed = await deployer.deploy(artifact, args)
+    deployed = await deployer.deploy(artifact, args, opt)
   } else {
     const factory = await ethers.getContractFactory(contractName, wallet)
-    deployed = await factory.deploy(...args)
+    deployed = await factory.deploy(...args, opt)
     await deployed.deployed()
   }
   console.log(`${contractName} deployed at: ${deployed.address}`)

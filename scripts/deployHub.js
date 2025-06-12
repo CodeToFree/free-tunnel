@@ -39,7 +39,7 @@ const { deployContract } = require('./lib')
 // 0x28: ✅ sei 20250105
 // 0x29: ✅ duck 20250105
 // 0x2a: ✅ morph 20241220
-// 0x2b: ✅ exsat 20241206
+// 0x2b: ✅ exsat 20250105
 // 0x2c: ✅ hemi 20250105
 // 0x2d: ✅ corn 20241206
 // 0x2e: ✅ lisk 20241206
@@ -47,6 +47,7 @@ const { deployContract } = require('./lib')
 // 0x30: ✅ rsk 20250105
 // 0x31: ✅ bera 20250105
 // 0x32: ✅ memecore 20250105
+// 0x33: ✅ goat 20250105
 // 0xa0: (non-evm) sui
 // 0xf0: sepolia
 // 0xf1: merlin_testnet
@@ -58,10 +59,10 @@ module.exports = async function deployHub() {
   await hre.run('compile')
 
   const chainConfig = require(`../src/lib/const/chains/${hre.network.name}.json`)
-  const impl = await deployContract('FreeTunnelHub')
+  const impl = await deployContract('FreeTunnelHub', [], { nonce: 0 })
 
   const data = impl.interface.encodeFunctionData('initialize', [chainConfig.hubId])
-  const proxy = await deployContract('ERC1967Proxy', [impl.address, data])
+  const proxy = await deployContract('ERC1967Proxy', [impl.address, data], { nonce: 1 })
 
   return proxy.address
 }
