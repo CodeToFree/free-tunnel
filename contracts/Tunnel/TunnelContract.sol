@@ -10,7 +10,9 @@ import "../DelayedERC1967Proxy.sol";
 import "../utils/MultiControlERC20.sol";
 
 contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
-    error EUpgradeNotAllowed();
+    bool public detached;
+
+    error EUpgradeNotDetached();
     error EDeployMultiControlERC20();
     error EDeployProxy();
 
@@ -37,8 +39,13 @@ contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
 
     function _authorizeUpgrade(address newImplementation) internal pure override {}
 
-    function upgradeToAndCall(address, bytes memory) public payable override {
-        revert EUpgradeNotAllowed();
+    function upgradeToAndCall(address newImplementation, bytes memory data) public payable override {
+        require(detached, EUpgradeNotDetached());
+        UUPSUpgradeable.upgradeToAndCall(newImplementation, data);
+    }
+
+    function detachTunnel() external onlyHub {
+        detached = true;
     }
 
     function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
