@@ -17,6 +17,8 @@ contract MultiControlERC20 is ERC20Upgradeable, Ownable2StepUpgradeable, AccessC
 
     uint256 public mintQuota;
 
+    error EOnlyGuardianOrOwner();
+    error EBlacklisted();
 
     function initConfigs(string memory name, string memory symbol, uint8 decimals_, address owner) public initializer {
         __ERC20_init(name, symbol);
@@ -44,7 +46,7 @@ contract MultiControlERC20 is ERC20Upgradeable, Ownable2StepUpgradeable, AccessC
     }
 
     modifier notBlacklisted(address account) {
-        require(!blacklisted[account], "Address is blacklisted");
+        require(!blacklisted[account], EBlacklisted());
         _;
     }
 
@@ -95,12 +97,12 @@ contract MultiControlERC20 is ERC20Upgradeable, Ownable2StepUpgradeable, AccessC
     }
 
     function pause() external {
-        require(_msgSender() == owner() || hasRole(GUARDIAN_ROLE, _msgSender()), "Only for guardian or owner");
+        require(_msgSender() == owner() || hasRole(GUARDIAN_ROLE, _msgSender()), EOnlyGuardianOrOwner());
         _pause();
     }
 
     function unpause() external {
-        require(_msgSender() == owner() || hasRole(GUARDIAN_ROLE, _msgSender()), "Only for guardian or owner");
+        require(_msgSender() == owner() || hasRole(GUARDIAN_ROLE, _msgSender()), EOnlyGuardianOrOwner());
         _unpause();
     }
 

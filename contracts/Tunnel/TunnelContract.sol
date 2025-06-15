@@ -10,6 +10,10 @@ import "../DelayedERC1967Proxy.sol";
 import "../utils/MultiControlERC20.sol";
 
 contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
+    error EUpgradeNotAllowed();
+    error EDeployMultiControlERC20();
+    error EDeployProxy();
+
     constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) Constants(version, hubAddress, tunnelName, isLockMode) initializer {}
 
     function initConfigs(
@@ -34,7 +38,7 @@ contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
     function _authorizeUpgrade(address newImplementation) internal pure override {}
 
     function upgradeToAndCall(address, bytes memory) public payable override {
-        revert("Method upgradeToAndCall disabled. Use upgradeTunnel.");
+        revert EUpgradeNotAllowed();
     }
 
     function addToken(uint8 tokenIndex, address tokenAddr) external onlyAdmin {
@@ -48,14 +52,14 @@ contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
         assembly {
             implAddress := create2(0, add(bytecode, 0x20), mload(bytecode), salt)
         }
-        require(implAddress != address(0), "MultiControlERC20 failed to deploy");
+        require(implAddress != address(0), EDeployMultiControlERC20());
 
         bytes memory proxyBytecode = ITunnelHub(HUB_ADDRESS).getProxyBytecode();
         address proxyAddress;
         assembly {
             proxyAddress := create2(0, add(proxyBytecode, 0x20), mload(proxyBytecode), salt)
         }
-        require(proxyAddress != address(0), "Proxy contract failed to deploy");
+        require(proxyAddress != address(0), EDeployProxy());
 
         bytes memory data = abi.encodeCall(MultiControlERC20.initConfigs, (name, symbol, decimals, _getVaultWithAdminFallback()));
         DelayedERC1967Proxy(payable(proxyAddress)).initImplementation(implAddress, data);

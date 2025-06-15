@@ -44,12 +44,12 @@ abstract contract MintContract is Permissions, ReqHelpers {
 
     function proposeMint(bytes32 reqId, address recipient) external onlyHubOrProposer isMintMode hubIsMintSideOf(reqId) {
         uint8 specificAction = _actionFrom(reqId) & 0x0f;
-        require(specificAction == 1 || specificAction == 3, "Invalid action; not lock-mint or burn-mint");
+        require(specificAction == 1 || specificAction == 3, EInvalidAction());
 
         _createdTimeFrom(reqId, true);
         MintContractStorage storage $ = _getMintContractStorage();
-        require($.proposedMint[reqId] == address(0), "Invalid reqId");
-        require(recipient > address(1), "Invalid recipient");
+        require($.proposedMint[reqId] == address(0), EInvalidReqId());
+        require(recipient > address(1), EInvalidRecipient());
 
         _amountFrom(reqId);
         _tokenFrom(reqId);
@@ -61,7 +61,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
     function executeMint(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         MintContractStorage storage $ = _getMintContractStorage();
         address recipient = $.proposedMint[reqId];
-        require(recipient > address(1), "Invalid reqId");
+        require(recipient > address(1), EInvalidReqId());
 
         bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
@@ -80,7 +80,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
           vault == address(0) ? recipient: vault,
           amount
         ));
-        require(success && (data.length == 0 || abi.decode(data, (bool))), "Mint failed");
+        require(success && (data.length == 0 || abi.decode(data, (bool))), EMintFailed());
 
         emit TokenMintExecuted(reqId, recipient);
     }
@@ -88,8 +88,8 @@ abstract contract MintContract is Permissions, ReqHelpers {
     function cancelMint(bytes32 reqId) external {
         MintContractStorage storage $ = _getMintContractStorage();
         address recipient = $.proposedMint[reqId];
-        require(recipient > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, "Wait until expired to cancel");
+        require(recipient > address(1), EInvalidRecipient());
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, ENotExpiredToCancel());
 
         delete $.proposedMint[reqId];
 
@@ -111,17 +111,17 @@ abstract contract MintContract is Permissions, ReqHelpers {
     function _proposeBurn(bytes32 reqId, address proposer) private isMintMode {
         uint8 specificAction = _actionFrom(reqId) & 0x0f;
         if (specificAction == 2) { // burn-unlock
-            require(HUB_ID == uint8(uint256(reqId) >> 112), "Current hub is not the mint side of reqId");
+            require(HUB_ID == uint8(uint256(reqId) >> 112), EHubNotMintSide());
         } else if (specificAction == 3) { // burn-mint
-            require(HUB_ID == uint8(uint256(reqId) >> 120), "Current hub is not the mint-opposite side of reqId");
+            require(HUB_ID == uint8(uint256(reqId) >> 120), EHubNotMintOppositeSide());
         } else {
-            revert("Invalid action; not burn-unlock or burn-mint");
+            revert EInvalidAction();
         }
 
         _createdTimeFrom(reqId, true);
         MintContractStorage storage $ = _getMintContractStorage();
-        require($.proposedBurn[reqId] == address(0), "Invalid reqId");
-        require(proposer > address(1), "Invalid proposer");
+        require($.proposedBurn[reqId] == address(0), EInvalidReqId());
+        require(proposer > address(1), EInvalidProposer());
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
@@ -135,7 +135,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
     function executeBurn(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         MintContractStorage storage $ = _getMintContractStorage();
         address proposer = $.proposedBurn[reqId];
-        require(proposer > address(1), "Invalid reqId");
+        require(proposer > address(1), EInvalidReqId());
 
         bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
@@ -147,10 +147,10 @@ abstract contract MintContract is Permissions, ReqHelpers {
 
         (bool success, bytes memory data) = tokenAddr.call(abi.encodeWithSelector(BURN_SELECTOR, address(this), amount));
         if (success) {
-            require(data.length == 0 || abi.decode(data, (bool)), "Burn failed");
+            require(data.length == 0 || abi.decode(data, (bool)), EBurnFailed());
         } else {
             (success, data) = tokenAddr.call(abi.encodeWithSelector(BURN2_SELECTOR, amount));
-            require(success && (data.length == 0 || abi.decode(data, (bool))), "Burn failed");
+            require(success && (data.length == 0 || abi.decode(data, (bool))), EBurnFailed());
         }
 
         emit TokenBurnExecuted(reqId, proposer);
@@ -159,8 +159,8 @@ abstract contract MintContract is Permissions, ReqHelpers {
     function cancelBurn(bytes32 reqId) external {
         MintContractStorage storage $ = _getMintContractStorage();
         address proposer = $.proposedBurn[reqId];
-        require(proposer > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, "Wait until expired to cancel");
+        require(proposer > address(1), EInvalidReqId());
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, ENotExpiredToCancel());
 
         delete $.proposedBurn[reqId];
 

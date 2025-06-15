@@ -15,6 +15,32 @@ abstract contract ReqHelpers is Constants, SigVerifier {
     // keccak256(abi.encode(uint256(keccak256("FreeTunnel.ReqHelpers")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant ReqHelpersStorageLocation = 0x057585c5bab557d050e69d0aa3d9dc85384bd232fd51374129020b8431577400;
 
+    error ETunnelOnLockMode();
+    error ETunnelOnMintMode();
+    error EHubNotMintSide();
+    error EHubNotMintOppositeSide();
+
+    error ETokenIndexExisted();
+    error ETokenIndexNotExisted();
+    error ETokenIndexZero();
+    error ETokenIndexRange();
+    error ETokenAddressZero();
+
+    error EInvalidReqId();
+    error EInvalidAction();
+    error EInvalidProposer();
+    error EInvalidRecipient();
+
+    error ECreatedTimeTooEarly();
+    error ECreatedTimeTooLate();
+    error EAmountZero();
+
+    error EVaultNotActivated();
+    error ETransferFailed();
+    error EMintFailed();
+    error EBurnFailed();
+    error ENotExpiredToCancel();
+
     function _getReqHelpersStorage() private pure returns (ReqHelpersStorage storage $) {
         assembly {
             $.slot := ReqHelpersStorageLocation
@@ -31,17 +57,17 @@ abstract contract ReqHelpers is Constants, SigVerifier {
 
     function _addToken(uint8 tokenIndex, address tokenAddr) internal {
         ReqHelpersStorage storage $ = _getReqHelpersStorage();
-        require($._tokens[tokenIndex] == address(0), "Token index occupied");
-        require(tokenIndex > 0, "Token index cannot be zero");
-        require(tokenAddr != address(0), "Token address cannot be zero");
+        require($._tokens[tokenIndex] == address(0), ETokenIndexExisted());
+        require(tokenIndex > 0, ETokenIndexZero());
+        require(tokenAddr != address(0), ETokenAddressZero());
 
         uint8 decimals = tokenAddr == address(1) ? 18 : IERC20Metadata(tokenAddr).decimals();
         if (decimals == 6) {
-            require(tokenIndex < 64, "Token with decimals 6 should have index 1-63");
+            require(tokenIndex < 64, ETokenIndexRange());
         } else if (decimals == 18) {
-            require(tokenIndex >= 64 && tokenIndex < 192, "Token with decimals 18 should have index 64-191");
+            require(tokenIndex >= 64 && tokenIndex < 192, ETokenIndexRange());
         } else {
-            require(tokenIndex >= 192, "Token with decimals other than 6 or 18 should have index 192-255");
+            require(tokenIndex >= 192, ETokenIndexRange());
             $._tokenDecimals[tokenIndex] = decimals;
         }
         $._tokens[tokenIndex] = tokenAddr;
@@ -50,10 +76,10 @@ abstract contract ReqHelpers is Constants, SigVerifier {
     }
 
     function _removeToken(uint8 tokenIndex) internal {
-        require(tokenIndex > 0, "Token index cannot be zero");
+        require(tokenIndex > 0, ETokenIndexZero());
         ReqHelpersStorage storage $ = _getReqHelpersStorage();
         address tokenAddr = $._tokens[tokenIndex];
-        require(tokenAddr != address(0), "No token for this tokenIndex");
+        require(tokenAddr != address(0), ETokenIndexNotExisted());
         delete $._tokens[tokenIndex];
         if (tokenIndex >= 192) {
             delete $._tokenDecimals[tokenIndex];
@@ -101,8 +127,8 @@ abstract contract ReqHelpers is Constants, SigVerifier {
     function _createdTimeFrom(bytes32 reqId, bool check) internal view returns (uint256 createdTime) {
         createdTime = uint40(uint256(reqId) >> 208);
         if (check) {
-            require(createdTime > block.timestamp - PROPOSE_PERIOD, "createdTime too early");
-            require(createdTime < block.timestamp + 1 minutes, "createdTime too late");
+            require(createdTime > block.timestamp - PROPOSE_PERIOD, ECreatedTimeTooEarly());
+            require(createdTime < block.timestamp + 1 minutes, ECreatedTimeTooLate());
         }
     }
 
@@ -121,12 +147,12 @@ abstract contract ReqHelpers is Constants, SigVerifier {
         ReqHelpersStorage storage $ = _getReqHelpersStorage();
         uint8 tokenIndex = uint8(uint256(reqId) >> 192);
         tokenAddr = $._tokens[tokenIndex];
-        require(tokenAddr != address(0), "Invalid tokenIndex");
+        require(tokenAddr != address(0), ETokenIndexNotExisted());
     }
 
     function _amountFrom(bytes32 reqId) internal view returns (uint256 amount) {
         amount = (uint256(reqId) >> 128) & 0xFFFFFFFFFFFFFFFF;
-        require(amount > 0, "Amount must be greater than zero");
+        require(amount > 0, EAmountZero());
         uint8 tokenIndex = uint8(uint256(reqId) >> 192);
         if (tokenIndex >= 192) {
             ReqHelpersStorage storage $ = _getReqHelpersStorage();
@@ -163,22 +189,22 @@ abstract contract ReqHelpers is Constants, SigVerifier {
     }
 
     modifier isLockMode() {
-        require(IS_LOCK_MODE, "Tunnel running on lock mode");
+        require(IS_LOCK_MODE, ETunnelOnLockMode());
         _;
     }
 
     modifier isMintMode() {
-        require(!IS_LOCK_MODE, "Tunnel running on mint mode");
+        require(!IS_LOCK_MODE, ETunnelOnMintMode());
         _;
     }
 
     modifier hubIsMintOppositeSideOf(bytes32 reqId) {
-        require(HUB_ID == uint8(uint256(reqId) >> 120), "Current hub is not the mint-opposite side of reqId");
+        require(HUB_ID == uint8(uint256(reqId) >> 120), EHubNotMintOppositeSide());
         _;
     }
 
     modifier hubIsMintSideOf(bytes32 reqId) {
-        require(HUB_ID == uint8(uint256(reqId) >> 112), "Current hub is not the mint side of reqId");
+        require(HUB_ID == uint8(uint256(reqId) >> 112), EHubNotMintSide());
         _;
     }
 }
