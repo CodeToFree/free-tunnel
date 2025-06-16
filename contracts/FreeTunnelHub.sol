@@ -12,6 +12,7 @@ import "./utils/SigVerifier.sol";
 
 contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     uint8 public HUB_ID;
+    address public immutable TUNNEL_SIGNER;
 
     address public currentTBM;
     event TunnelBoringMachineUpdated(uint64 indexed version, address tbmAddress);
@@ -21,7 +22,9 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     event TunnelUpgraded(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
     event TunnelDetached(address indexed tunnelAddress);
 
-    constructor() initializer {}
+    constructor() initializer {
+        TUNNEL_SIGNER = tx.origin;
+    }
 
     function initialize(uint8 hubId) public initializer {
         __Ownable_init(msg.sender);
@@ -101,7 +104,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
             " to open the tunnel:\n", tunnelName,
             "\nUntil: ", Strings.toString(until)
         ));
-        __checkSignature(digest, r, yParityAndS, owner());
+        __checkSignature(digest, r, yParityAndS, TUNNEL_SIGNER);
 
         address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
 
