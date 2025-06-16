@@ -22,7 +22,7 @@ const events = {
   '0x1ddac62124b119ca03938d470a086327983c6af84d0a692542c6afdf6c30202b': 'TokenBurnCancelled',
   '0xadeba355367ba829c72a6c1961984bf03b6a05c5a743c62bfced85e6b1fc1edd': 'TokenUnlockProposed',
   '0x92fd09a543e2e6a459f5e6a96fdf98f7fc614eee2145af3f9d2b9f33360f4268': 'TokenUnlockExecuted',
-  '': 'TokenUnlockCancelled',
+  '0x6f728f8699b4774e6257222b67bc88bc725ad625c81bf3997510908ca2e33041': 'TokenUnlockCancelled',
 }
 
 export default async function handler(req, res) {
