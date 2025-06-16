@@ -6,6 +6,7 @@
   "rpcUrl": "https://rpc.memecore.net",
   "explorerUrl": "https://memecorescan.io",
   "tokens": {
+    "0x0000000000000000000000000000000000000001": "M",
     "0x552791BE94B679cd0CeFB35c8AB0364973ACB37f": "USDC"
   },
   "hubId": 50
