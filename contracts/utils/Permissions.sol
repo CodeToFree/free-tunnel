@@ -44,6 +44,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
 
     error EThreshold();
     error EThresholdZero();
+    error EThresholdOver();
     error EActiveSinceTooEarly();
     error EActiveSinceTooLate();
     error EOverwriteExecutors();
@@ -154,6 +155,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
         PermissionsStorage storage $ = _getPermissionsStorage();
         require($._exeThresholdForIndex.length == 0, EExecutorsAlreadyInitialized());
         require(threshold > 0, EThresholdZero());
+        require(threshold <= executors.length, EThresholdOver());
         while (exeIndex > 0) {
             $._executorsForIndex.push(new address[](0));
             $._exeThresholdForIndex.push(0);
@@ -206,6 +208,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
         bytes32[] calldata r, bytes32[] calldata yParityAndS, address[] calldata executors, uint256 exeIndex
     ) external {
         require(threshold > 0, EThresholdZero());
+        require(threshold <= newExecutors.length, EThresholdOver());
         require(activeSince > block.timestamp + 36 hours, EActiveSinceTooEarly());
         require(activeSince < block.timestamp + 5 days, EActiveSinceTooLate());
 
