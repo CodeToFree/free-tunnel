@@ -20,6 +20,8 @@ contract MultiControlERC20 is ERC20Upgradeable, Ownable2StepUpgradeable, AccessC
     error EOnlyGuardianOrOwner();
     error EBlacklisted();
 
+    constructor() initializer {}
+
     function initConfigs(string memory name, string memory symbol, uint8 decimals_, address owner) public initializer {
         __ERC20_init(name, symbol);
         _decimals = decimals_;
