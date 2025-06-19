@@ -8,7 +8,7 @@
   "rpcUrl": "https://mainnet.movementnetwork.xyz/v1",
   "explorerUrl": "https://explorer.movementlabs.xyz",
   "tokens": {
-    "0xcd70462449e33f24847ffd56ef45c8875a13c374e1d6f07342b365e42fd3c028": "M-BTC",
+    "0xc457331726b4672205f8a89f7b6e3a0545e2edadf6e4ee86ceaaf9147ae9d80a": "M-BTC",
     "0x48b904a97eafd065ced05168ec44638a63e1e3bcaec49699f6b8dabbd1424650": "USDa",
     "0xe699e6c1733462632821b6e5b954c0ed3aa9ad1efb70b6ce92616952ade89258": "sUSDa"
   },
