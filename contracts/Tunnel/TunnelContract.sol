@@ -39,7 +39,7 @@ contract TunnelContract is LockContract, MintContract, UUPSUpgradeable {
 
     function _authorizeUpgrade(address newImplementation) internal pure override {}
 
-    function upgradeToAndCall(address newImplementation, bytes memory data) public payable override {
+    function upgradeToAndCall(address newImplementation, bytes memory data) public payable override onlyAdmin {
         require(detached, EUpgradeNotDetached());
         UUPSUpgradeable.upgradeToAndCall(newImplementation, data);
     }
