@@ -7,12 +7,19 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../utils/Permissions.sol";
 import "../utils/ReqHelpers.sol";
 
+interface IMerlinBridge {
+    function mintERC20Token(bytes32 txHash, address token, address to, uint256 amount) external;
+    function burnERC20Token(address token, uint256 amount, string memory destBtcAddr) external;
+}
+
 abstract contract MintContract is Permissions, ReqHelpers {
     using SafeERC20 for IERC20;
 
     bytes4 private constant MINT_SELECTOR = bytes4(keccak256("mint(address,uint256)"));
     bytes4 private constant BURN_SELECTOR = bytes4(keccak256("burn(address,uint256)"));
     bytes4 private constant BURN2_SELECTOR = bytes4(keccak256("burn(uint256)"));
+
+    IMerlinBridge private constant MERLIN_BRIDGE = IMerlinBridge(address(0x28AD6b7dfD79153659cb44C2155cf7C0e1CeEccC));
 
     struct MintContractStorage {
         mapping(bytes32 => address) proposedMint;
@@ -75,12 +82,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
             vault = getVault();
         }
 
-        (bool success, bytes memory data) = tokenAddr.call(abi.encodeWithSelector(
-          MINT_SELECTOR,
-          vault == address(0) ? recipient: vault,
-          amount
-        ));
-        require(success && (data.length == 0 || abi.decode(data, (bool))), EMintFailed());
+        MERLIN_BRIDGE.mintERC20Token(reqId, tokenAddr, vault == address(0) ? recipient: vault, amount);
 
         emit TokenMintExecuted(reqId, recipient);
     }
@@ -145,13 +147,7 @@ abstract contract MintContract is Permissions, ReqHelpers {
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
 
-        (bool success, bytes memory data) = tokenAddr.call(abi.encodeWithSelector(BURN_SELECTOR, address(this), amount));
-        if (success) {
-            require(data.length == 0 || abi.decode(data, (bool)), EBurnFailed());
-        } else {
-            (success, data) = tokenAddr.call(abi.encodeWithSelector(BURN2_SELECTOR, amount));
-            require(success && (data.length == 0 || abi.decode(data, (bool))), EBurnFailed());
-        }
+        MERLIN_BRIDGE.burnERC20Token(tokenAddr, amount, Strings.toHexString(uint256(reqId), 32));
 
         emit TokenBurnExecuted(reqId, proposer);
     }
