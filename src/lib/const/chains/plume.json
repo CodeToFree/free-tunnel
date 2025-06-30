@@ -1,0 +1,12 @@
+{
+  "chainId": 98866,
+  "name": "Plume",
+  "icon": "plume",
+  "currency": "PLUME",
+  "rpcUrl": "https://rpc.plume.org",
+  "explorerUrl": "https://explorer.plume.org",
+  "tokens": {
+    "0x6B40636013CD0C5cBa347345e7CA2291B34Cd37D": "FBTC"
+  },
+  "hubId": 52
+}

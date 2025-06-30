@@ -1,0 +1,14 @@
+{
+  "chainId": 80094,
+  "name": "Berachain",
+  "icon": "bera",
+  "currency": "BERA",
+  "rpcUrl": "https://rpc.berachain.com",
+  "explorerUrl": "https://berascan.com",
+  "tokens": {
+    "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77": "SolvBTC",
+    "0xCC0966D8418d412c599A6421b760a847eB169A8c": "xSolvBTC",
+    "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B": "SolvBTC.BERA"
+  },
+  "hubId": 49
+}

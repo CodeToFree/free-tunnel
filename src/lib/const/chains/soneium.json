@@ -1,0 +1,14 @@
+{
+  "chainId": 1868,
+  "name": "Soneium",
+  "icon": "soneium",
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.soneium.org",
+  "explorerUrl": "https://www.okx.com/web3/explorer/soneium",
+  "tokens": {
+    "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77": "SolvBTC",
+    "0xCC0966D8418d412c599A6421b760a847eB169A8c": "xSolvBTC",
+    "0xAffEb8576b927050f5a3B6fbA43F360D2883A118": "SolvBTC.JUP"
+  },
+  "hubId": 27
+}

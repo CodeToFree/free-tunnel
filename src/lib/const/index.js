@@ -21,7 +21,10 @@ import bevm from './chains/bevm.json'
 import bb from './chains/bb.json'
 import bob from './chains/bob.json'
 import opbnb from './chains/opbnb.json'
+import sonic from './chains/sonic.json'
+import cfx from './chains/cfx.json'
 import neox from './chains/neox.json'
+import soneium from './chains/soneium.json'
 import kava from './chains/kava.json'
 import kroma from './chains/kroma.json'
 import kaia from './chains/kaia.json'
@@ -39,6 +42,10 @@ import corn from './chains/corn.json'
 import lisk from './chains/lisk.json'
 import taker from './chains/taker.json'
 import rsk from './chains/rsk.json'
+import bera from './chains/bera.json'
+import memecore from './chains/memecore.json'
+import goat from './chains/goat.json'
+import plume from './chains/plume.json'
 import sui from './chains/sui.json'
 import aptos from './chains/aptos.json'
 import movement from './chains/movement.json'
@@ -66,9 +73,9 @@ export const ROLES = {
 
 const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet, hype_testnet, aptos_testnet, rooch_testnet } : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
-  merlin, b2, bitlayer, bevm, bb, bob, opbnb, neox,
+  merlin, b2, bitlayer, bevm, bb, bob, opbnb, sonic, cfx, neox, soneium,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
-  rsk,
+  rsk, bera, memecore, goat, plume,
   sui, aptos, movement, rooch,
   aptos_testnet, rooch_testnet,
   hype_testnet,

@@ -1,7 +1,7 @@
 {
   "chainId": 5545,
   "name": "DuckChain",
-  "icon": "duckchain",
+  "icon": "duck",
   "currency": "TON",
   "rpcUrl": "https://rpc.duckchain.io",
   "explorerUrl": "https://scan.duckchain.io",
