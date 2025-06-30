@@ -10,7 +10,9 @@
   "tokens": {
     "0xc457331726b4672205f8a89f7b6e3a0545e2edadf6e4ee86ceaaf9147ae9d80a": "M-BTC",
     "0x48b904a97eafd065ced05168ec44638a63e1e3bcaec49699f6b8dabbd1424650": "USDa",
-    "0xe699e6c1733462632821b6e5b954c0ed3aa9ad1efb70b6ce92616952ade89258": "sUSDa"
+    "0xe699e6c1733462632821b6e5b954c0ed3aa9ad1efb70b6ce92616952ade89258": "sUSDa",
+    "0x638a9893eceddafa6b7c065ea9eb869f9f51d2f8afd52b97678edc67c91692a8": "uniBTC",
+    "0x8e1a04363457fb10be28689b4bfcb4d8ebfeea35758b518dec424bb41b9ed112": "brBTC"
   },
   "hubId": 166
 }
