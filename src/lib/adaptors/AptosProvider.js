@@ -186,7 +186,7 @@ export default class AptosProvider {
     const decimals = []
     const supportedTokens = []
 
-    for (const i of [34, 64, 85, 86]) {
+    for (const i of [34, 64, 85, 86, 194, 197]) {
       const tableItem = await this._readTable(storage.tokens.handle, {
         key_type: 'u8',
         value_type: '0x1::object::Object<0x1::fungible_asset::Metadata>',
