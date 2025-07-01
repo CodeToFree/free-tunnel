@@ -118,7 +118,7 @@ export default class AptosProvider {
               // const i = indexes.findIndex(i => i === req.tokenIndex)
               // const tokenAddr = supportedTokens[i]
               // const tokenDecimals = decimals[i]
-              if (prop === 'proposeMint') {
+              if (prop === 'proposeMint' || prop === 'proposeMintFromBurn') {
                 payload.arguments = [
                   vectorize(reqId),
                   args[1],
@@ -131,7 +131,7 @@ export default class AptosProvider {
                   args[3].map(exe => vectorize(exe)),
                   BigNumber.from(args[4]).toHexString()
                 ]
-              } else if (prop === 'proposeBurn') {
+              } else if (prop === 'proposeBurn' || prop === 'proposeBurnForMint') {
                 payload.arguments = [
                   vectorize(reqId),
                 ]
@@ -210,8 +210,10 @@ function findModuleName(method) {
   const moduleMethods = {
     atomic_mint: [
       'proposeMint',
+      'proposeMintFromBurn',
       'executeMint',
       'proposeBurn',
+      'proposeBurnForMint',
       'executeBurn',
     ],
     atomic_lock: [],
