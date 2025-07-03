@@ -1,6 +1,8 @@
 import { ethers } from 'ethers'
 import { Tunnels, Requests } from '@/lib/db'
 import { CHAINS } from '@/lib/const'
+import { sendMsgToTg, sendMsg } from '@/lib/api/msg'
+import { getSignatureTimesConfig } from '@/lib/const/signatureConfig'
 
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
@@ -14,7 +16,6 @@ async function put(req, res) {
   if (!tunnel) {
     return res.status(404).send()
   }
-
   const { proposer, reqId } = req.query
   const { hash = {}, signature = {} } = req.body
   const { p2, e1, e2, c1, c2 } = hash
@@ -39,10 +40,85 @@ async function put(req, res) {
     // TODO: check signature
     update.$addToSet = { signatures: { sig, exe } }
   }
-  await Requests.findOneAndUpdate({
+  const params = {
     _id: reqId,
     proposer,
     channel: tunnel.name,
-  }, update, { new: true })
+  }
+  const item = await Requests.findOneAndUpdate(params, update, { new: true }).lean()
+  sendSignatureNotice({...item, tunnelId: tunnel._id})
+
   res.json({ result: true })
+}
+
+export const sendSignatureNotice = (item) => {
+  try {
+    if (!item) return
+    const { e1, e2, c2 } = item.hash
+    const config = getSignatureTimesConfig(item.tunnelId)
+    const signatureLength = item.signatures.length
+    if (!config) return
+
+    // All executed or cancelled, don't need to do anything
+    if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
+      return
+    }
+
+    // To notice free to propose
+    if (isOnlyProposedByUser(item.hash)) {
+      sendMsg({ message: `${item._id} needs to be proposed` })
+      return
+    }
+
+    // If all proposed then check signatures' length to determine whether a message needs to be sent.
+    // Send to free
+    if (
+      isAllProposed(item.hash)
+      && signatureLength < config.freeSignatures
+    ) {
+      sendMsg({ message: `Free: ${item._id} needs to be signatured` })
+      return
+    }
+
+    // Send to partner
+    if (
+      isAllProposed(item.hash)
+      && signatureLength >= config.freeSignatures
+      && signatureLength < config.requiredMinSignatures
+    ) {
+      sendMsg({
+        message: `${item._id} needs to be signatured`,
+        chat_id: config.chat_id || '-4875991412',
+        message_thread_id: config.message_thread_id
+      })
+      return
+    }
+    // If e2 need to be executed
+    if (e1 && !e2 && !c2 && signatureLength >= config.requiredMinSignatures) {
+      sendMsg({ message:  `${item._id} needs to be excecute` })
+      return
+    }
+
+  } catch (error) {
+    console.log('[msg sendSignatureNotice error] ', error)
+  }
+}
+
+const isStage2Finished = (hash) => { 
+  const { p2, c2, e2} = hash
+  return p2 && (c2 || e2)
+}
+
+const isStage1Finished = (hash) => { 
+  const { p1, c1, e1} = hash
+  return p1 && (c1 || e1)
+}
+
+const isAllProposed = (hash) => {
+  const { p1, p2 } = hash
+  return p1 && p2
+}
+
+const isOnlyProposedByUser = (hash) => {
+  return Object.keys(hash).length === 1 && hash.p1
 }
