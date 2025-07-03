@@ -92,7 +92,7 @@ export const sendSignatureNotice = (item) => {
       })
       return
     }
-    // If e2 need to be executed
+    // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({ message:  `${item._id} needs to be excecute` })
       return
