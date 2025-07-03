@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { Tunnels, Requests } from '@/lib/db'
 import { CHAINS } from '@/lib/const'
 import { getTunnelContract, parseRequest } from '@/lib/request'
+import { sendSignatureNotice } from '@/lib/msg'
 
 const events = {
   // '0xc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2': 'Initialized',
@@ -96,7 +97,8 @@ export async function refresh(id, tunnel) {
     } else {
       continue
     }
-    await Requests.findByIdAndUpdate(req.reqId, update, { upsert: true })
+    const item = await Requests.findByIdAndUpdate(req.reqId, update, { upsert: true, new: true }).lean()
+    sendSignatureNotice(item)
   }
 
   return true
