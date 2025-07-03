@@ -5,6 +5,10 @@ const headers = {
   authorization: `Bearer ${MSG_TOKEN}`
 }
 const fetcher = async (apiPath, method = 'GET', data) => {
+  if (!MSG_URL || !MSG_TOKEN) {
+    console.error('[msg config error]: Need to set MSG_URL and MSG_TOKEN')
+    return
+  }
   const option = {
     method,
     headers,

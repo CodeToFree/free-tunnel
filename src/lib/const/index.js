@@ -86,4 +86,4 @@ export const ADMIN_ADDRS = (process.env.NEXT_PUBLIC_ADMIN_ADDRS || '').split(','
 
 export const MSG_TOKEN = process.env.MSG_TOKEN
 export const MSG_URL = process.env.MSG_URL
-export const CHAT_ID = process.env.CHAT_ID
+export const CHAT_ID = process.env.CHAT_ID || '-4946255911'
