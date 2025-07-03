@@ -42,13 +42,8 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
   },
   {
-    id: "unibtc",
-    freeSignatures: 0,
-    requiredMinSignatures: 2,
-  },
-  {
     id: "bedrock",
-    freeSignatures: 2,
+    freeSignatures: 1,
     requiredMinSignatures: 3,
   },
   {
@@ -71,36 +66,46 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
   },
-  // {
-  //   id: "merl", // TODO:
-  //   freeSignatures: 1,
-  //   requiredMinSignatures: 3,
-  // },
-  // {
-  //   id: "stbtc", // TODO:
-  //   freeSignatures: 2,
-  //   requiredMinSignatures: 3,
-  // },
-  // {
-  //   id: "wusd", // TODO:
-  //   freeSignatures: 2,
-  //   requiredMinSignatures: 3,
-  // },
-  // {
-  //   id: "duck", // TODO:
-  //   freeSignatures: 2,
-  //   requiredMinSignatures: 3,
-  // },
-  // {
-  //   id: "bitlayer", // TODO:
-  //   freeSignatures: 2,
-  //   requiredMinSignatures: 3,
-  // },
-  // {
-  //   id: "bevm", // TODO:
-  //   freeSignatures: 2,
-  //   requiredMinSignatures: 3,
-  // },
+  {
+    id: "merl",
+    freeSignatures: 1,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "stbtc",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "wusd",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "duck",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "memecore",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "m",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "avalon",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+  },
+  {
+    id: "ubtc",
+    freeSignatures: 0,
+    requiredMinSignatures: 2,
+  },
 ];
 
 export const getSignatureTimesConfig = (channelId) => {

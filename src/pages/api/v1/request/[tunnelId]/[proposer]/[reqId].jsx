@@ -70,20 +70,19 @@ export const sendSignatureNotice = (item) => {
       return
     }
 
-    // If all proposed then check signatures' length to determine whether a message needs to be sent.
+    if (!isAllProposed(item.hash)) {
+      return
+    }
+
     // Send to free
-    if (
-      isAllProposed(item.hash)
-      && signatureLength < config.freeSignatures
-    ) {
+    if (signatureLength < config.freeSignatures) {
       sendMsg({ message: `Free: ${item._id} needs to be signatured` })
       return
     }
 
     // Send to partner
     if (
-      isAllProposed(item.hash)
-      && signatureLength >= config.freeSignatures
+      signatureLength >= config.freeSignatures
       && signatureLength < config.requiredMinSignatures
     ) {
       sendMsg({
@@ -94,7 +93,7 @@ export const sendSignatureNotice = (item) => {
       return
     }
     // If e2 need to be executed
-    if (e1 && !e2 && !c2 && signatureLength >= config.requiredMinSignatures) {
+    if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({ message:  `${item._id} needs to be excecute` })
       return
     }
