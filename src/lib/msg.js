@@ -3,7 +3,6 @@ import { getSignatureTimesConfig } from "./const/signatureConfig"
 
 export const sendSignatureNotice = (item) => {
   try {
-    sendMsg({ message: '[msg sendSignatureNotice start] ' })
     if (!item) return
     const config = getSignatureTimesConfig(item.tunnelId)
     const signatureLength = item.signatures.length
