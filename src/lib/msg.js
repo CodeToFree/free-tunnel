@@ -1,9 +1,12 @@
 import { sendMsg } from "./api/msg"
+import { defaultTokens } from "./const/defaultTokens"
 import { getSignatureTimesConfig } from "./const/signatureConfig"
+import { parseRequest } from "./request"
 
 export const sendSignatureNotice = (item) => {
   try {
     if (!item) return
+    const swapInfo = formatSwapInfo(item._id)
     const config = getSignatureTimesConfig(item.tunnelId)
     const signatureLength = item.signatures.length
     if (!config) return
@@ -25,7 +28,7 @@ export const sendSignatureNotice = (item) => {
 
     // Send to free
     if (signatureLength < config.freeSignatures) {
-      sendMsg({ message: `Free: ${item._id} needs to be signatured` })
+      sendMsg({ message: `Free signature: ${swapInfo}` })
       return
     }
 
@@ -35,15 +38,15 @@ export const sendSignatureNotice = (item) => {
       && signatureLength < config.requiredMinSignatures
     ) {
       sendMsg({
-        message: `${item._id} needs to be signatured`,
-        chat_id: config.chat_id || '-4875991412',
+        message: `Partner signature: ${swapInfo}`,
+        chat_id: config.chat_id || '-4946255911',
         message_thread_id: config.message_thread_id
       })
       return
     }
     // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
-      sendMsg({ message:  `${item._id} needs to be excecute` })
+      sendMsg({ message: `Free excecute: ${swapInfo}` })
       return
     }
 
@@ -71,4 +74,15 @@ const isAllProposed = (hash) => {
 
 const isOnlyProposedByUser = (hash) => {
   return Object.keys(hash).length === 1 && hash.p1
+}
+
+const formatSwapInfo = (reqId) => {
+  if (!reqId) return ''
+  try {
+    const parsedValue = parseRequest(reqId)
+    return `${parsedValue.value} ${defaultTokens[parsedValue.tokenIndex]} from ${parsedValue.fromChain?.name} to ${parsedValue.toChain?.name}`
+  } catch (error) {
+    console.error('[msg formatSwapInfo error]')
+    return `[msg formatSwapInfo error] ${reqId}`
+  }
 }
