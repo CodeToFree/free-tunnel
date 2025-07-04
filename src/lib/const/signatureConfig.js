@@ -3,7 +3,6 @@ export const SignatureTimesConfig = [
     id: "solvbtc",
     freeSignatures: 2,
     requiredMinSignatures: 3,
-    chat_id: '-4875991412'
   },
   {
     id: "solvbtc.m",
@@ -34,7 +33,6 @@ export const SignatureTimesConfig = [
     id: "pumpbtc",
     freeSignatures: 0,
     requiredMinSignatures: 2,
-    chat_id: '-4875991412'
   },
   {
     id: "neox",
