@@ -6,7 +6,7 @@ import { parseRequest } from "./request"
 export const sendSignatureNotice = (item) => {
   try {
     if (!item) return
-    const swapInfo = formatSwapInfo('0x01006866239003520000000000001d980031')
+    const swapInfo = formatSwapInfo(item.reqId)
     const config = getSignatureTimesConfig(item.tunnelId)
     const signatureLength = item.signatures.length
     if (!config) return
