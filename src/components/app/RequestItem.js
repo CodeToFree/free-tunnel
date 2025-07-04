@@ -9,43 +9,7 @@ import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
 import ButtonExecute from './ButtonExecute'
 import ButtonCancel from './ButtonCancel'
-
-const defaultTokens = {
-  1: 'USDC',
-  2: 'USDT',
-  64: 'BTC',
-  65: 'ETH',
-  66: 'MERL',
-  67: 'STONE',
-  68: 'FDUSD',
-  69: 'BDGM',
-  71: 'POL',
-  72: 'SolvBTC.m',
-  73: 'SolvBTC.b',
-  75: 'BBTC',
-  76: 'BBUSD',
-  77: 'uBTC',
-  78: 'SolvBTC',
-  79: 'xSolvBTC',
-  80: 'SolvBTC.ENA',
-  81: 'SolvBTC.JUP',
-  82: 'SolvBTC.BERA',
-  83: 'iBTC',
-  84: 'stBTC',
-  86: 'WUSD',
-  87: 'PUMP',
-  88: 'B2',
-  89: 'M',
-  173: 'TESTSV',
-  192: 'WBTC',
-  193: 'pumpBTC',
-  194: 'uniBTC',
-  195: 'cbBTC',
-  196: 'oBTC.x',
-  197: 'brBTC',
-  198: 'FBTC',
-  224: 'DUCK',
-}
+import { defaultTokens } from '@/lib/const/defaultTokens'
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const fromActionName = capitalize(action.split('-')[0])
