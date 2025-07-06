@@ -1,4 +1,5 @@
 import { sendMsg } from "./api/msg"
+import { CHAT_ID } from "./const"
 import { defaultTokens } from "./const/defaultTokens"
 import { getSignatureTimesConfig } from "./const/signatureConfig"
 import { parseRequest } from "./request"
@@ -18,7 +19,7 @@ export const sendSignatureNotice = (item) => {
 
     // To notice free to propose
     if (isOnlyProposedByUser(item.hash)) {
-      sendMsg({ message: `${item._id} needs to be proposed` })
+      sendMsg({ message: `Free propose: ${swapInfo}` })
       return
     }
 
@@ -39,7 +40,7 @@ export const sendSignatureNotice = (item) => {
     ) {
       sendMsg({
         message: `Partner signature: ${swapInfo}`,
-        chat_id: config.chat_id || '-4946255911',
+        chat_id: config.chat_id || CHAT_ID,
         message_thread_id: config.message_thread_id
       })
       return
@@ -73,7 +74,7 @@ const isAllProposed = (hash) => {
 }
 
 const isOnlyProposedByUser = (hash) => {
-  return Object.keys(hash).length === 1 && hash.p1
+  return hash.p1 && !hash.p2
 }
 
 const formatSwapInfo = (reqId) => {
