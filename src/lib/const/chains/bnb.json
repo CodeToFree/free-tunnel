@@ -6,6 +6,7 @@
   "rpcUrl": "https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3",
   "explorerUrl": "https://bscscan.com",
   "tokens": {
+    "0x0000000000000000000000000000000000000001": "BNB",
     "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c": "BTCB",
     "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409": "FDUSD",
     "0x9BFA177621119e64CecbEabE184ab9993E2ef727": "M-BTC",
