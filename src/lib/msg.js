@@ -6,7 +6,7 @@ import { parseRequest } from "./request"
 
 export const sendSignatureNotice = (item) => {
   try {
-    if (!item) return
+    if (!item || !Object.keys(item.hash || {}).length) return
     const swapInfo = formatSwapInfo(item._id)
     const config = getSignatureTimesConfig(item.tunnelId)
     const signatureLength = item.signatures.length
@@ -74,7 +74,7 @@ const isAllProposed = (hash) => {
 }
 
 const isOnlyProposedByUser = (hash) => {
-  return hash.p1 && !hash.p2
+  return Object.keys(hash).length === 1 && hash.p1
 }
 
 const formatSwapInfo = (reqId) => {
