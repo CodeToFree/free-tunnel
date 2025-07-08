@@ -124,5 +124,5 @@ const SwapType = {
 const getUrl = (parsedValue, tunnelId) => {
   const type = parsedValue.actionId & 0x0f
   const isUnlock = type === SwapType.BURN_UNLOCK
-  return `https://tunnel.free.tech/${tunnelId}${isUnlock ? 'unlock' : ''}`
+  return `https://tunnel.free.tech/${tunnelId}${isUnlock ? '/unlock' : ''}`
 }
