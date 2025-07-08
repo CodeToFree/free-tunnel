@@ -17,7 +17,7 @@ export const sendSignatureNotice = (item) => {
     // All executed or cancelled, don't need to do anything
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
       sendMsg({
-        message: `🤳🏻 ${swapInfo.msg}\n ✅ EXECUTED`,
+        message: `${swapInfo.msg}\n ✅ EXECUTED`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
@@ -26,7 +26,7 @@ export const sendSignatureNotice = (item) => {
     // To notice free to propose
     if (isOnlyProposedByUser(item.hash)) {
       sendMsg({
-        message: `🙌🏻 ${swapInfo.msg}\n ${FreeResponsiblePeople.join(' ')} Please PROPOSE  👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please PROPOSE  👉🏻 ${swapInfo.url}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
       })
       return
@@ -37,7 +37,7 @@ export const sendSignatureNotice = (item) => {
     }
 
     sendMsg({
-      message: `🙌🏻 ${swapInfo.msg}\n ✅ PROPOSED`,
+      message: `${swapInfo.msg}\n✅ PROPOSED`,
       cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
     })
 
@@ -60,7 +60,7 @@ export const sendSignatureNotice = (item) => {
     // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({
-        message: `🤳🏻 ${swapInfo.msg}\n ${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
@@ -109,9 +109,11 @@ const formatSwapInfo = (reqId, tunnelId) => {
 
 const getMessageInfo = ({ swapInfo, config, signLen, forFree }) => {
   const { requiredMinSignatures, responsiblePeople = [] } = config
-  const responsiblePeopleStr = forFree ? FreeResponsiblePeople.join(' ') : responsiblePeople.join(' ')
+  const noticePeople = forFree ? FreeResponsiblePeople : responsiblePeople
+  const responsiblePeopleStr = noticePeople.length ? noticePeople.join(' ') + ' ' : ''
+  const reachRequired = requiredMinSignatures === signLen
   const { msg, url } = swapInfo
-  return `✍🏽 ${msg}\n ${responsiblePeopleStr} Please verify and SIGN 👉🏻 ${url} \n ${requiredMinSignatures === signLen ? '✅ ' : ''} ${requiredMinSignatures} required, ${signLen} signed`
+  return `${msg}\n${reachRequired ? '' : `${responsiblePeopleStr}Please verify and SIGN 👉🏻 ${url}\n`}${reachRequired ? '✅ ' : ''}${requiredMinSignatures} required, ${signLen} signed`
 }
 
 const SwapType = {
