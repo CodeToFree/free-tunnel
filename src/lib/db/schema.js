@@ -52,3 +52,13 @@ export const FeeSchema = mongoose.Schema({
   _id: String,
   rules: Object,
 })
+
+export const MsgCacheSchema = mongoose.Schema({
+  _id: String,
+  expireTs: Date,
+  chat_id: String,
+  message_id: Number,
+  message: String,
+})
+
+MsgCacheSchema.index({ expireTs: 1 }, { expireAfterSeconds: 0 })
