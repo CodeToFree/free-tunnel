@@ -55,6 +55,6 @@ async function post(req, res) {
     update.to = toChain.chainId.toString()
   }
   const item = await Requests.findByIdAndUpdate(reqId, update, { upsert: true, new: true }).lean()
-  sendSignatureNotice({ ...item, tunnelId: tunnel.id })
+  sendSignatureNotice({ ...item, tunnel })
   res.json({ result: true })
 }

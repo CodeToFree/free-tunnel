@@ -9,8 +9,8 @@ const FreeResponsiblePeople = ['@phil_0']
 export const sendSignatureNotice = (item) => {
   try {
     if (!item || !Object.keys(item.hash || {}).length) return
-    const swapInfo = formatSwapInfo(item._id, item.tunnelId)
-    const config = getSignatureTimesConfig(item.tunnelId)
+    const swapInfo = formatSwapInfo(item._id, item.tunnel)
+    const config = getSignatureTimesConfig(item.tunnel._id)
     const signatureLength = item.signatures.length
     if (!config) return
 
@@ -92,17 +92,17 @@ const isOnlyProposedByUser = (hash) => {
   return Object.keys(hash).length === 1 && hash.p1
 }
 
-const formatSwapInfo = (reqId, tunnelId) => {
+const formatSwapInfo = (reqId, tunnel) => {
   if (!reqId) return ''
   try {
     const parsedValue = parseRequest(reqId)
-    const url = getUrl(parsedValue, tunnelId)
+    const url = getUrl(parsedValue, tunnel)
     return {
       msg: `${parsedValue.value} ${defaultTokens[parsedValue.tokenIndex]} from ${parsedValue.fromChain?.name} to ${parsedValue.toChain?.name}`,
       url,
     }
   } catch (error) {
-    console.error('[msg formatSwapInfo error]')
+    console.error('[msg formatSwapInfo error]', error)
     return `[msg formatSwapInfo error] ${reqId}`
   }
 }
@@ -122,8 +122,12 @@ const SwapType = {
   BURN_MINT: 3,
 }
 
-const getUrl = (parsedValue, tunnelId) => {
+const NON_EVM_CHAINS = ['aptos', 'sui', 'movement', 'rooch']
+
+const getUrl = (parsedValue, tunnel) => {
   const type = parsedValue.actionId & 0x0f
   const isUnlock = type === SwapType.BURN_UNLOCK
-  return `https://tunnel.free.tech/${tunnelId}${isUnlock ? '/unlock' : ''}`
+  const isNonEvm = [...(tunnel.from || []), ...tunnel.to || []].some(i => NON_EVM_CHAINS.includes(i))
+  const domain = isNonEvm ? 'https://nonevm.free.tech' : 'https://tunnel.free.tech'
+  return `${domain}/${tunnel._id}${isUnlock ? '/unlock' : ''}`
 }

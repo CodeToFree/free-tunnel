@@ -44,7 +44,7 @@ async function put(req, res) {
     channel: tunnel.name,
   }
   const item = await Requests.findOneAndUpdate(params, update, { new: true }).lean()
-  sendSignatureNotice({...item, tunnelId: tunnel._id})
+  sendSignatureNotice({...item, tunnel})
 
   res.json({ result: true })
 }

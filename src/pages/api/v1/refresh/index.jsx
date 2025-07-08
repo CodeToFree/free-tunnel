@@ -98,7 +98,7 @@ export async function refresh(id, tunnel) {
       continue
     }
     const item = await Requests.findByIdAndUpdate(req.reqId, update, { upsert: true, new: true }).lean()
-    sendSignatureNotice({ ...item, tunnelId: tunnel._id })
+    sendSignatureNotice({ ...item, tunnel })
   }
 
   return true
