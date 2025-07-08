@@ -1,4 +1,5 @@
 import { MSG_TOKEN, MSG_URL, CHAT_ID } from "@/lib/const"
+import { MsgCache } from "@/lib/db"
 
 const headers = {
   'Content-Type': 'application/json',
@@ -26,15 +27,58 @@ const fetcher = async (apiPath, method = 'GET', data) => {
     throw err
   }
 }
+export const MsgCacheType = {
+  NEED_PROPOSE: 'NEED_PROPOSE',
+  NEED_FREE_SIGNATURE: 'NEED_FREE_SIGNATURE',
+  NEED_PARTNER_SIGNATURE: 'NEED_PARTNER_SIGNATURE',
+  NEED_EXECUTE: 'NEED_EXECUTE',
+}
 
-export const sendMsg = async ({ message, chat_id, message_thread_id }) => {
+export const sendMsg = async (params) => {
   try {
-    await fetcher(`api/tg/message`, 'POST', {
-      message,
-      chat_id: chat_id || CHAT_ID,
-      message_thread_id // if in topics, should pass a thread id
-    })
+    const { cacheId } = params
+    const msgCache = await MsgCache.findOne({ _id: cacheId }).lean()
+    if (!msgCache) {
+      sendNewMsg(params)
+    } else {
+      updateMsg(params, msgCache)
+    }
   } catch (error) {
     console.error(`[msg send error] `, error)
   }
+}
+
+const sendNewMsg = async (params) => {
+  const { message, chatId = CHAT_ID, messageThreadId, cacheId } = params
+  const res = await fetcher(`api/tg/message`, 'POST', {
+    message,
+    chat_id: chatId,
+    message_thread_id: messageThreadId
+  })
+  await MsgCache.create({
+    _id: cacheId,
+    message,
+    expireTs: getExpireTs(96),
+    chatId: [chatId, messageThreadId].filter(i => !!i).join(':'),
+    messageId: res.message_id
+  })
+}
+
+const updateMsg = async (params, msgCache) => {
+  const { message, cacheId } = params
+  const [cachedChatId, messageThreadId] = msgCache.chatId.split(':')
+  if (message !== msgCache.message) {
+    await fetcher(`api/tg/message`, 'PUT', {
+      message,
+      chat_id: cachedChatId,
+      message_thread_id: messageThreadId,
+      message_id: msgCache.messageId
+    })
+    await MsgCache.updateOne({ _id: cacheId }, { message })
+  }
+}
+
+
+const getExpireTs = (expireHours) => {
+  return new Date().getTime() + 1000 * 60 * 60 * expireHours
 }
