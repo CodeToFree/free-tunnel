@@ -17,7 +17,7 @@ export const sendSignatureNotice = (item) => {
     // All executed or cancelled, don't need to do anything
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
       sendMsg({
-        message: `${swapInfo.msg}\n ✅ EXECUTED`,
+        message: `${swapInfo.msg}\n✅ EXECUTED`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
@@ -26,7 +26,7 @@ export const sendSignatureNotice = (item) => {
     // To notice free to propose
     if (isOnlyProposedByUser(item.hash)) {
       sendMsg({
-        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please PROPOSE  👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please PROPOSE 👉🏻 ${swapInfo.url}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
       })
       return
