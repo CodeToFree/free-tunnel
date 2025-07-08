@@ -2,7 +2,6 @@ import { MsgCacheType, sendMsg } from "./api/msg"
 import { CHAT_ID } from "./const"
 import { defaultTokens } from "./const/defaultTokens"
 import { getSignatureTimesConfig } from "./const/signatureConfig"
-import { MsgCache } from "./db"
 import { parseRequest } from "./request"
 
 const FreeResponsiblePeople = ['@phil_0']
@@ -19,7 +18,7 @@ export const sendSignatureNotice = (item) => {
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
       sendMsg({
         message: `🤳🏻 ${swapInfo.msg}\n ✅ EXECUTED`,
-        cache_id: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
+        cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
     }
@@ -27,8 +26,8 @@ export const sendSignatureNotice = (item) => {
     // To notice free to propose
     if (isOnlyProposedByUser(item.hash)) {
       sendMsg({
-        message: `🙌🏻 ${swapInfo.msg}\n @phil_0 Please PROPOSE  👉🏻 ${swapInfo.url}`,
-        cache_id: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
+        message: `🙌🏻 ${swapInfo.msg}\n ${FreeResponsiblePeople.join(' ')} Please PROPOSE  👉🏻 ${swapInfo.url}`,
+        cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
       })
       return
     }
@@ -39,22 +38,22 @@ export const sendSignatureNotice = (item) => {
 
     sendMsg({
       message: `🙌🏻 ${swapInfo.msg}\n ✅ PROPOSED`,
-      cache_id: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
+      cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
     })
 
     if (signatureLength <= config.requiredMinSignatures) {
       if (config.freeSignatures > 0) {
         sendMsg({
           message: getMessageInfo({ swapInfo, config, signLen: signatureLength, forFree: true}),
-          cache_id: `${item._id}:${MsgCacheType.NEED_FREE_SIGNATURE}`
+          cacheId: `${item._id}:${MsgCacheType.NEED_FREE_SIGNATURE}`
         })
       }
 
       sendMsg({
         message: getMessageInfo({ swapInfo, config, signLen: signatureLength}),
-        chat_id: config.chat_id || CHAT_ID,
-        message_thread_id: config.message_thread_id,
-        cache_id: `${item._id}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
+        chatId: config.chatId || CHAT_ID,
+        messageThreadId: config.messageThreadId,
+        cacheId: `${item._id}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
       })
     }
 
@@ -62,7 +61,7 @@ export const sendSignatureNotice = (item) => {
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({
         message: `🤳🏻 ${swapInfo.msg}\n ${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}`,
-        cache_id: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
+        cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
     }

@@ -36,8 +36,8 @@ export const MsgCacheType = {
 
 export const sendMsg = async (params) => {
   try {
-    const { cache_id } = params
-    const msgCache = await MsgCache.findOne({ _id: cache_id }).lean()
+    const { cacheId } = params
+    const msgCache = await MsgCache.findOne({ _id: cacheId }).lean()
     if (!msgCache) {
       sendNewMsg(params)
     } else {
@@ -49,32 +49,32 @@ export const sendMsg = async (params) => {
 }
 
 const sendNewMsg = async (params) => {
-  const { message, chat_id = CHAT_ID, message_thread_id, cache_id } = params
+  const { message, chatId = CHAT_ID, messageThreadId, cacheId } = params
   const res = await fetcher(`api/tg/message`, 'POST', {
     message,
-    chat_id,
-    message_thread_id
+    chat_id: chatId,
+    message_thread_id: messageThreadId
   })
   await MsgCache.create({
-    _id: cache_id,
+    _id: cacheId,
     message,
     expireTs: getExpireTs(96),
-    chat_id: [chat_id, message_thread_id].filter(i => !!i).join(':'),
-    message_id: res.message_id
+    chatId: [chatId, messageThreadId].filter(i => !!i).join(':'),
+    messageId: res.message_id
   })
 }
 
 const updateMsg = async (params, msgCache) => {
-  const { message, cache_id } = params
-  const [cached_chat_id, message_thread_id] = msgCache.chat_id.split(':')
+  const { message, cacheId } = params
+  const [cachedChatId, messageThreadId] = msgCache.chatId.split(':')
   if (message !== msgCache.message) {
     await fetcher(`api/tg/message`, 'PUT', {
       message,
-      chat_id: cached_chat_id,
-      message_thread_id,
-      message_id: msgCache.message_id
+      chat_id: cachedChatId,
+      message_thread_id: messageThreadId,
+      message_id: msgCache.messageId
     })
-    await MsgCache.updateOne({ _id: cache_id }, { message })
+    await MsgCache.updateOne({ _id: cacheId }, { message })
   }
 }
 
