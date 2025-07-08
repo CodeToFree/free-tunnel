@@ -9,15 +9,15 @@ const FreeResponsiblePeople = ['@phil_0']
 export const sendSignatureNotice = (item) => {
   try {
     if (!item || !Object.keys(item.hash || {}).length) return
-    const swapInfo = formatSwapInfo(item._id, item.tunnelId)
-    const config = getSignatureTimesConfig(item.tunnelId)
+    const swapInfo = formatSwapInfo(item._id, item.tunnel)
+    const config = getSignatureTimesConfig(item.tunnel._id)
     const signatureLength = item.signatures.length
     if (!config) return
 
     // All executed or cancelled, don't need to do anything
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
       sendMsg({
-        message: `🤳🏻 ${swapInfo.msg}\n ✅ EXECUTED`,
+        message: `${swapInfo.msg}\n✅ EXECUTED`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
@@ -26,7 +26,7 @@ export const sendSignatureNotice = (item) => {
     // To notice free to propose
     if (isOnlyProposedByUser(item.hash)) {
       sendMsg({
-        message: `🙌🏻 ${swapInfo.msg}\n ${FreeResponsiblePeople.join(' ')} Please PROPOSE  👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please PROPOSE 👉🏻 ${swapInfo.url}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
       })
       return
@@ -37,7 +37,7 @@ export const sendSignatureNotice = (item) => {
     }
 
     sendMsg({
-      message: `🙌🏻 ${swapInfo.msg}\n ✅ PROPOSED`,
+      message: `${swapInfo.msg}\n✅ PROPOSED`,
       cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
     })
 
@@ -60,7 +60,7 @@ export const sendSignatureNotice = (item) => {
     // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({
-        message: `🤳🏻 ${swapInfo.msg}\n ${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
@@ -92,26 +92,28 @@ const isOnlyProposedByUser = (hash) => {
   return Object.keys(hash).length === 1 && hash.p1
 }
 
-const formatSwapInfo = (reqId, tunnelId) => {
+const formatSwapInfo = (reqId, tunnel) => {
   if (!reqId) return ''
   try {
     const parsedValue = parseRequest(reqId)
-    const url = getUrl(parsedValue, tunnelId)
+    const url = getUrl(parsedValue, tunnel)
     return {
       msg: `${parsedValue.value} ${defaultTokens[parsedValue.tokenIndex]} from ${parsedValue.fromChain?.name} to ${parsedValue.toChain?.name}`,
       url,
     }
   } catch (error) {
-    console.error('[msg formatSwapInfo error]')
+    console.error('[msg formatSwapInfo error]', error)
     return `[msg formatSwapInfo error] ${reqId}`
   }
 }
 
 const getMessageInfo = ({ swapInfo, config, signLen, forFree }) => {
   const { requiredMinSignatures, responsiblePeople = [] } = config
-  const responsiblePeopleStr = forFree ? FreeResponsiblePeople.join(' ') : responsiblePeople.join(' ')
+  const noticePeople = forFree ? FreeResponsiblePeople : responsiblePeople
+  const responsiblePeopleStr = noticePeople.length ? noticePeople.join(' ') + ' ' : ''
+  const reachRequired = requiredMinSignatures === signLen
   const { msg, url } = swapInfo
-  return `✍🏽 ${msg}\n ${responsiblePeopleStr} Please verify and SIGN 👉🏻 ${url} \n ${requiredMinSignatures === signLen ? '✅ ' : ''} ${requiredMinSignatures} required, ${signLen} signed`
+  return `${msg}\n${reachRequired ? '' : `${responsiblePeopleStr}Please verify and SIGN 👉🏻 ${url}\n`}${reachRequired ? '✅ ' : ''}${requiredMinSignatures} required, ${signLen} signed`
 }
 
 const SwapType = {
@@ -120,8 +122,12 @@ const SwapType = {
   BURN_MINT: 3,
 }
 
-const getUrl = (parsedValue, tunnelId) => {
+const NON_EVM_CHAINS = ['aptos', 'sui', 'movement', 'rooch']
+
+const getUrl = (parsedValue, tunnel) => {
   const type = parsedValue.actionId & 0x0f
   const isUnlock = type === SwapType.BURN_UNLOCK
-  return `https://tunnel.free.tech/${tunnelId}${isUnlock ? '/unlock' : ''}`
+  const isNonEvm = [...(tunnel.from || []), ...tunnel.to || []].some(i => NON_EVM_CHAINS.includes(i))
+  const domain = isNonEvm ? 'https://nonevm.free.tech' : 'https://tunnel.free.tech'
+  return `${domain}/${tunnel._id}${isUnlock ? '/unlock' : ''}`
 }
