@@ -41,7 +41,7 @@ export const sendMsg = async (params) => {
     if (!msgCache) {
       sendNewMsg(params)
     } else {
-      updateMsg(params, msgCache)
+      !!msgCache.message && updateMsg(params, msgCache)
     }
   } catch (error) {
     console.error(`[msg send error] `, error)
@@ -50,18 +50,27 @@ export const sendMsg = async (params) => {
 
 const sendNewMsg = async (params) => {
   const { message, chatId = CHAT_ID, messageThreadId, cacheId } = params
-  const res = await fetcher(`api/tg/message`, 'POST', {
-    message,
-    chat_id: chatId,
-    message_thread_id: messageThreadId
-  })
-  await MsgCache.create({
-    _id: cacheId,
-    message,
-    expireTs: getExpireTs(96),
-    chatId: [chatId, messageThreadId].filter(i => !!i).join(':'),
-    messageId: res.message_id
-  })
+  try {
+    await MsgCache.create({
+      _id: cacheId,
+      message,
+      expireTs: getExpireTs(96),
+      chatId: [chatId, messageThreadId].filter(i => !!i).join(':'),
+    })
+  } catch (error) {
+    console.error(`[msg write db error] `, error)
+    return
+  }
+  try {
+    const res = await fetcher(`api/tg/message`, 'POST', {
+      message,
+      chat_id: chatId,
+      message_thread_id: messageThreadId
+    })
+    await MsgCache.updateOne({ _id: cacheId }, { messageId: res.message_id })
+  } catch (error) {
+    await MsgCache.deleteOne({ _id: cacheId })
+  }
 }
 
 const updateMsg = async (params, msgCache) => {
