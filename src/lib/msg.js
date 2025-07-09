@@ -49,9 +49,9 @@ export const sendSignatureNotice = (item) => {
         })
       }
 
-      sendMsg({
+      !!config.chatId && sendMsg({
         message: getMessageInfo({ swapInfo, config, signLen: signatureLength}),
-        chatId: config.chatId || CHAT_ID,
+        chatId: config.chatId,
         messageThreadId: config.messageThreadId,
         cacheId: `${item._id}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
       })
