@@ -25,6 +25,7 @@ export const defaultTokens = {
   87: 'PUMP',
   88: 'B2',
   89: 'M',
+  90: 'TAKER',
   173: 'TESTSV',
   192: 'WBTC',
   193: 'pumpBTC',
