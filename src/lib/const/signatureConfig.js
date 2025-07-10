@@ -72,6 +72,18 @@ export const SignatureTimesConfig = [
     maxSignatureCount: 4
   },
   {
+    id: "taker-evm",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+    maxSignatureCount: 4
+  },
+  {
+    id: "fbtc",
+    freeSignatures: 2,
+    requiredMinSignatures: 3,
+    maxSignatureCount: 4
+  },
+  {
     id: "rooch",
     freeSignatures: 2,
     requiredMinSignatures: 3,
