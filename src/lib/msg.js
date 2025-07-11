@@ -4,6 +4,7 @@ import { defaultTokens } from "./const/defaultTokens"
 import { FREE_LP_ADDRESSES, getSignatureTimesConfig } from "./const/signatureConfig"
 import { SignatureUser } from "./db"
 import { parseRequest } from "./request"
+import { shortenAddress } from "./utils"
 
 const FreeResponsiblePeople = ['@phil_0']
 
@@ -137,7 +138,7 @@ const getSignatureUseText = (signAddresses, signatures, signatureUsers, reachReq
       const isSigned = signatures.find(s => s.exe.toLowerCase() === addr.toLowerCase())
       const text = `${isSigned ? '✅' : '*️⃣'} `
       const user = signatureUsers.find(u => u._id.toLowerCase() === addr.toLowerCase())
-      return `${text} ${user ? `@${user.tgUserName}` : addr}`
+      return `${text} ${user ? `@${user.tgUserName}` : shortenAddress(addr)}`
     }).join('\n')
 }
 
