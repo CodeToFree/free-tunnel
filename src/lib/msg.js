@@ -22,7 +22,7 @@ export const sendSignatureNotice = async (item) => {
 
     // All executed or cancelled, don't need to do anything
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
-      const signatureUsers = await SignatureUser.find({ _id: { $in: config.signAddresses || [] } }).lean()
+      const signatureUsers = await getSignatureUsers(config)
       const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, isFinished: true }
       sendSignatureMsg({...msgInfoParams, reqId: item._id})
       sendMsg({
@@ -51,7 +51,7 @@ export const sendSignatureNotice = async (item) => {
     })
 
     if (signatureLength <= config.maxSignatureCount) {
-      const signatureUsers = await SignatureUser.find({ _id: { $in: config.signAddresses || [] } }).lean()
+      const signatureUsers = await getSignatureUsers(config)
       const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, externalText: noticeIsLpTransationText }
       sendSignatureMsg({...msgInfoParams, reqId: item._id})
     }
@@ -106,6 +106,10 @@ const sendSignatureMsg = async (msgInfoParams) => {
     messageThreadId: config.messageThreadId,
     cacheId: `${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
   })
+}
+
+const getSignatureUsers = async (config) => {
+  return await SignatureUser.find({ _id: { $in: config.signAddresses || [] } }).lean()
 }
 
 const formatSwapInfo = (reqId, tunnel) => {
