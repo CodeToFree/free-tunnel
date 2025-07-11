@@ -1,18 +1,24 @@
 import { MsgCacheType, sendMsg } from "./api/msg"
 import { CHAT_ID } from "./const"
 import { defaultTokens } from "./const/defaultTokens"
-import { getSignatureTimesConfig } from "./const/signatureConfig"
+import { FREE_LP_ADDRESSES, getSignatureTimesConfig } from "./const/signatureConfig"
+import { SignatureUser } from "./db"
 import { parseRequest } from "./request"
+import { shortenAddress } from "./utils"
 
 const FreeResponsiblePeople = ['@phil_0']
 
-export const sendSignatureNotice = (item) => {
+export const sendSignatureNotice = async (item) => {
   try {
     if (!item || !Object.keys(item.hash || {}).length) return
-    const swapInfo = formatSwapInfo(item._id, item.tunnel)
+
     const config = getSignatureTimesConfig(item.tunnel._id)
-    const signatureLength = item.signatures.length
     if (!config) return
+
+    const swapInfo = formatSwapInfo(item._id, item.tunnel)
+    const signatures = item.signatures
+    const signatureLength = signatures.length
+    const noticeIsLpTransationText = getNoticeIsLpTransationText(item)
 
     // All executed or cancelled, don't need to do anything
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
@@ -26,7 +32,7 @@ export const sendSignatureNotice = (item) => {
     // To notice free to propose
     if (isOnlyProposedByUser(item.hash)) {
       sendMsg({
-        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please PROPOSE 👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please PROPOSE 👉🏻 ${swapInfo.url}${noticeIsLpTransationText}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
       })
       return
@@ -41,16 +47,18 @@ export const sendSignatureNotice = (item) => {
       cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
     })
 
-    if (signatureLength <= config.requiredMinSignatures) {
+    if (signatureLength <= config.maxSignatureCount) {
+      const signatureUsers = await SignatureUser.find({ _id: { $in: config.signAddresses || [] } }).lean()
+      const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, externalText: noticeIsLpTransationText }
       if (config.freeSignatures > 0) {
         sendMsg({
-          message: getMessageInfo({ swapInfo, config, signLen: signatureLength, forFree: true}),
+          message: getSignatureMsg(msgInfoParams),
           cacheId: `${item._id}:${MsgCacheType.NEED_FREE_SIGNATURE}`
         })
       }
 
       !!config.chatId && sendMsg({
-        message: getMessageInfo({ swapInfo, config, signLen: signatureLength}),
+        message: getSignatureMsg(msgInfoParams),
         chatId: config.chatId,
         messageThreadId: config.messageThreadId,
         cacheId: `${item._id}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
@@ -60,7 +68,7 @@ export const sendSignatureNotice = (item) => {
     // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({
-        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}`,
+        message: `${swapInfo.msg}\n${FreeResponsiblePeople.join(' ')} Please EXECUTE 👉🏻 ${swapInfo.url}${noticeIsLpTransationText}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
       })
       return
@@ -107,13 +115,35 @@ const formatSwapInfo = (reqId, tunnel) => {
   }
 }
 
-const getMessageInfo = ({ swapInfo, config, signLen, forFree }) => {
-  const { requiredMinSignatures, responsiblePeople = [] } = config
-  const noticePeople = forFree ? FreeResponsiblePeople : responsiblePeople
-  const responsiblePeopleStr = noticePeople.length ? noticePeople.join(' ') + ' ' : ''
-  const reachRequired = requiredMinSignatures === signLen
+const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatures, signatureUsers }) => {
+  const { requiredMinSignatures, signAddresses } = config
+  const reachRequired = requiredMinSignatures <= signLen
   const { msg, url } = swapInfo
-  return `${msg}\n${reachRequired ? '' : `${responsiblePeopleStr}Please verify and SIGN 👉🏻 ${url}\n`}${reachRequired ? '✅ ' : ''}${requiredMinSignatures} required, ${signLen} signed`
+  const linkText = reachRequired ? '' : `Please verify and SIGN 👉🏻 ${url}\n`
+  let signatureUseText = getSignatureUseText(signAddresses, signatures, signatureUsers, reachRequired)
+
+  if (signatureUseText.length !== 0) {
+    signatureUseText = `\n${signatureUseText}\n`
+  }
+  const requiredText = reachRequired ? 'Ready To Execute' : `${requiredMinSignatures} signatures required to execute${externalText}`
+  return `${msg}\n${linkText}${signatureUseText}\n${requiredText}`
+}
+
+const getSignatureUseText = (signAddresses, signatures, signatureUsers, reachRequired) => {
+  return (signAddresses || [])
+    .filter(addr => {
+      if (!reachRequired) return true
+      return signatures.some(s => s.exe.toLowerCase() === addr.toLowerCase())
+    }).map(addr => {
+      const isSigned = signatures.find(s => s.exe.toLowerCase() === addr.toLowerCase())
+      const text = `${isSigned ? '✅' : '*️⃣'} `
+      const user = signatureUsers.find(u => u._id.toLowerCase() === addr.toLowerCase())
+      return `${text} ${user ? `@${user.tgUserName}` : shortenAddress(addr)}`
+    }).join('\n')
+}
+
+const getNoticeIsLpTransationText = (item) => {
+  return FREE_LP_ADDRESSES.includes(item.recipient) ? '\n\n❗️Meson initiated transaction for liquidity rebalancing. Please sign first.' : ''
 }
 
 const SwapType = {

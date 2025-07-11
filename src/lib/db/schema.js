@@ -62,3 +62,8 @@ export const MsgCacheSchema = mongoose.Schema({
 })
 
 MsgCacheSchema.index({ expireTs: 1 }, { expireAfterSeconds: 0 })
+
+export const SignatureUserSchema = mongoose.Schema({
+  _id: String,
+  tgUserName: String
+})
