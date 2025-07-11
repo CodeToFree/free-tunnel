@@ -12,48 +12,55 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x32369c32113d6a85d4b71faa40ddd048187dce79', '0xcd6d31668524598755b81a2cee068ae2ea6979b9'],
+    chatId: '-4177551452',
   },
   {
     id: "solvbtc.m",
-    freeSignatures: 2,
+    freeSignatures: 1,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    // TODO: signAddresses
+    chatId: '-4177551452',
+    signAddresses: [FREE_SIG_1, '0x32369c32113d6a85d4b71faa40ddd048187dce79', '0xcd6d31668524598755b81a2cee068ae2ea6979b9', '0xde498b6179500eb95d48a47f315e473a39cbc1aa'],
   },
   {
     id: "solvbtc.b",
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    // TODO: signAddresses
+    chatId: '-4177551452',
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x32369c32113d6a85d4b71faa40ddd048187dce79', '0xcd6d31668524598755b81a2cee068ae2ea6979b9'],
   },
   {
     id: "mbtc",
     freeSignatures: 1,
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
-    signAddresses: [FREE_SIG_1, '0x99eab698babf04889b5d4ed682e7e24b3a2089eb', '0xde498b6179500eb95d48a47f315e473a39cbc1aa']
+    signAddresses: [FREE_SIG_1, '0x99eab698babf04889b5d4ed682e7e24b3a2089eb', '0xde498b6179500eb95d48a47f315e473a39cbc1aa'],
+    chatId: '-4138337624'
   },
   {
     id: "merlin",
     freeSignatures: 1,
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
-    signAddresses: [FREE_SIG_1, '0x99eab698babf04889b5d4ed682e7e24b3a2089eb', '0xde498b6179500eb95d48a47f315e473a39cbc1aa']
+    signAddresses: [FREE_SIG_1, '0x99eab698babf04889b5d4ed682e7e24b3a2089eb', '0xde498b6179500eb95d48a47f315e473a39cbc1aa'],
+    chatId: '-4138337624'
   },
   {
     id: "pump",
     freeSignatures: 1,
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
-    signAddresses: [FREE_SIG_2, '0xbfce4653cc71bfd6293faca6bad988e8d72f0497', '0xc9c5bd2ecf73d6975b567337aaf0134cc962722e']
+    signAddresses: [FREE_SIG_2, '0xbfce4653cc71bfd6293faca6bad988e8d72f0497', '0xc9c5bd2ecf73d6975b567337aaf0134cc962722e'],
+    chatId: '-4237721398'
   },
   {
     id: "pumpbtc",
     freeSignatures: 0,
     requiredMinSignatures: 2,
-    maxSignatureCount: 3
-    // TODO: signAddresses
+    maxSignatureCount: 3,
+    signAddresses: ['0xbfce4653cc71bfd6293faca6bad988e8d72f0497', '0xc9c5bd2ecf73d6975b567337aaf0134cc962722e'],
+    chatId: '-4237721398'
   },
   {
     id: "neox",
@@ -67,7 +74,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 1,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_2, '0xde9a5ab522959091d07d022d4c8922b63d9ada0c', '0xa5ed5aa26d95a11c33e2a3650a2c9dc6ca00375c', '0xda084147eee60866c5487e1f7464a5b1c559bc03']
+    signAddresses: [FREE_SIG_2, '0xde9a5ab522959091d07d022d4c8922b63d9ada0c', '0xa5ed5aa26d95a11c33e2a3650a2c9dc6ca00375c', '0xda084147eee60866c5487e1f7464a5b1c559bc03'],
+    chatId: '-4237721398'
   },
   {
     id: "b2",
@@ -116,7 +124,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 1,
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
-    signAddresses: [FREE_SIG_1, '0x99eab698babf04889b5d4ed682e7e24b3a2089eb', '0xde498b6179500eb95d48a47f315e473a39cbc1aa']
+    signAddresses: [FREE_SIG_1, '0x99eab698babf04889b5d4ed682e7e24b3a2089eb', '0xde498b6179500eb95d48a47f315e473a39cbc1aa'],
+    chatId: '-4138337624'
   },
   {
     id: "stbtc",
@@ -144,14 +153,16 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xe486bf9858f8b995d4bde291c43eb35d94546764', '0xa031e792e26193a3a16c16993b611ff5b3bbdc8f']
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xe486bf9858f8b995d4bde291c43eb35d94546764', '0xa031e792e26193a3a16c16993b611ff5b3bbdc8f'],
+    groupId: '-4886127651'
   },
   {
     id: "m",
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xe486bf9858f8b995d4bde291c43eb35d94546764', '0xa031e792e26193a3a16c16993b611ff5b3bbdc8f']
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xe486bf9858f8b995d4bde291c43eb35d94546764', '0xa031e792e26193a3a16c16993b611ff5b3bbdc8f'],
+    groupId: '-4886127651'
   },
   {
     id: "avalon",
