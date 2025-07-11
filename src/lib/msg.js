@@ -22,6 +22,9 @@ export const sendSignatureNotice = async (item) => {
 
     // All executed or cancelled, don't need to do anything
     if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
+      const signatureUsers = await SignatureUser.find({ _id: { $in: config.signAddresses || [] } }).lean()
+      const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, isFinished: true }
+      sendSignatureMsg({...msgInfoParams, reqId: item._id})
       sendMsg({
         message: `${swapInfo.msg}\n✅ EXECUTED`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
@@ -50,19 +53,7 @@ export const sendSignatureNotice = async (item) => {
     if (signatureLength <= config.maxSignatureCount) {
       const signatureUsers = await SignatureUser.find({ _id: { $in: config.signAddresses || [] } }).lean()
       const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, externalText: noticeIsLpTransationText }
-      if (config.freeSignatures > 0) {
-        sendMsg({
-          message: getSignatureMsg(msgInfoParams),
-          cacheId: `${item._id}:${MsgCacheType.NEED_FREE_SIGNATURE}`
-        })
-      }
-
-      !!config.chatId && sendMsg({
-        message: getSignatureMsg(msgInfoParams),
-        chatId: config.chatId,
-        messageThreadId: config.messageThreadId,
-        cacheId: `${item._id}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
-      })
+      sendSignatureMsg({...msgInfoParams, reqId: item._id})
     }
 
     // need to be executed
@@ -100,6 +91,23 @@ const isOnlyProposedByUser = (hash) => {
   return Object.keys(hash).length === 1 && hash.p1
 }
 
+const sendSignatureMsg = async (msgInfoParams) => {
+  const { config, reqId } = msgInfoParams
+  if (config.freeSignatures > 0) {
+    sendMsg({
+      message: getSignatureMsg(msgInfoParams),
+      cacheId: `${reqId}:${MsgCacheType.NEED_FREE_SIGNATURE}`
+    })
+  }
+
+  !!config.chatId && sendMsg({
+    message: getSignatureMsg(msgInfoParams),
+    chatId: config.chatId,
+    messageThreadId: config.messageThreadId,
+    cacheId: `${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
+  })
+}
+
 const formatSwapInfo = (reqId, tunnel) => {
   if (!reqId) return ''
   try {
@@ -115,7 +123,7 @@ const formatSwapInfo = (reqId, tunnel) => {
   }
 }
 
-const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatures, signatureUsers }) => {
+const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatures, signatureUsers, isFinished }) => {
   const { requiredMinSignatures, signAddresses } = config
   const reachRequired = requiredMinSignatures <= signLen
   const { msg, url } = swapInfo
@@ -126,7 +134,7 @@ const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatu
     signatureUseText = `\n${signatureUseText}\n`
   }
   const requiredText = reachRequired ? 'Ready To Execute' : `${requiredMinSignatures} signatures required to execute${externalText}`
-  return `${msg}\n${linkText}${signatureUseText}\n${requiredText}`
+  return `${msg}\n${linkText}${signatureUseText}\n${isFinished ? '✅ EXECUTED' : requiredText}`
 }
 
 const getSignatureUseText = (signAddresses, signatures, signatureUsers, reachRequired) => {
