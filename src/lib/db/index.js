@@ -4,7 +4,8 @@ import {
   TunnelSchema,
   RequestSchema,
   FeeSchema,
-  MsgCacheSchema
+  MsgCacheSchema,
+  SignatureUserSchema
 } from './schema'
 
 mongoose.pluralize(null)
@@ -17,3 +18,4 @@ export const Tunnels = db.model('free_channels', TunnelSchema)
 export const Requests = db.model('free_reqs', RequestSchema)
 export const Fees = db.model('free_fees', FeeSchema)
 export const MsgCache = db.model('free_msg_cache', MsgCacheSchema)
+export const SignatureUser = db.model('free_signature_user', SignatureUserSchema)
