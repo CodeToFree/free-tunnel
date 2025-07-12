@@ -59,7 +59,7 @@ export const SignatureTimesConfig = [
     freeSignatures: 0,
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
-    signAddresses: ['0xbfce4653cc71bfd6293faca6bad988e8d72f0497', '0xc9c5bd2ecf73d6975b567337aaf0134cc962722e'],
+    signAddresses: ['0x62fe55a5a59a0382aa16388077105771bd327a68', '0x48c2c935363339dabb53a14f9626a8426e1ac162', '0x9dbc04ade3be3aefdb4aecdb451942e41ae841a2'],
     chatId: '-4237721398'
   },
   {
@@ -75,7 +75,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_2, '0xde9a5ab522959091d07d022d4c8922b63d9ada0c', '0xa5ed5aa26d95a11c33e2a3650a2c9dc6ca00375c', '0xda084147eee60866c5487e1f7464a5b1c559bc03'],
-    chatId: '-4237721398'
+    chatId: '-4744097890'
   },
   {
     id: "b2",
