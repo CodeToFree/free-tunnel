@@ -117,8 +117,11 @@ const formatSwapInfo = (reqId, tunnel) => {
   try {
     const parsedValue = parseRequest(reqId)
     const url = getUrl(parsedValue, tunnel)
+    const isUnlock = getIsUnlock(parsedValue)
+    const fromName = isUnlock ? parsedValue.toChain?.name : parsedValue.fromChain?.name
+    const toName = isUnlock ? parsedValue.fromChain?.name : parsedValue.toChain?.name
     return {
-      msg: `${parsedValue.value} ${defaultTokens[parsedValue.tokenIndex]} from ${parsedValue.fromChain?.name} to ${parsedValue.toChain?.name}`,
+      msg: `${parsedValue.value} ${defaultTokens[parsedValue.tokenIndex]} from ${fromName} to ${toName}`,
       url,
     }
   } catch (error) {
@@ -167,9 +170,13 @@ const SwapType = {
 const NON_EVM_CHAINS = ['aptos', 'sui', 'movement', 'rooch']
 
 const getUrl = (parsedValue, tunnel) => {
-  const type = parsedValue.actionId & 0x0f
-  const isUnlock = type === SwapType.BURN_UNLOCK
+  const isUnlock = getIsUnlock(parsedValue)
   const isNonEvm = [...(tunnel.from || []), ...tunnel.to || []].some(i => NON_EVM_CHAINS.includes(i))
   const domain = isNonEvm ? 'https://nonevm.free.tech' : 'https://tunnel.free.tech'
   return `${domain}/${tunnel._id}${isUnlock ? '/unlock' : ''}`
+}
+
+const getIsUnlock = (parsedValue) => {
+  const type = parsedValue.actionId & 0x0f
+  return type === SwapType.BURN_UNLOCK
 }
