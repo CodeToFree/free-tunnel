@@ -78,11 +78,20 @@ export const SignatureTimesConfig = [
     chatId: '-4744097890'
   },
   {
+    id: "unibtc",
+    freeSignatures: 1,
+    requiredMinSignatures: 3,
+    maxSignatureCount: 4,
+    signAddresses: [FREE_SIG_2, '0xde9a5ab522959091d07d022d4c8922b63d9ada0c', '0xa5ed5aa26d95a11c33e2a3650a2c9dc6ca00375c', '0xda084147eee60866c5487e1f7464a5b1c559bc03'],
+    chatId: '-4744097890'
+  },
+  {
     id: "b2",
     freeSignatures: 0,
     requiredMinSignatures: 2,
-    maxSignatureCount: 3
-    // TODO: signAddresses
+    maxSignatureCount: 3,
+    signAddresses: ['0xf860b08ca3ee77c6c9ef5a08aa7636aa37963153', '0x8f3c6735152074e4ce2b31bba8b48f128998d76d', '0xc7f261b3660ce3d052f27a55f8c81dc67d841ed2'],
+    chatId: "-4106885870"
   },
   {
     id: "exsat",
@@ -176,7 +185,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 0,
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
-    // TODO: signAddresses
+    signAddresses: ['0xf860b08ca3ee77c6c9ef5a08aa7636aa37963153', '0x8f3c6735152074e4ce2b31bba8b48f128998d76d', '0xc7f261b3660ce3d052f27a55f8c81dc67d841ed2'],
+    chatId: "-4106885870"
   },
 ];
 

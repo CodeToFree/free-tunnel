@@ -153,7 +153,7 @@ const getSignatureUseText = (signAddresses, signatures, signatureUsers, reachReq
       const isSigned = signatures.find(s => s.exe.toLowerCase() === addr.toLowerCase())
       const text = `${isSigned ? '✅' : '*️⃣'} `
       const user = signatureUsers.find(u => u._id.toLowerCase() === addr.toLowerCase())
-      return `${text} ${user ? `@${user.tgUserName}` : shortenAddress(addr)}`
+      return `${text} ${user ? `${user.tgUserName.split(',').map(n => `@${n}`).join(' ')}` : shortenAddress(addr)}`
     }).join('\n')
 }
 
