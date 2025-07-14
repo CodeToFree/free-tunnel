@@ -153,12 +153,12 @@ const getSignatureUseText = (signAddresses, signatures, signatureUsers, reachReq
       const isSigned = signatures.find(s => s.exe.toLowerCase() === addr.toLowerCase())
       const text = `${isSigned ? '✅' : '*️⃣'} `
       const user = signatureUsers.find(u => u._id.toLowerCase() === addr.toLowerCase())
-      return `${text} ${user ? `@${user.tgUserName}` : shortenAddress(addr)}`
+      return `${text} ${user ? `${user.tgUserName.split(',').map(n => `@${n}`).join(' ')}` : shortenAddress(addr)}`
     }).join('\n')
 }
 
 const getNoticeIsLpTransationText = (item) => {
-  return FREE_LP_ADDRESSES.includes(item.recipient) ? '\n\n❗️Meson initiated transaction for liquidity rebalancing. Please sign first.' : ''
+  return FREE_LP_ADDRESSES.includes(item.recipient.toLowerCase()) ? '\n\n❗️Meson initiated transaction for liquidity rebalancing. Please sign first.' : ''
 }
 
 const SwapType = {
