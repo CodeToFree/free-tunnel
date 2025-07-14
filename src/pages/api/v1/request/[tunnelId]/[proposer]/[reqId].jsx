@@ -5,6 +5,8 @@ import { sendSignatureNotice } from '@/lib/msg'
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
     return await put(req, res)
+  } else if (req.method === 'OPTIONS') {
+    return await res.end()
   }
   res.status(404).send()
 }
