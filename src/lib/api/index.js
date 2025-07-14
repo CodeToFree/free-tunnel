@@ -41,5 +41,5 @@ export async function postRequest(tunnelId, proposer, reqId, recipient, hash) {
 }
 
 export async function updateRequest(tunnelId, proposer, reqId, { signature, hash }) {
-  await fetcher(`api/v1/request/${tunnelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
+  await fetcher(`https://tunnel.free.tech/api/v1/request/${tunnelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
 }
