@@ -64,7 +64,7 @@ export default function TabUnlock() {
       return []
     }
     const { supportedTokens, indexes } = _tokens
-    return supportedTokens.map((addr, i) => ({ addr, index: indexes[i] }))
+    return supportedTokens.map((addr, i) => ({ id: addr, addr, index: indexes[i] }))
   }, [_tokens])
 
   const [token, setToken] = React.useState()
@@ -92,7 +92,7 @@ export default function TabUnlock() {
             <div className='mb-2 flex'>
               <Label value='Tokens' />
             </div>
-            <TokenSelector tokens={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
+            <TokenSelector options={tokens} noSelect={role === ROLES.Admin} onChange={setToken} />
           </div>
           {(!role || role === ROLES.Proposer || role === ROLES.Vault) && <SectionPropose action='burn-unlock' role={role} token={token} />}
         </Card>
