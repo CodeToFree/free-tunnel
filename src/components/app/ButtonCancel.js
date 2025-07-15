@@ -65,7 +65,7 @@ export default function ButtonCancel ({ action, id: reqId, created, proposer, ha
         args={args}
         callback={callback}
       >
-        Cancel {actionName} on <TokenIcon size='sm' token={chain?.icon} className='mx-1' /> {chain?.name}
+        Cancel {actionName} on <TokenIcon size='sm' chain={chain} className='mx-1' /> {chain?.name}
       </ContractCallButton>
     </ConnectButton>
   )
