@@ -52,7 +52,7 @@ export default function ButtonPropose ({ action, proposer, id: reqId, recipient,
         args={args}
         callback={callback}
       >
-        Propose {toActionName} on <TokenIcon size='sm' token={chain?.icon} className='mx-1' /> {chain?.name}
+        Propose {toActionName} on <TokenIcon size='sm' chain={chain} className='mx-1' /> {chain?.name}
       </ContractCallButton>
     </ConnectButton>
   )

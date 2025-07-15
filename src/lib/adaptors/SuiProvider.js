@@ -15,7 +15,12 @@ const METADATA = {
     storeP: '0x0384b1aee13c22ad5f14355c1dbd7a5028c5a82c1f708e9c39ac0d518d6663f9',
     storeR: '0x21990596a674400ae1e3cfd557a9747465d61fdbf0735a4563d09a347ae59ab6',
     treasuryCapManager: '0x2d9c3f6c6bcf2125f5f3a71126b437ce6e9aa7851c226fdf6a3d643970b6f5eb',
-  } 
+  },
+  '0x149a2bf0705a09f7115d79b97657e9a06b3af56cb85ef99eed1283e08ae70030': {
+    storeA: '0x588d57e40b8b635c39a03768ba407ebb1b9b0fb37299f82e1fcef019efb9c4b6',
+    storeP: '0xe7cdd337457a627ce5735426ed4a67ab1b4bb689145e91fbd2c34dc98de49285',
+    storeR: '0x8ce045d3423f0b70f3745426d2f8cc2d2ddbc9096db06b0c2d10b02872b10eb0',
+  }
 }
 
 export default class SuiProvider {

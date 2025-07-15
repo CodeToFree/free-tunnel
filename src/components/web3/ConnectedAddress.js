@@ -24,7 +24,7 @@ export default function ConnectedAddress() {
   if (!ready) {
     return <Button pill size='md' color='light'>Unknown</Button>
   } else if (wallets.account) {
-    btn = <Button pill size='md' color='light'><TokenIcon token={chain?.icon} />{chain?.name}</Button>
+    btn = <Button pill size='md' color='light'><TokenIcon chain={chain} />{chain?.name}</Button>
   } else if (!address) {
     let label = isOpen ? <><Spinner size='sm' className='mr-2' />Connecting...</> : 'Disconnected'
     if (NON_ETHERS_WALLETS) {
@@ -45,7 +45,7 @@ export default function ConnectedAddress() {
       btn = <Button pill size='md' color='light' onClick={() => open()}>{label}</Button>
     }
   } else if (connected) {
-    btn = <Button pill size='md' color='light'><TokenIcon token={chain?.icon} />{chain?.name}</Button>
+    btn = <Button pill size='md' color='light'><TokenIcon chain={chain} />{chain?.name}</Button>
   } else if (chain) {
     btn = <w3m-network-button />
   } else {

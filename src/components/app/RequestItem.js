@@ -96,7 +96,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
       }
 
       <div className='mt-2 flex items-center'>
-        <TokenIcon token={chain1?.icon} className='mr-2' />
+        <TokenIcon chain={chain1} className='mr-2' />
         <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
         {
           hash?.p1
@@ -129,7 +129,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         }
       </div>
       <div className='mt-2 flex items-center'>
-        <TokenIcon token={chain2?.icon} className='mr-2' />
+        <TokenIcon chain={chain2} className='mr-2' />
         <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{toActionName}:</div>
         {
           hash?.p2

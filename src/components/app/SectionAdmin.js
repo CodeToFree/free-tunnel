@@ -91,7 +91,7 @@ export default function SectionAdmin ({ createToken = false }) {
           callback={callback}
           disabled={!tokenInfo}
         >
-          Add Token on <TokenIcon token={chain?.icon} className='mx-2' /> {chain?.name}
+          Add Token on <TokenIcon chain={chain} className='mx-2' /> {chain?.name}
         </ContractCallButton>
       </ConnectButton>
     </>

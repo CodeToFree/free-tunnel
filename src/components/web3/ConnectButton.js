@@ -37,7 +37,7 @@ export default function ConnectButton ({ pill, size, color, forceChains, disable
       return <Button pill={pill} size={size} color={color} onClick={() => open({ view: 'Connect' })}>Connect Wallet</Button>
     }
   } else if (forceChains && !forceChains.find(c => c.chainId === chain?.chainId)) {
-    if (typeof chain.chainId === 'string') {
+    if (typeof chain?.chainId === 'string') {
       return (
         <Button pill={pill} size={size} color={color} onClick={() => wallets.disconnect()}>
           Disconnect Unsupported Wallet

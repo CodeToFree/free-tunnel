@@ -40,6 +40,8 @@ export function tokenLinkInExplorer(tokenAddr, chain) {
       return `${chain.explorerUrl}/fungible_asset/${tokenAddr}?network=testnet`
     case 'aptos:250':
       return `${chain.explorerUrl}/fungible_asset/${tokenAddr}?network=mainnet`
+    case 'sui':
+      return `${chain.explorerUrl}/coin/${tokenAddr}`
     case 'rooch':
     case 'rooch_testnet':
       return `${chain.explorerUrl}/object/${tokenAddr.split('::')[0]}`

@@ -125,7 +125,7 @@ function ChainDetail ({ chain, contractAddr }) {
       <div className='bg-gray-800 p-3 pb-2'>
         <div className='flex items-end justify-between'>
           <div className='flex items-center text-nowrap shrink-0'>
-            <TokenIcon token={chain.icon} className='mr-2' />
+            <TokenIcon chain={chain} className='mr-2' />
             <h4 className='font-semibold'>{chain.name}</h4>
           </div>
           {
