@@ -20,6 +20,8 @@ const METADATA = {
     storeA: '0x588d57e40b8b635c39a03768ba407ebb1b9b0fb37299f82e1fcef019efb9c4b6',
     storeP: '0xe7cdd337457a627ce5735426ed4a67ab1b4bb689145e91fbd2c34dc98de49285',
     storeR: '0x8ce045d3423f0b70f3745426d2f8cc2d2ddbc9096db06b0c2d10b02872b10eb0',
+    treasuryCapManager: '0x8fe24030d80dd52f9ec65793adb2046a58c1a93cbac9288b812babfcf1bb6f36',
+    accessConfig: '0xdcdec5b454a1033ece15af203c8bf39bc8b84b8c24511d66991a823046f417f8'
   }
 }
 
@@ -139,6 +141,7 @@ export default class SuiProvider {
                   txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[2].map(s => vectorize(s)))),
                   txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(exe => vectorize(exe)))),
                   txb.pure(BigNumber.from(args[4]).toHexString()),
+                  txb.object(METADATA[contractAddr].accessConfig),
                   txb.object(METADATA[contractAddr].treasuryCapManager),
                   txb.object(METADATA[contractAddr].storeA),
                   txb.object(METADATA[contractAddr].storeP),
@@ -163,6 +166,7 @@ export default class SuiProvider {
                   txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[2].map(s => vectorize(s)))),
                   txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(exe => vectorize(exe)))),
                   txb.pure(BigNumber.from(args[4]).toHexString()),
+                  txb.object(METADATA[contractAddr].accessConfig),
                   txb.object(METADATA[contractAddr].treasuryCapManager),
                   txb.object(METADATA[contractAddr].storeA),
                   txb.object(METADATA[contractAddr].storeP),
