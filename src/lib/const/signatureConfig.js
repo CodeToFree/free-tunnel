@@ -106,6 +106,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x294d04731908d5d1c3fdd0b1d752905472e667bb', '0xcb7762b41379cca8c5cc3213f3ef9d000afbe3ae'],
+    chatId: '-4609352134',
   },
   {
     id: "taker-evm",
@@ -113,6 +114,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x294d04731908d5d1c3fdd0b1d752905472e667bb', '0xcb7762b41379cca8c5cc3213f3ef9d000afbe3ae'],
+    chatId: '-4609352134',
   },
   {
     id: "fbtc",
