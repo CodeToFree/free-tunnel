@@ -128,7 +128,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xdea32f54823e9feedaf17fe113e817735d3e87e0', '0xcdecac75c4fbb33c47510c1c1e70c8e88b7b597a']
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xdea32f54823e9feedaf17fe113e817735d3e87e0', '0xcdecac75c4fbb33c47510c1c1e70c8e88b7b597a'],
+    chatId: '-4609258594'
   },
   {
     id: "merl",
