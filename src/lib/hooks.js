@@ -10,6 +10,10 @@ import ERC20 from '@/lib/abis/ERC20.json'
 import { openInExplorer, wait } from '@/lib/tx'
 import { useAppHooks } from '@/components/AppProvider'
 
+import SuiProvider from './adaptors/SuiProvider'
+import AptosProvider from './adaptors/AptosProvider'
+import RoochProvider from './adaptors/RoochProvider'
+
 export function useWeb3ModalFromTunnel(tunnel) {
   const tunnelId = tunnel?.id
   const [ready, setReady] = React.useState(false)
@@ -63,29 +67,29 @@ export function toValue(input, decimals = 18) {
   }
 }
 
-export function useChain() {
+export function useChain(_chain) {
   const [ready, setReady] = React.useState(false)
   React.useEffect(() => setReady(true), [])
 
-  const { isConnected, chainId } = useWeb3ModalAccount()
+  const { wallets } = useAppHooks()
   const { connected, safe } = useSafeAppsSDK()
-  const { tronlink } = useAppHooks()
+  const { isConnected, chainId } = useWeb3ModalAccount()
 
-  const match = tronlink.account
-    ? 'tron'
-    : connected ? safe.chainId : (ready && isConnected && chainId)
+  const match = _chain?.chainId ||
+    wallets.account?.chainId ||
+    (connected ? safe.chainId : (ready && isConnected && chainId))
   return React.useMemo(() => CHAINS.find(c => c.chainId === match), [match])
 }
 
 export function useAddress(_address) {
+  const { wallets } = useAppHooks()
   const { isConnected, address } = useWeb3ModalAccount()
   const { connected, safe } = useSafeAppsSDK()
-  const { tronlink } = useAppHooks()
 
   if (_address) {
     return _address
-  } else if (tronlink.account) {
-    return tronlink.account.base58
+  } else if (wallets.account) {
+    return wallets.account.address
   } else if (connected) {
     return safe.safeAddress
   } else if (isConnected) {
@@ -93,45 +97,71 @@ export function useAddress(_address) {
   }
 }
 
-export function useProvider(chain) {
-  const _chain = useChain()
-  const { walletProvider } = useWeb3ModalProvider()
+function useSigner(noSigner) {
+  const chain = useChain()
+  const { wallets } = useAppHooks()
   const { connected, sdk, safe } = useSafeAppsSDK()
-  const { tronlink } = useAppHooks()
-
-  const validWalletProvider = _chain && walletProvider
+  const { walletProvider } = useWeb3ModalProvider()
+  const validWalletProvider = chain && walletProvider
+  
   return React.useMemo(() => {
-    if (tronlink.account) {
-      return window.tronLink.tronWeb
-    } else if (chain) {
-      return new ethers.providers.StaticJsonRpcProvider(chain.rpcUrl)
-    } else if (connected) {
-      return new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk))
-    } else if (!validWalletProvider) {
+    if (noSigner) {
       return
-    } else {
-      return new ethers.providers.Web3Provider(validWalletProvider, 'any')
+    } else if (wallets.account) {
+      return wallets.account.signer
+    } else if (connected) {
+      return new SafeAppProvider(safe, sdk)
+    } else if (validWalletProvider) {
+      return validWalletProvider
     }
-  }, [chain, tronlink, connected, sdk, safe, validWalletProvider])
+  }, [noSigner, wallets.account, connected, safe, sdk, validWalletProvider])
+}
+
+export function useProvider(_chain) {
+  const chain = useChain(_chain)
+  const signer = useSigner(!!_chain)
+
+  return React.useMemo(() => {
+    if (!chain) {
+      return
+    } else if (typeof chain.chainId === 'number') {
+      if (signer) {
+        return new ethers.providers.Web3Provider(signer, 'any')
+      } else {
+        return new ethers.providers.StaticJsonRpcProvider(chain.rpcUrl)
+      }
+    } else {
+      switch (chain.chainId) {
+        case 'sui':
+          return new SuiProvider(chain.rpcUrl, signer)
+        case 'aptos:1':
+        case 'aptos:2':
+        case 'aptos:250':
+          return new AptosProvider(chain.rpcUrl, signer)
+        case 'rooch':
+        case 'rooch_testnet':
+          return new RoochProvider(chain.rpcUrl, signer)
+        default:
+          throw new Error(`Unsupported non-EVM chain: ${chain.chainId}`)
+      }
+    }
+  }, [chain, signer])
 }
 
 export function useContract(address, abi, chain) {
   const provider = useProvider(chain)
-  const { tronlink } = useAppHooks()
 
   return React.useMemo(() => {
     if (!provider || !address || !abi) {
       return
-    } else if (tronlink.account) {
-      return provider.contract(abi, address)
-    } else if (!ethers.utils.isAddress(address)) {
-      return
-    } else if (chain) {
-      return new ethers.Contract(address, abi, provider)
-    } else {
+    } else if (provider.getContract) { // Non-EVM
+      return provider.getContract(address, abi)
+    } else if (provider instanceof ethers.providers.Web3Provider) {
       return new ethers.Contract(address, abi, provider.getSigner())
+    } else {
+      return new ethers.Contract(address, abi, provider)
     }
-  }, [tronlink, provider, chain, address, abi])
+  }, [provider, address, abi])
 }
 
 export function useERC20(tokenAddress) {
@@ -144,7 +174,7 @@ export function useCoreBalance(_address) {
   const provider = useProvider()
 
   const symbol = chain?.currency
-  const decimals = chain?.chainId === 'tron' ? 6 : 18
+  const decimals = chain?.coreDecimals || 18
   const [balance, setBalance] = React.useState()
   
   const refresh = React.useCallback(() => {
@@ -248,7 +278,7 @@ export function useContractQuery(address, abi, method, args, chain, refreshTrigg
     contractInstance[method](...(args || [])).then(result => {
       setPending(false)
       setResult(result)
-    }).catch(e => {})
+    }).catch(e => console.warn(e))
   }, [contractInstance, method, args])
 
   React.useEffect(() => {
@@ -295,7 +325,7 @@ export function useContractCall(address, abi, method, args) {
       content: 'Waiting transaction...',
       buttons: [{
         text: 'View on Explorer',
-        onClick: () => openInExplorer(tx, chain)
+        onClick: () => openInExplorer(tx.hash, chain)
       }]
     })
     try {
@@ -311,7 +341,7 @@ export function useContractCall(address, abi, method, args) {
       content: 'Transaction executed!',
       buttons: [{
         text: 'View on Explorer',
-        onClick: () => openInExplorer(tx, chain)
+        onClick: () => openInExplorer(tx.hash, chain)
       }]
     })
     setPending(false)

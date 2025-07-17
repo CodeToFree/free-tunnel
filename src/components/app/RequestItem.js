@@ -4,6 +4,7 @@ import { Card, Badge } from 'flowbite-react'
 import { TokenIcon } from '@/components/ui'
 
 import { ROLES, PROPOSE_PERIOD, EXECUTE_PERIOD } from '@/lib/const'
+import { openInExplorer, addressLinkInExplorer } from '@/lib/tx'
 
 import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
@@ -43,7 +44,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             <span className='mx-1 whitespace-nowrap'>{`->`}</span>
             <a
               className='cursor-pointer hover:text-cyan-500 hover:underline'
-              href={`${chain2.explorerUrl}/address/${recipient}`}
+              href={addressLinkInExplorer(recipient, chain2)}
               target='_blank'
             >
               {recipient}
@@ -57,7 +58,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
           <span className='text-white'>Proposer:{' '}</span>
           <a
             className='cursor-pointer hover:text-cyan-500 hover:underline'
-            href={`${chain1.explorerUrl}/address/${proposer}`}
+            href={addressLinkInExplorer(proposer, chain1)}
             target='_blank'
           >{proposer}</a>
         </div>
@@ -68,7 +69,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         <div className='text-white whitespace-nowrap mr-1.5'>{chain1?.name}</div>
         {
           hash?.p1
-          ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.p1.replace('^', '')}`, '_blank')}>
+          ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.p1.replace('^', ''), chain1)}>
               {hash.p1.startsWith('^') && '🟢 '}{vault && '🗳️ '}Proposed
             </Badge>
           : <Badge color='gray'>Not Proposed</Badge>
@@ -79,8 +80,8 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
             <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
             {
               hash.e1
-              ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.e1.replace('^', '')}`, '_blank')}>
-                  {hash.e1.startsWith('^') && '🟢 '}{vault && '🗳️ '}Executed
+              ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.e1.replace('^', ''), chain1)}>
+                  {hash.e1.startsWith('^') && '🟢 '}Executed
                 </Badge>
               : <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>
             }
@@ -90,7 +91,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
           hash?.p1 && hash?.c1 &&
           <>
             <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
-            <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain1.explorerUrl}/tx/${hash.c1.replace('^', '')}`, '_blank')}>
+            <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.c1.replace('^', ''), chain1)}>
               {hash.c1.startsWith('^') && '🟢 '}Cancelled
             </Badge>
           </>
@@ -102,7 +103,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         {
           hash?.p2
           ? <>
-              <Badge className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.p2.replace('^', '')}`, '_blank')}>
+              <Badge className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.p2.replace('^', ''), chain2)}>
                 {hash.p2.startsWith('^') && '🟢 '}{vault && '🗳️ '}Proposed
               </Badge>
               <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
@@ -115,11 +116,11 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         }
         {
           hash?.e2
-          ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.e2.replace('^', '')}`, '_blank')}>
+          ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.e2.replace('^', ''), chain2)}>
               {hash.e2.startsWith('^') && '🟢 '}{vault && '🗳️ '}Executed
             </Badge>
           : hash?.c2
-            ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => window.open(`${chain2.explorerUrl}/tx/${hash.c2.replace('^', '')}`, '_blank')}>
+            ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.c2.replace('^', ''), chain2)}>
                 {hash.c2.startsWith('^') && '🟢 '}Cancelled
               </Badge>
             : hash?.p2 && <Badge color='gray'>Execute {new Date((created + EXECUTE_PERIOD) * 1000).toLocaleString()}</Badge>

@@ -59,7 +59,7 @@ import rooch_testnet from './chains/rooch_testnet.json'
 
 export const DARK_MODE = process.env.NEXT_PUBLIC_DARK_MODE
 export const TESTNET = process.env.NEXT_PUBLIC_TESTNET
-export const TRONLINK = process.env.NEXT_PUBLIC_TRONLINK
+export const NON_ETHERS_WALLETS = process.env.NEXT_PUBLIC_NON_ETHERS_WALLETS
 
 export const ADDR_ONE = '0x0000000000000000000000000000000000000001'
 export const ADDR_ZERO = '0x0000000000000000000000000000000000000000'

@@ -1,7 +1,7 @@
 {
   "chainId": "aptos:250",
   "name": "Movement",
-  "icon": "move",
+  "icon": "movement",
   "addressFormat": "aptos",
   "currency": "MOVE",
   "coreDecimals": 8,

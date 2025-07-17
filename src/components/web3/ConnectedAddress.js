@@ -4,7 +4,7 @@ import { Dropdown, Button, Spinner } from 'flowbite-react'
 import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
-import { TRONLINK } from '@/lib/const'
+import { NON_ETHERS_WALLETS } from '@/lib/const'
 import { useChain, useAddress } from '@/lib/hooks'
 import { TokenIcon } from '@/components/ui'
 import { useAppHooks } from '@/components/AppProvider'
@@ -13,21 +13,21 @@ export default function ConnectedAddress() {
   const [ready, setReady] = React.useState(false)
   React.useEffect(() => setReady(true), [])
 
+  const { wallets } = useAppHooks()
   const { open } = useWeb3Modal()
   const { open: isOpen } = useWeb3ModalState()
   const { connected } = useSafeAppsSDK()
   const chain = useChain()
   const address = useAddress()
-  const { tronlink } = useAppHooks()
 
   let btn
   if (!ready) {
     return <Button pill size='md' color='light'>Unknown</Button>
-  } else if (tronlink.account) {
-    btn = <Button pill size='md' color='light'><TokenIcon token='tron' />Tron</Button>
+  } else if (wallets.account) {
+    btn = <Button pill size='md' color='light'><TokenIcon chain={chain} />{chain?.name}</Button>
   } else if (!address) {
     let label = isOpen ? <><Spinner size='sm' className='mr-2' />Connecting...</> : 'Disconnected'
-    if (TRONLINK) {
+    if (NON_ETHERS_WALLETS) {
       btn = (
         <Dropdown
           pill
@@ -35,8 +35,10 @@ export default function ConnectedAddress() {
           label={label}
           arrowIcon={false}
         >
-          <Dropdown.Item onClick={() => open()}>Ethereum / Arbitrum</Dropdown.Item>
-          <Dropdown.Item onClick={() => tronlink.connect()}>Tron Wallet</Dropdown.Item>
+          <Dropdown.Item onClick={() => open()}>EVM Wallets</Dropdown.Item>
+          <Dropdown.Item onClick={() => wallets.connect('sui')}>Sui Wallet</Dropdown.Item>
+          <Dropdown.Item onClick={() => wallets.connect('aptos')}>Aptos Wallet</Dropdown.Item>
+          <Dropdown.Item onClick={() => wallets.connect('rooch')}>Rooch Wallet</Dropdown.Item>
         </Dropdown>
       )
     } else {

@@ -12,7 +12,8 @@ export async function fetcher(apiPath, method = 'GET', data) {
   if (method === 'POST' || method === 'PUT') {
     option.body = JSON.stringify(data)
   }
-  const res = await fetch(`${NEXT_PUBLIC_API_URL}/${apiPath}`, option)
+  const url = apiPath.startsWith('http') ? apiPath : `${NEXT_PUBLIC_API_URL}/${apiPath}`
+  const res = await fetch(url, option)
   const result = await res.json()
   if (result.result) {
     return result.result
@@ -41,5 +42,5 @@ export async function postRequest(tunnelId, proposer, reqId, recipient, hash) {
 }
 
 export async function updateRequest(tunnelId, proposer, reqId, { signature, hash }) {
-  await fetcher(`api/v1/request/${tunnelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
+  await fetcher(`https://tunnel.free.tech/api/v1/request/${tunnelId}/${proposer}/${reqId}`, 'PUT', { signature, hash })
 }

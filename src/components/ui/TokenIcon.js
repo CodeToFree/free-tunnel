@@ -16,7 +16,7 @@ export default function TokenIcon ({ size, chain, token, className }) {
     return <img src='https://static.meson.fi/icon/token/usdt.png' className={_className} />
   } else if (token === 'beth') {
     return <img src='https://static.meson.fi/icon/token/eth.png' className={_className} />
-  } else if (token === 'btcb' || token === 'wbtc' || token === 'fbtc') {
+  } else if (token === 'btcb' || token === 'wbtc') {
     return <img src='https://static.meson.fi/icon/token/btc.png' className={_className} />
   } else if (token === 'm-btc') {
     return <img src='https://static.meson.fi/icon/token/mbtc.png' className={_className} />
