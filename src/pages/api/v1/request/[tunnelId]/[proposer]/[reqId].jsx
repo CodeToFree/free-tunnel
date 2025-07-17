@@ -1,10 +1,12 @@
 import { ethers } from 'ethers'
 import { Tunnels, Requests } from '@/lib/db'
-import { CHAINS } from '@/lib/const'
+import { sendSignatureNotice } from '@/lib/msg'
 
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
     return await put(req, res)
+  } else if (req.method === 'OPTIONS') {
+    return await res.end()
   }
   res.status(404).send()
 }
@@ -14,7 +16,6 @@ async function put(req, res) {
   if (!tunnel) {
     return res.status(404).send()
   }
-
   const { proposer, reqId } = req.query
   const { hash = {}, signature = {} } = req.body
   const { p2, e1, e2, c1, c2 } = hash
@@ -39,10 +40,13 @@ async function put(req, res) {
     // TODO: check signature
     update.$addToSet = { signatures: { sig, exe } }
   }
-  await Requests.findOneAndUpdate({
+  const params = {
     _id: reqId,
     proposer,
     channel: tunnel.name,
-  }, update, { new: true })
+  }
+  const item = await Requests.findOneAndUpdate(params, update, { new: true }).lean()
+  sendSignatureNotice({...item, tunnel})
+
   res.json({ result: true })
 }

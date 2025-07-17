@@ -72,20 +72,20 @@ const hardhatConfig = {
     },
   },
   zksolc: {
-    version: '1.5.7',
+    version: '1.5.11',
     compilerSource: 'binary',
     settings: {},
   },
   defaultNetwork: 'eth',
   networks: {
     eth: {
-      url: 'https://rpc.ankr.com/eth',
+      url: 'https://eth.llamarpc.com',
     },
     arb: {
       url: 'https://arb1.arbitrum.io/rpc',
     },
     bnb: {
-      url: 'https://rpc.ankr.com/bsc',
+      url: 'https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3',
     },
     polygon: {
       url: 'https://polygon-rpc.com',
@@ -153,8 +153,17 @@ const hardhatConfig = {
     opbnb: {
       url: 'https://opbnb-mainnet-rpc.bnbchain.org',
     },
+    sonic: {
+      url: 'https://rpc.soniclabs.com',
+    },
+    cfx: {
+      url: 'https://evm.confluxrpc.com',
+    },
     neox: {
       url: 'https://mainnet-1.rpc.banelabs.org',
+    },
+    soneium: {
+      url: 'https://rpc.soneium.org',
     },
     kava: {
       url: 'https://evm.kava.io',
@@ -205,7 +214,19 @@ const hardhatConfig = {
       url: 'https://rpc-mainnet.taker.xyz'
     },
     rsk: {
-      url: 'https://rootstock-mainnet.public.blastapi.io'
+      url: 'https://rsk-live.sovryn.app/rpc'
+    },
+    bera: {
+      url: 'https://rpc.berachain.com'
+    },
+    memecore: {
+      url: 'https://rpc.memecore.net'
+    },
+    goat: {
+      url: 'https://rpc.goat.network'
+    },
+    plume: {
+      url: 'https://rpc.plume.org'
     },
     sepolia: {
       url: 'https://eth-sepolia.public.blastapi.io',
@@ -218,6 +239,9 @@ const hardhatConfig = {
     },
     hype_testnet: {
       url: 'https://api.hyperliquid-testnet.xyz/evm',
+    },
+    memecore_testnet: {
+      url: 'https://rpc.formicarium.memecore.net',
     },
   }
 }

@@ -1,0 +1,13 @@
+{
+  "chainId": 43521,
+  "name": "Formicarium Testnet",
+  "icon": "memecore",
+  "currency": "M",
+  "rpcUrl": "https://rpc.formicarium.memecore.net",
+  "explorerUrl": "https://www.okx.com/web3/explorer/formicarium-testnet",
+  "tokens": {
+    "0x8Bce6233193c0c4f06bdB8b5aA485a3Bf79E1514": "USDC",
+    "0x0C8E0BFC3C997C5c06917DfDBbFEa5a86dBEFedF": "USDT"
+  },
+  "hubId": 244
+}

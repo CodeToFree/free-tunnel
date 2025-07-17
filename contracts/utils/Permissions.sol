@@ -30,6 +30,27 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
 
     event AdminTransferred(address indexed prevAdmin, address indexed newAdmin);
 
+    error EOnlyAdmin();
+    error EOnlyVault();
+    error EOnlyHubOrProposer();
+
+    error EProposerExisted();
+    error EProposerNotExisted();
+    error EExecutorsAlreadyInitialized();
+    error EExecutorsNotActive();
+    error EExecutorsNextActive();
+    error EExecutorsDuplicated();
+    error ENotExecutor();
+
+    error EThreshold();
+    error EThresholdZero();
+    error EThresholdOver();
+    error EActiveSinceTooEarly();
+    error EActiveSinceTooLate();
+    error EOverwriteExecutors();
+    
+    error EArrayLengthNotEqual();
+
     function _initAdmin(address admin) internal onlyInitializing {
         PermissionsStorage storage $ = _getPermissionsStorage();
         $._admin = admin;
@@ -49,7 +70,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
     }
 
     modifier onlyAdmin() {
-        require(msg.sender == getAdmin(), "Require admin");
+        require(msg.sender == getAdmin(), EOnlyAdmin());
         _;
     }
 
@@ -75,7 +96,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
     }
 
     modifier onlyVaultWithAdminFallback() {
-        require(msg.sender == _getVaultWithAdminFallback(), "Require vault");
+        require(msg.sender == _getVaultWithAdminFallback(), EOnlyVault());
         _;
     }
 
@@ -99,7 +120,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
 
     function _addProposer(address proposer) internal {
         PermissionsStorage storage $ = _getPermissionsStorage();
-        require($._proposerIndex[proposer] == 0, "Already a proposer");
+        require($._proposerIndex[proposer] == 0, EProposerExisted());
         $._proposerList.push(proposer);
         $._proposerIndex[proposer] = $._proposerList.length;
         emit ProposerAdded(proposer);
@@ -108,7 +129,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
     function removeProposer(address proposer) external onlyAdmin {
         PermissionsStorage storage $ = _getPermissionsStorage();
         uint256 index = $._proposerIndex[proposer];
-        require(index > 0, "Not an existing proposer");
+        require(index > 0, EProposerNotExisted());
         delete $._proposerIndex[proposer];
 
         uint256 len = $._proposerList.length;
@@ -124,7 +145,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
     modifier onlyHubOrProposer() {
         if (msg.sender != HUB_ADDRESS) {
             PermissionsStorage storage $ = _getPermissionsStorage();
-            require($._proposerIndex[msg.sender] > 0, "Require a proposer");
+            require($._proposerIndex[msg.sender] > 0, EOnlyHubOrProposer());
         }
         _;
     }
@@ -132,8 +153,9 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
 
     function _initExecutors(address[] memory executors, uint256 threshold, uint256 exeIndex) internal onlyInitializing {
         PermissionsStorage storage $ = _getPermissionsStorage();
-        require($._exeThresholdForIndex.length == 0, "Executors already initialized");
-        require(threshold > 0, "Threshold must be greater than 0");
+        require($._exeThresholdForIndex.length == 0, EExecutorsAlreadyInitialized());
+        require(threshold > 0, EThresholdZero());
+        require(threshold <= executors.length, EThresholdOver());
         while (exeIndex > 0) {
             $._executorsForIndex.push(new address[](0));
             $._exeThresholdForIndex.push(0);
@@ -185,9 +207,10 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
         uint256 activeSince,
         bytes32[] calldata r, bytes32[] calldata yParityAndS, address[] calldata executors, uint256 exeIndex
     ) external {
-        require(threshold > 0, "Threshold must be greater than 0");
-        require(activeSince > block.timestamp + 36 hours, "The activeSince should be after 1.5 days from now");
-        require(activeSince < block.timestamp + 5 days, "The activeSince should be within 5 days from now");
+        require(threshold > 0, EThresholdZero());
+        require(threshold <= newExecutors.length, EThresholdOver());
+        require(activeSince > block.timestamp + 36 hours, EActiveSinceTooEarly());
+        require(activeSince < block.timestamp + 5 days, EActiveSinceTooLate());
 
         bytes32 digest = __digestFromMessage(abi.encodePacked(
             "[", getTunnelName(), "]\n",
@@ -206,9 +229,9 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
             $._exeThresholdForIndex.push(threshold);
             $._exeActiveSinceForIndex.push(activeSince);
         } else {
-            require(activeSince >= $._exeActiveSinceForIndex[newIndex], "Failed to overwrite existing executors");
-            require(threshold >= $._exeThresholdForIndex[newIndex], "Failed to overwrite existing executors");
-            require(_cmpAddrList(newExecutors, $._executorsForIndex[newIndex]), "Failed to overwrite existing executors");
+            require(activeSince >= $._exeActiveSinceForIndex[newIndex], EOverwriteExecutors());
+            require(threshold >= $._exeThresholdForIndex[newIndex], EOverwriteExecutors());
+            require(_cmpAddrList(newExecutors, $._executorsForIndex[newIndex]), EOverwriteExecutors());
             $._executorsForIndex[newIndex] = newExecutors;
             $._exeThresholdForIndex[newIndex] = threshold;
             $._exeActiveSinceForIndex[newIndex] = activeSince;
@@ -238,8 +261,8 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
         address[] memory executors,
         uint256 exeIndex
     ) internal view {
-        require(r.length == yParityAndS.length, "Array length should equal");
-        require(r.length == executors.length, "Array length should equal");
+        require(r.length == yParityAndS.length, EArrayLengthNotEqual());
+        require(r.length == executors.length, EArrayLengthNotEqual());
 
         _checkExecutorsForIndex(executors, exeIndex);
 
@@ -251,22 +274,22 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
 
     function _checkExecutorsForIndex(address[] memory executors, uint256 exeIndex) private view {
         PermissionsStorage storage $ = _getPermissionsStorage();
-        require(executors.length >= $._exeThresholdForIndex[exeIndex], "Does not meet threshold");
+        require(executors.length >= $._exeThresholdForIndex[exeIndex], EThreshold());
 
         uint256 blockTime = block.timestamp;
         uint256 activeSince = $._exeActiveSinceForIndex[exeIndex];
-        require(activeSince < blockTime, "Executors not yet active");
+        require(activeSince < blockTime, EExecutorsNotActive());
 
         if ($._exeActiveSinceForIndex.length > exeIndex + 1) {
             uint256 nextActiveSince = $._exeActiveSinceForIndex[exeIndex + 1];
-            require(nextActiveSince > blockTime, "Executors of next index is active");
+            require(nextActiveSince > blockTime, EExecutorsNextActive());
         }
 
         address[] memory currentExecutors = $._executorsForIndex[exeIndex];
         for (uint256 i = 0; i < executors.length; i++) {
             address executor = executors[i];
             for (uint256 j = 0; j < i; j++) {
-                require(executors[j] != executor, "Duplicated executors");
+                require(executors[j] != executor, EExecutorsDuplicated());
             }
 
             bool isExecutor = false;
@@ -276,7 +299,7 @@ abstract contract Permissions is Constants, SigVerifier, Initializable {
                     break;
                 }
             }
-            require(isExecutor, "Non-executor");
+            require(isExecutor, ENotExecutor());
         }
     }
 }

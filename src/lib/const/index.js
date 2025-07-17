@@ -71,7 +71,9 @@ export const ROLES = {
   Vault: 'vault',
 }
 
-const chains = TESTNET ? { sepolia, merlin_testnet, b2_testnet, hype_testnet, aptos_testnet, rooch_testnet } : {
+const chains = TESTNET ? {
+  sepolia, merlin_testnet, b2_testnet, hype_testnet, aptos_testnet, rooch_testnet
+} : {
   eth, arb, bnb, polygon, opt, avax, base, linea, zksync, scroll, mode, manta, zklink, core, xlayer, mantle,
   merlin, b2, bitlayer, bevm, bb, bob, opbnb, sonic, cfx, neox, soneium,
   kava, kroma, kaia, ailayer, zircuit, iotex, zeta, taiko, sei, duck, morph, exsat, hemi, corn, lisk, taker,
@@ -86,3 +88,7 @@ export const PROPOSE_PERIOD = Number(process.env.NEXT_PUBLIC_PROPOSE_PERIOD || 8
 export const EXECUTE_PERIOD = Number(process.env.NEXT_PUBLIC_EXECUTE_PERIOD || 86400 * 3)
 
 export const ADMIN_ADDRS = (process.env.NEXT_PUBLIC_ADMIN_ADDRS || '').split(',')
+
+export const MSG_TOKEN = process.env.MSG_TOKEN
+export const MSG_URL = process.env.MSG_URL
+export const CHAT_ID = process.env.CHAT_ID || '-4946255911'

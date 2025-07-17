@@ -56,24 +56,24 @@ abstract contract LockContract is Permissions, ReqHelpers {
         _createdTimeFrom(reqId, true);
         LockContractStorage storage $ = _getLockContractStorage();
         uint8 action = _actionFrom(reqId);
-        require(action & 0x0f == 1, "Invalid action; not lock-mint");
-        require($.proposedLock[reqId] == address(0), "Invalid reqId");
-        require(proposer > address(1), "Invalid proposer");
+        require(action & 0x0f == 1, EInvalidAction());
+        require($.proposedLock[reqId] == address(0), EInvalidReqId());
+        require(proposer > address(1), EInvalidProposer());
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
         if (tokenAddr == address(1)) {
-            require(msg.value >= amount, "Transferred amount (tx.value) insufficient");
+            require(msg.value >= amount, ETransferFailed());
         }
         $.proposedLock[reqId] = proposer;
 
         if (action & 0x10 > 0) {
             address vault = getVault();
-            require(vault != address(0), "Vault not activated");
+            require(vault != address(0), EVaultNotActivated());
 
             if (tokenAddr == address(1)) {
                 (bool success, ) = vault.call{ value: amount }("");
-                require(success, "Transfer failed");
+                require(success, ETransferFailed());
             } else {
                 IERC20(tokenAddr).safeTransferFrom(proposer, vault, amount);
             }
@@ -93,7 +93,7 @@ abstract contract LockContract is Permissions, ReqHelpers {
     function executeLock(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         LockContractStorage storage $ = _getLockContractStorage();
         address proposer = $.proposedLock[reqId];
-        require(proposer > address(1), "Invalid reqId");
+        require(proposer > address(1), EInvalidReqId());
 
         bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
@@ -110,8 +110,8 @@ abstract contract LockContract is Permissions, ReqHelpers {
     function cancelLock(bytes32 reqId) external {
         LockContractStorage storage $ = _getLockContractStorage();
         address proposer = $.proposedLock[reqId];
-        require(proposer > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, "Wait until expired to cancel");
+        require(proposer > address(1), EInvalidReqId());
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_PERIOD, ENotExpiredToCancel());
 
         delete $.proposedLock[reqId];
 
@@ -120,7 +120,7 @@ abstract contract LockContract is Permissions, ReqHelpers {
 
         if (tokenAddr == address(1)) {
             (bool success, ) = proposer.call{ value: amount }("");
-            require(success, "Transfer failed");
+            require(success, ETransferFailed());
         } else {
             address vault;
             if (_actionFrom(reqId) & 0x10 > 0) {
@@ -143,9 +143,9 @@ abstract contract LockContract is Permissions, ReqHelpers {
     function proposeUnlock(bytes32 reqId, address recipient) external onlyHubOrProposer isLockMode hubIsMintOppositeSideOf(reqId) {
         _createdTimeFrom(reqId, true);
         LockContractStorage storage $ = _getLockContractStorage();
-        require(_actionFrom(reqId) & 0x0f == 2, "Invalid action; not burn-unlock");
-        require($.proposedUnlock[reqId] == address(0), "Invalid reqId");
-        require(recipient > address(1), "Invalid recipient");
+        require(_actionFrom(reqId) & 0x0f == 2, EInvalidAction());
+        require($.proposedUnlock[reqId] == address(0), EInvalidReqId());
+        require(recipient > address(1), EInvalidRecipient());
 
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
@@ -158,7 +158,7 @@ abstract contract LockContract is Permissions, ReqHelpers {
     function executeUnlock(bytes32 reqId, bytes32[] memory r, bytes32[] memory yParityAndS, address[] memory executors, uint256 exeIndex) external {
         LockContractStorage storage $ = _getLockContractStorage();
         address recipient = $.proposedUnlock[reqId];
-        require(recipient > address(1), "Invalid reqId");
+        require(recipient > address(1), EInvalidReqId());
 
         bytes32 digest = _digestFromReqSigningMessage(reqId);
         _checkMultiSignatures(digest, r, yParityAndS, executors, exeIndex);
@@ -169,7 +169,7 @@ abstract contract LockContract is Permissions, ReqHelpers {
         address tokenAddr = _tokenFrom(reqId);
         if (tokenAddr == address(1)) {
             (bool success, ) = recipient.call{ value: amount }("");
-            require(success, "Transfer failed");
+            require(success, ETransferFailed());
         } else {
             address vault;
             if (_actionFrom(reqId) & 0x10 > 0) {
@@ -188,8 +188,8 @@ abstract contract LockContract is Permissions, ReqHelpers {
     function cancelUnlock(bytes32 reqId) external {
         LockContractStorage storage $ = _getLockContractStorage();
         address recipient = $.proposedUnlock[reqId];
-        require(recipient > address(1), "Invalid reqId");
-        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, "Wait until expired to cancel");
+        require(recipient > address(1), EInvalidReqId());
+        require(block.timestamp > _createdTimeFrom(reqId, false) + EXPIRE_EXTRA_PERIOD, ENotExpiredToCancel());
 
         delete $.proposedUnlock[reqId];
 

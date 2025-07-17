@@ -52,3 +52,18 @@ export const FeeSchema = mongoose.Schema({
   _id: String,
   rules: Object,
 })
+
+export const MsgCacheSchema = mongoose.Schema({
+  _id: String,
+  expireTs: Date,
+  chatId: String,
+  messageId: Number,
+  message: String,
+})
+
+MsgCacheSchema.index({ expireTs: 1 }, { expireAfterSeconds: 0 })
+
+export const SignatureUserSchema = mongoose.Schema({
+  _id: String,
+  tgUserName: String
+})

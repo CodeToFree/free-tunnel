@@ -106,7 +106,10 @@ export default function SectionPropose ({ action = 'lock-mint', role, token }) {
   const recipientLabel = differentAddressFormat
     ? `Recipient Address (${target.name})`
     : 'Recipient Address'
-  const disabled = from === 16 && token?.index === 79 && 'SolvBTC.BBN from Merlin Disabled'
+  let disabled
+  if ((from === 16 || to === 16) && token?.index === 79) {
+    disabled = 'xSolvBTC from/to Merlin Disabled'
+  }
 
   return (
     <>

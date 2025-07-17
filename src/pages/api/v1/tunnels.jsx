@@ -14,6 +14,6 @@ async function get(req, res) {
   if (NON_EVM) {
     query.to = { $in: ['sui', 'aptos', 'movement', 'rooch'] }
   }
-  const result = await Tunnels.find(query).sort({ priority: -1 }).select('_id name logo lock mint from to contracts')
-  res.json({ result: result.map(({ _id, name, logo, lock, mint, from, to, contracts }) => ({ id: _id, name, logo, lock, mint, from, to, contracts })) })
+  const result = await Tunnels.find(query).sort({ priority: -1 }).select('_id name logo lock mint from to contracts min')
+  res.json({ result: result.map(({ _id, name, logo, lock, mint, from, to, contracts, min }) => ({ id: _id, name, logo, lock, mint, from, to, contracts, min })) })
 }

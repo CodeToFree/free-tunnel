@@ -20,6 +20,9 @@ contract Constants {
     uint256 constant EXPIRE_PERIOD = 72 hours;
     uint256 constant EXPIRE_EXTRA_PERIOD = 96 hours;
 
+    error EOnlyFreeTunnelHub();
+    error ETunnelNameTooLong();
+
     constructor(uint64 version, address hubAddress, string memory tunnelName, bool isLockMode) {
         VERSION = version;
         HUB_ADDRESS = hubAddress;
@@ -28,7 +31,7 @@ contract Constants {
 
         bytes memory nameBytes = bytes(tunnelName);
         uint256 len = nameBytes.length;
-        require(len < 32, "The length of tunnelName must be less than 32.");
+        require(len < 32, ETunnelNameTooLong());
         bytes32 nameBytes32;
         assembly {
             nameBytes32 := mload(add(nameBytes, 32))
@@ -46,7 +49,7 @@ contract Constants {
     }
 
     modifier onlyHub() {
-        require(msg.sender == HUB_ADDRESS, "Only for FreeTunnelHub");
+        require(msg.sender == HUB_ADDRESS, EOnlyFreeTunnelHub());
         _;
     }
 }

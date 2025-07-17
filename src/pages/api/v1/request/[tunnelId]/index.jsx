@@ -1,4 +1,5 @@
 import { Tunnels, Requests } from '@/lib/db'
+import { sendSignatureNotice } from '@/lib/msg'
 import { parseRequest } from '@/lib/request'
 
 export default async function handler(req, res) {
@@ -53,6 +54,7 @@ async function post(req, res) {
     update.from = fromChain.chainId.toString()
     update.to = toChain.chainId.toString()
   }
-  await Requests.findByIdAndUpdate(reqId, update, { upsert: true })
+  const item = await Requests.findByIdAndUpdate(reqId, update, { upsert: true, new: true }).lean()
+  sendSignatureNotice({ ...item, tunnel })
   res.json({ result: true })
 }

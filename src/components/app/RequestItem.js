@@ -10,38 +10,7 @@ import { capitalize } from './lib'
 import ButtonPropose from './ButtonPropose'
 import ButtonExecute from './ButtonExecute'
 import ButtonCancel from './ButtonCancel'
-
-const defaultTokens = {
-  1: 'USDC',
-  2: 'USDT',
-  64: 'BTC',
-  65: 'ETH',
-  66: 'MERL',
-  67: 'STONE',
-  68: 'FDUSD',
-  69: 'BDGM',
-  71: 'POL',
-  72: 'SolvBTC.m',
-  73: 'SolvBTC.b',
-  75: 'BBTC',
-  76: 'BBUSD',
-  77: 'uBTC',
-  78: 'SolvBTC',
-  79: 'SolvBTC.BBN',
-  80: 'SolvBTC.ENA',
-  83: 'iBTC',
-  84: 'stBTC',
-  85: 'USDa',
-  86: 'sUSDa',
-  173: 'TESTSV',
-  192: 'WBTC',
-  193: 'pumpBTC',
-  194: 'uniBTC',
-  195: 'cbBTC',
-  196: 'oBTC.x',
-  197: 'brBTC',
-  224: 'DUCK',
-}
+import { defaultTokens } from '@/lib/const/defaultTokens'
 
 export default function RequestItem ({ tokens, role, action, exes, ...req }) {
   const fromActionName = capitalize(action.split('-')[0])
@@ -96,12 +65,12 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
       }
 
       <div className='mt-2 flex items-center'>
-        <TokenIcon chain={chain1} className='mr-2' />
-        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{fromActionName}:</div>
+        <TokenIcon chain={chain1} className='mr-1.5' />
+        <div className='text-white whitespace-nowrap mr-1.5'>{chain1?.name}</div>
         {
           hash?.p1
           ? <Badge className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.p1.replace('^', ''), chain1)}>
-              {hash.p1.startsWith('^') && '🟢 '}Proposed
+              {hash.p1.startsWith('^') && '🟢 '}{vault && '🗳️ '}Proposed
             </Badge>
           : <Badge color='gray'>Not Proposed</Badge>
         }
@@ -129,13 +98,13 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         }
       </div>
       <div className='mt-2 flex items-center'>
-        <TokenIcon chain={chain2} className='mr-2' />
-        <div className='text-white whitespace-nowrap mr-2'>{vault && 'Vault '}{toActionName}:</div>
+        <TokenIcon chain={chain2} className='mr-1.5' />
+        <div className='text-white whitespace-nowrap mr-1.5'>{chain2?.name}</div>
         {
           hash?.p2
           ? <>
               <Badge className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.p2.replace('^', ''), chain2)}>
-                {hash.p2.startsWith('^') && '🟢 '}Proposed
+                {hash.p2.startsWith('^') && '🟢 '}{vault && '🗳️ '}Proposed
               </Badge>
               <div className='text-gray-500 mx-1.5 whitespace-nowrap text-sm'>{'->'}</div>
             </>
@@ -148,7 +117,7 @@ export default function RequestItem ({ tokens, role, action, exes, ...req }) {
         {
           hash?.e2
           ? <Badge color='green' className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.e2.replace('^', ''), chain2)}>
-              {hash.e2.startsWith('^') && '🟢 '}Executed
+              {hash.e2.startsWith('^') && '🟢 '}{vault && '🗳️ '}Executed
             </Badge>
           : hash?.c2
             ? <Badge color='gray' className='cursor-pointer hover:opacity-80' onClick={() => openInExplorer(hash.c2.replace('^', ''), chain2)}>

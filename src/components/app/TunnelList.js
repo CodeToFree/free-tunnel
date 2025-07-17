@@ -19,6 +19,19 @@ export default function TunnelList ({ tunnels = [], badges, current, action = 'L
     setSelected(match || tunnels[0])
   }, [tunnels, current])
 
+  const tunnelPageUrl = React.useMemo(() => {
+    if (!selected) {
+      return
+    }
+    if (
+      selected.from.filter(id => ['aptos', 'movement', 'sui', 'rooch'].includes(id)).length ||
+      selected.to.filter(id => ['aptos', 'movement', 'sui', 'rooch'].includes(id)).length
+    ) {
+      return `https://nonevm.free.tech/${selected.id}`
+    }
+    return `/${selected.id}`
+  }, [selected])
+
   if (!selected) {
     return (
       <div className={classnames('flex flex-row min-w-[480px] min-h-80 overflow-hidden', className)}>
@@ -58,7 +71,7 @@ export default function TunnelList ({ tunnels = [], badges, current, action = 'L
               <h3 className='inline-block text-xl text-white font-semibold'>{selected.name}</h3>
               <span className='ml-1 text-sm'>({selected.from.length ? 'Lock-Mint' : 'Burn-Mint'})</span>
             </div>
-            <Button size='sm' onClick={() => window.location.href = `/${selected.id}`}>{action}</Button>
+            <Button size='sm' href={tunnelPageUrl}>{action}</Button>
           </div>
           <div className='flex-1 px-4 pb-4 overflow-y-auto'>
             <TunnelDetail tunnel={selected} singleCol={!!SidePanel} />

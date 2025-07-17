@@ -12,6 +12,7 @@ import "./utils/SigVerifier.sol";
 
 contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     uint8 public HUB_ID;
+    address public immutable TUNNEL_SIGNER;
 
     address public currentTBM;
     event TunnelBoringMachineUpdated(uint64 indexed version, address tbmAddress);
@@ -19,8 +20,11 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
     mapping(bytes32 => address) public addressOfTunnel;
     event TunnelOpenned(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
     event TunnelUpgraded(address indexed tunnelAddress, uint64 indexed version, address implAddress, string tunnelName);
+    event TunnelDetached(address indexed tunnelAddress);
 
-    constructor() initializer {}
+    constructor() initializer {
+        TUNNEL_SIGNER = tx.origin;
+    }
 
     function initialize(uint8 hubId) public initializer {
         __Ownable_init(msg.sender);
@@ -100,7 +104,7 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
             " to open the tunnel:\n", tunnelName,
             "\nUntil: ", Strings.toString(until)
         ));
-        __checkSignature(digest, r, yParityAndS, owner());
+        __checkSignature(digest, r, yParityAndS, TUNNEL_SIGNER);
 
         address implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
 
@@ -126,6 +130,12 @@ contract FreeTunnelHub is SigVerifier, OwnableUpgradeable, UUPSUpgradeable {
         require(msg.sender == address(tunnel), "Only for Tunnel");
         implAddress = TunnelBoringMachine(currentTBM).openNewTunnel(address(this), tunnelName, isLockMode);
         emit TunnelUpgraded(address(tunnel), currentTBMVersion(), implAddress, tunnelName);
+    }
+
+    function detachTunnel(string memory tunnelName, bool isLockMode) external onlyOwner {
+        TunnelContract tunnel = _getTunnelContract(tunnelName, isLockMode);
+        tunnel.detachTunnel();
+        emit TunnelDetached(address(tunnel));
     }
 
     function getProxyBytecode() public pure returns (bytes memory) {
