@@ -1,0 +1,18 @@
+{
+  "chainId": "aptos:250",
+  "name": "Movement",
+  "icon": "move",
+  "addressFormat": "aptos",
+  "currency": "MOVE",
+  "coreDecimals": 8,
+  "rpcUrl": "https://mainnet.movementnetwork.xyz/v1",
+  "explorerUrl": "https://explorer.movementlabs.xyz",
+  "tokens": {
+    "0xc457331726b4672205f8a89f7b6e3a0545e2edadf6e4ee86ceaaf9147ae9d80a": "M-BTC",
+    "0x48b904a97eafd065ced05168ec44638a63e1e3bcaec49699f6b8dabbd1424650": "USDa",
+    "0xe699e6c1733462632821b6e5b954c0ed3aa9ad1efb70b6ce92616952ade89258": "sUSDa",
+    "0x4f6dd08aaaca8d7df1ab337e9acc797228e5a6db983d7fa25d863640c8ffe6c": "uniBTC",
+    "0x5d613a51971832b7687322fbd60760ffe500a86acb73b7527d617b86381aa47f": "brBTC"
+  },
+  "hubId": 166
+}
