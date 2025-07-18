@@ -7,7 +7,7 @@ export const defaultTokens = {
   67: 'STONE',
   68: 'FDUSD',
   69: 'BDGM',
-  71: 'BNB',
+  70: 'BNB',
   71: 'POL',
   72: 'SolvBTC.m',
   73: 'SolvBTC.b',
