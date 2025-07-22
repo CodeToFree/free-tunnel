@@ -20,19 +20,19 @@ async function put(req, res) {
   const { hash = {}, signature = {} } = req.body
   const { p2, e1, e2, c1, c2 } = hash
   const update = {}
-  if (ethers.utils.isHexString(p2)) {
+  if (p2) {
     update['hash.p2'] = p2
   }
-  if (ethers.utils.isHexString(e1)) {
+  if (e1) {
     update['hash.e1'] = e1
   }
-  if (ethers.utils.isHexString(e2)) {
+  if (e2) {
     update['hash.e2'] = e2
   }
-  if (ethers.utils.isHexString(c1)) {
+  if (c1) {
     update['hash.c1'] = c1
   }
-  if (ethers.utils.isHexString(c2)) {
+  if (c2) {
     update['hash.c2'] = c2
   }
   const { sig, exe } = signature
