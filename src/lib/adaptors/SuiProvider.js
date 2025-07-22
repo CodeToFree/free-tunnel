@@ -108,80 +108,81 @@ export default class SuiProvider {
                 options = args.pop()
               }
 
-              const txb = new SuiTransaction()
+              const transaction = new SuiTransaction()
               const payload = {
                 target: `${contractAddr}::${findModuleName(prop)}::${prop}`,
                 arguments: undefined,
                 typeArguments: undefined,
               }
 
-              console.log('args:', args)
               const reqId = args[0]
               const req = parseRequest(reqId)
               const { supportedTokens, indexes, decimals } = await that._getSupportedTokens(contractAddr)
               const i = indexes.findIndex(i => i === req.tokenIndex)
               const tokenAddr = supportedTokens[i]
               const tokenDecimals = decimals[i]
-              console.log('req:', req)
               if (prop === 'proposeMint') {
                 payload.typeArguments = [tokenAddr]
                 payload.arguments = [
-                  txb.pure(vectorize(reqId)),
-                  txb.pure(args[1]),
-                  txb.object(METADATA[contractAddr].storeA),
-                  txb.object(METADATA[contractAddr].storeP),
-                  txb.object(METADATA[contractAddr].storeR),
-                  txb.object('0x6'),
+                  transaction.pure('vector<u8>', vectorize(reqId)),
+                  transaction.pure.address(args[1]),
+                  transaction.object(METADATA[contractAddr].storeA),
+                  transaction.object(METADATA[contractAddr].storeP),
+                  transaction.object(METADATA[contractAddr].storeR),
+                  transaction.object('0x6'),
                 ]
               } else if (prop === 'executeMint') {
                 payload.typeArguments = [tokenAddr]
                 payload.arguments = [
-                  txb.pure(vectorize(reqId)),
-                  txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[1].map(r => vectorize(r)))),
-                  txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[2].map(s => vectorize(s)))),
-                  txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(exe => vectorize(exe)))),
-                  txb.pure(BigNumber.from(args[4]).toHexString()),
-                  txb.object(METADATA[contractAddr].accessConfig),
-                  txb.object(METADATA[contractAddr].treasuryCapManager),
-                  txb.object(METADATA[contractAddr].storeA),
-                  txb.object(METADATA[contractAddr].storeP),
-                  txb.object(METADATA[contractAddr].storeR),
-                  txb.object('0x6'),
+                  transaction.pure('vector<u8>', vectorize(reqId)),
+                  transaction.pure.vector('vector<u8>', args[1].map(r => vectorize(r))),
+                  transaction.pure.vector('vector<u8>', args[2].map(s => vectorize(s))),
+                  transaction.pure.vector('vector<u8>', args[3].map(exe => vectorize(exe))),
+                  transaction.pure.u64(BigNumber.from(args[4]).toHexString()),
+                  transaction.object(METADATA[contractAddr].accessConfig),
+                  transaction.object(METADATA[contractAddr].treasuryCapManager),
+                  transaction.object(METADATA[contractAddr].storeA),
+                  transaction.object(METADATA[contractAddr].storeP),
+                  transaction.object(METADATA[contractAddr].storeR),
+                  transaction.object('0x6'),
                 ]
               } else if (prop === 'proposeBurn') {
                 const coinList = await that._pickCoinObjects(tokenAddr, utils.parseUnits(req.value, tokenDecimals))
                 payload.typeArguments = [tokenAddr]
                 payload.arguments = [
-                  txb.pure(vectorize(reqId)),
-                  txb.makeMoveVec({ objects: coinList.map(obj => txb.object(obj.coinObjectId)) }),
-                  txb.object(METADATA[contractAddr].storeA),
-                  txb.object(METADATA[contractAddr].storeR),
-                  txb.object('0x6'),
+                  transaction.pure('vector<u8>', vectorize(reqId)),
+                  transaction.makeMoveVec({ elements: coinList.map(obj => transaction.object(obj.coinObjectId)) }),
+                  transaction.object(METADATA[contractAddr].storeA),
+                  transaction.object(METADATA[contractAddr].storeR),
+                  transaction.object('0x6'),
                 ]
               } else if (prop === 'executeBurn') {
                 payload.typeArguments = [tokenAddr]
                 payload.arguments = [
-                  txb.pure(vectorize(reqId)),
-                  txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[1].map(r => vectorize(r)))),
-                  txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[2].map(s => vectorize(s)))),
-                  txb.pure(bcs.vector(bcs.vector(bcs.u8())).serialize(args[3].map(exe => vectorize(exe)))),
-                  txb.pure(BigNumber.from(args[4]).toHexString()),
-                  txb.object(METADATA[contractAddr].accessConfig),
-                  txb.object(METADATA[contractAddr].treasuryCapManager),
-                  txb.object(METADATA[contractAddr].storeA),
-                  txb.object(METADATA[contractAddr].storeP),
-                  txb.object(METADATA[contractAddr].storeR),
-                  txb.object('0x6'),
+                  transaction.pure('vector<u8>', vectorize(reqId)),
+                  transaction.pure.vector('vector<u8>', args[1].map(r => vectorize(r))),
+                  transaction.pure.vector('vector<u8>', args[2].map(s => vectorize(s))),
+                  transaction.pure.vector('vector<u8>', args[3].map(exe => vectorize(exe))),
+                  transaction.pure.u64(BigNumber.from(args[4]).toHexString()),
+                  transaction.object(METADATA[contractAddr].accessConfig),
+                  transaction.object(METADATA[contractAddr].treasuryCapManager),
+                  transaction.object(METADATA[contractAddr].storeA),
+                  transaction.object(METADATA[contractAddr].storeP),
+                  transaction.object(METADATA[contractAddr].storeR),
+                  transaction.object('0x6'),
                 ]
               }
 
               console.log(payload)
-              txb.moveCall(payload)
+              transaction.moveCall(payload)
               const feat = signer.features['sui:signAndExecuteTransactionBlock']
-              const result = await feat.signAndExecuteTransactionBlock({ transactionBlock: txb })
+              const result = await feat.signAndExecuteTransactionBlock({
+                transactionBlock: transaction,
+                chain: 'sui:mainnet',
+              })
               return {
                 hash: result.digest,
-                wait: () => this._wrapSuiTx(result)
+                wait: () => result,
               }
             }
           }
