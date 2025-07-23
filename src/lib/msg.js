@@ -8,6 +8,9 @@ import { shortenAddress } from "./utils"
 
 const FreeResponsiblePeople = ['@phil_0']
 
+const REQ_FINISHED = 'REQ_FINISHED'
+const REQ_CANCELD = 'REQ_CANCELD'
+
 export const sendSignatureNotice = async (item) => {
   try {
     if (!item || !Object.keys(item.hash || {}).length) return
@@ -20,14 +23,27 @@ export const sendSignatureNotice = async (item) => {
     const signatureLength = signatures.length
     const noticeIsLpTransationText = getNoticeIsLpTransationText(item)
 
-    // All executed or cancelled, don't need to do anything
-    if (isStage2Finished(item.hash) && isStage1Finished(item.hash)) {
-      const signatureUsers = await getSignatureUsers(config)
-      const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, isFinished: true }
-      sendSignatureMsg({...msgInfoParams, reqId: item._id})
+    if (isCanceled(item.hash) && !isStage2Finished(item.hash)) {
       sendMsg({
-        message: `${swapInfo.msg}\n✅ EXECUTED`,
+        message: `${swapInfo.msg}\n↩️ CANCELLED`,
+        cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
+      })
+      return
+    }
+
+    if ((isStage2Finished(item.hash) && isStage1Finished(item.hash))) {
+      const signatureUsers = await getSignatureUsers(config)
+      const status = getFinishStatus(item.hash)
+      const msgInfoParams = { swapInfo, config, signLen: signatureLength, signatures, signatureUsers, status }
+      sendSignatureMsg({...msgInfoParams, reqId: item._id})
+      signatureLength >= config.requiredMinSignatures && sendMsg({
+        message: `${swapInfo.msg}\n${status === REQ_FINISHED ? `✅ EXECUTED` : `↩️ CANCELLED`}`,
         cacheId: `${item._id}:${MsgCacheType.NEED_EXECUTE}`
+      })
+
+      isCanceled(item.hash) && sendMsg({
+        message: `${swapInfo.msg}\n↩️ CANCELLED`,
+        cacheId: `${item._id}:${MsgCacheType.NEED_PROPOSE}`
       })
       return
     }
@@ -82,6 +98,22 @@ const isStage1Finished = (hash) => {
   return p1 && (c1 || e1)
 }
 
+const isCanceled = (hash) => {
+  const keys = Object.keys(hash)
+  const cancelLength = keys.filter(k => k[0] === 'c').length
+  const proposeLength = keys.filter(k => k[0] === 'p').length
+  if (cancelLength === proposeLength) {
+    return REQ_CANCELD
+  }
+}
+
+const getFinishStatus = (hash) => {
+  if (isCanceled(hash)) {
+    return REQ_CANCELD
+  }
+  return REQ_FINISHED
+}
+
 const isAllProposed = (hash) => {
   const { p1, p2 } = hash
   return p1 && p2
@@ -133,7 +165,7 @@ const formatSwapInfo = (reqId, tunnel) => {
   }
 }
 
-const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatures, signatureUsers, isFinished }) => {
+const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatures, signatureUsers, status }) => {
   const { requiredMinSignatures, signAddresses } = config
   const reachRequired = requiredMinSignatures <= signLen
   const { msg, url } = swapInfo
@@ -144,7 +176,8 @@ const getSignatureMsg = ({ swapInfo, config, signLen, externalText = '', signatu
     signatureUseText = `\n${signatureUseText}\n`
   }
   const requiredText = reachRequired ? 'Ready To Execute' : `${requiredMinSignatures} signatures required to execute${externalText}`
-  return `${msg}\n${linkText}${signatureUseText}\n${isFinished ? '✅ EXECUTED' : requiredText}`
+  const finishText = status === REQ_FINISHED ? '✅ EXECUTED' : '↩️ CANCELLED'
+  return `${msg}\n${linkText}${signatureUseText}\n${status ? finishText : requiredText}`
 }
 
 const getSignatureUseText = (signAddresses, signatures, signatureUsers, reachRequired) => {
