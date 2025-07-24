@@ -62,15 +62,8 @@ abstract contract ReqHelpers is Constants, SigVerifier {
         require(tokenAddr != address(0), ETokenAddressZero());
 
         uint8 decimals = tokenAddr == address(1) ? 18 : IERC20Metadata(tokenAddr).decimals();
-        if (decimals == 6) {
-            require(tokenIndex < 64, ETokenIndexRange());
-        } else if (decimals == 18) {
-            require(tokenIndex >= 64 && tokenIndex < 192, ETokenIndexRange());
-        } else {
-            require(tokenIndex >= 192, ETokenIndexRange());
-            $._tokenDecimals[tokenIndex] = decimals;
-        }
         $._tokens[tokenIndex] = tokenAddr;
+        $._tokenDecimals[tokenIndex] = decimals;
 
         emit TokenAdded(tokenIndex, tokenAddr);
     }
@@ -81,9 +74,7 @@ abstract contract ReqHelpers is Constants, SigVerifier {
         address tokenAddr = $._tokens[tokenIndex];
         require(tokenAddr != address(0), ETokenIndexNotExisted());
         delete $._tokens[tokenIndex];
-        if (tokenIndex >= 192) {
-            delete $._tokenDecimals[tokenIndex];
-        }
+        delete $._tokenDecimals[tokenIndex];
 
         emit TokenRemoved(tokenIndex, tokenAddr);
     }
@@ -107,13 +98,7 @@ abstract contract ReqHelpers is Constants, SigVerifier {
             if ($._tokens[i+1] != address(0)) {
                 supportedTokens[j] = $._tokens[i+1];
                 indexes[j] = i+1;
-                if (i+1 < 64) {
-                    decimals[j] = 6;
-                } else if (i+1 < 192) {
-                    decimals[j] = 18;
-                } else {
-                    decimals[j] = $._tokenDecimals[i+1];
-                }
+                decimals[j] = $._tokenDecimals[i+1];
                 j++;
             }
         }
@@ -154,16 +139,12 @@ abstract contract ReqHelpers is Constants, SigVerifier {
         amount = (uint256(reqId) >> 128) & 0xFFFFFFFFFFFFFFFF;
         require(amount > 0, EAmountZero());
         uint8 tokenIndex = uint8(uint256(reqId) >> 192);
-        if (tokenIndex >= 192) {
-            ReqHelpersStorage storage $ = _getReqHelpersStorage();
-            uint8 decimals = $._tokenDecimals[tokenIndex];
-            if (decimals > 6) {
-                amount *= 10 ** (decimals - 6);
-            } else {
-                amount /= 10 ** (6 - decimals);
-            }
-        } else if (tokenIndex >= 64) {
-            amount *= 1e12;
+        ReqHelpersStorage storage $ = _getReqHelpersStorage();
+        uint8 decimals = $._tokenDecimals[tokenIndex];
+        if (decimals > 6) {
+            amount *= 10 ** (decimals - 6);
+        } else {
+            amount /= 10 ** (6 - decimals);
         }
     }
 
