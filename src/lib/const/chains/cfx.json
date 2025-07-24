@@ -6,6 +6,8 @@
   "rpcUrl": "https://evm.confluxrpc.com",
   "explorerUrl": "https://evm.confluxscan.net",
   "tokens": {
+    "0x6963EfED0aB40F6C3d7BdA44A05dcf1437C44372": "USDC",
+    "0xfe97E85d13ABD9c1c33384E796F10B73905637cE": "USDT",
     "0x55eC3bF08A1D4C812cae1219216053A31e8BFfC9": "WUSD"
   },
   "hubId": 24
