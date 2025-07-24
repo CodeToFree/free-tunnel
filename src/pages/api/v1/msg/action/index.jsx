@@ -33,6 +33,8 @@ async function post(req, res) {
           await MsgCache.updateMany({ _id: { $gt: `${reqId}:` } }, { status: MsgCacheStatus.URGENT })
           // check immediately
           checkRequests([{ ...needSendMsg, status: MsgCacheStatus.URGENT }])
+        } else {
+          return formatErrorMsg(res, MsgErrorCode.MSG_SIGNATURES_REACH_REQUIRED)
         }
         res.json({ result: true })
       } else {
