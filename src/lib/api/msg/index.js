@@ -27,12 +27,6 @@ const fetcher = async (apiPath, method = 'GET', data) => {
     throw err
   }
 }
-export const MsgCacheType = {
-  NEED_PROPOSE: 'NEED_PROPOSE',
-  NEED_FREE_SIGNATURE: 'NEED_FREE_SIGNATURE',
-  NEED_PARTNER_SIGNATURE: 'NEED_PARTNER_SIGNATURE',
-  NEED_EXECUTE: 'NEED_EXECUTE',
-}
 
 export const sendMsg = async (params) => {
   try {
@@ -62,7 +56,7 @@ const sendNewMsg = async (params) => {
     return
   }
   try {
-    const res = await fetcher(`api/tg/message`, 'POST', {
+    const res = await sendMsgAPI({
       message,
       chat_id: chatId,
       message_thread_id: messageThreadId
@@ -85,6 +79,11 @@ const updateMsg = async (params, msgCache) => {
     })
     await MsgCache.updateOne({ _id: cacheId }, { message })
   }
+}
+
+export const sendMsgAPI = async (params) => {
+  const res = await fetcher(`api/tg/message`, 'POST', params)
+  return res
 }
 
 

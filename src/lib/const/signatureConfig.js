@@ -5,6 +5,8 @@ export const FREE_LP_ADDRESSES = [
 export const FREE_SIG_1 = '0x0014eb4ac6dd1473b258d088e6ef214b2bcdc53c'
 export const FREE_SIG_2 = '0x9e498dd03c5e984c105e83221aa911dec4844db5'
 
+export const FREE_SIGS = [FREE_SIG_1, FREE_SIG_2]
+
 export const SignatureTimesConfig = [
   {
     id: "solvbtc",

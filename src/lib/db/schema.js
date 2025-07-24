@@ -59,6 +59,7 @@ export const MsgCacheSchema = mongoose.Schema({
   chatId: String,
   messageId: Number,
   message: String,
+  status: String,
 })
 
 MsgCacheSchema.index({ expireTs: 1 }, { expireAfterSeconds: 0 })
