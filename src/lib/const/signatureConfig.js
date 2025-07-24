@@ -67,7 +67,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x4bd2cd70e77cd71fd79a4d0c5a63d88ba4fc2675', '0xb4daa52e4074931c4f297a5ab65a31f2678386bb']
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x4bd2cd70e77cd71fd79a4d0c5a63d88ba4fc2675', '0xb4daa52e4074931c4f297a5ab65a31f2678386bb'],
+    chatId: '-4556632259'
   },
   {
     id: "bedrock",
@@ -98,7 +99,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x74f3a237e2b70552c865b030eecdf2764b547fcc', '0x1ad81526616c01cb3da22497f1a8dac2ea67b5dc']
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x74f3a237e2b70552c865b030eecdf2764b547fcc', '0x1ad81526616c01cb3da22497f1a8dac2ea67b5dc'],
+    chatId: '-4752628954'
   },
   {
     id: "taker",
@@ -159,6 +161,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x6c318392621c9dab12c052a3e1d3b2f00b082301', '0x70b9c40dfb04f4036fc2b98065e9eb6e9ac38266'],
+    chatId: '-4605099572'
   },
   {
     id: "memecore",
@@ -181,7 +184,8 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x57d6a3de4ee808a3162c541c7d089e006f3969aa', '0x3b47b6a52e2c5bd4ca23ef7295af7c435e63fc92']
+    signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x57d6a3de4ee808a3162c541c7d089e006f3969aa', '0x3b47b6a52e2c5bd4ca23ef7295af7c435e63fc92'],
+    chatId: '-4695271255'
   },
   {
     id: "ubtc",
