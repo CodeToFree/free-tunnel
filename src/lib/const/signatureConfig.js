@@ -12,14 +12,14 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x32369c32113d6a85d4b71faa40ddd048187dce79', '0xcd6d31668524598755b81a2cee068ae2ea6979b9'],
-    chatId: '-4177551452',
+    chatId: ['-4177551452'],
   },
   {
     id: "solvbtc.m",
     freeSignatures: 1,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    chatId: '-4177551452',
+    chatId: ['-4177551452', '-4138337624'],
     signAddresses: [FREE_SIG_1, '0x32369c32113d6a85d4b71faa40ddd048187dce79', '0xcd6d31668524598755b81a2cee068ae2ea6979b9', '0xde498b6179500eb95d48a47f315e473a39cbc1aa'],
   },
   {
@@ -27,7 +27,7 @@ export const SignatureTimesConfig = [
     freeSignatures: 2,
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
-    chatId: '-4177551452',
+    chatId: ['-4177551452'],
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x32369c32113d6a85d4b71faa40ddd048187dce79', '0xcd6d31668524598755b81a2cee068ae2ea6979b9'],
   },
   {
@@ -36,7 +36,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: [FREE_SIG_1, '0x4d9eb5be0ae58d5a6c32a816702d89af8ae7a096', '0xb16c8fbf12a56b391dd248543affc0ca0c02c3a5'],
-    chatId: '-4138337624'
+    chatId: ['-4138337624']
   },
   {
     id: "merlin",
@@ -44,7 +44,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: [FREE_SIG_1, '0x4d9eb5be0ae58d5a6c32a816702d89af8ae7a096', '0xb16c8fbf12a56b391dd248543affc0ca0c02c3a5'],
-    chatId: '-4138337624'
+    chatId: ['-4138337624']
   },
   {
     id: "pump",
@@ -52,7 +52,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: [FREE_SIG_2, '0xbfce4653cc71bfd6293faca6bad988e8d72f0497', '0xc9c5bd2ecf73d6975b567337aaf0134cc962722e'],
-    chatId: '-4237721398'
+    chatId: ['-4237721398']
   },
   {
     id: "pumpbtc",
@@ -60,7 +60,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: ['0x62fe55a5a59a0382aa16388077105771bd327a68', '0x48c2c935363339dabb53a14f9626a8426e1ac162', '0x9dbc04ade3be3aefdb4aecdb451942e41ae841a2'],
-    chatId: '-4237721398'
+    chatId: ['-4237721398']
   },
   {
     id: "neox",
@@ -68,7 +68,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x4bd2cd70e77cd71fd79a4d0c5a63d88ba4fc2675', '0xb4daa52e4074931c4f297a5ab65a31f2678386bb'],
-    chatId: '-4556632259'
+    chatId: ['-4556632259']
   },
   {
     id: "bedrock",
@@ -76,7 +76,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_2, '0xde9a5ab522959091d07d022d4c8922b63d9ada0c', '0xa5ed5aa26d95a11c33e2a3650a2c9dc6ca00375c', '0xda084147eee60866c5487e1f7464a5b1c559bc03'],
-    chatId: '-4744097890'
+    chatId: ['-4744097890']
   },
   {
     id: "unibtc",
@@ -84,7 +84,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_2, '0xde9a5ab522959091d07d022d4c8922b63d9ada0c', '0xa5ed5aa26d95a11c33e2a3650a2c9dc6ca00375c', '0xda084147eee60866c5487e1f7464a5b1c559bc03'],
-    chatId: '-4744097890'
+    chatId: ['-4744097890']
   },
   {
     id: "b2",
@@ -92,7 +92,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: ['0xf860b08ca3ee77c6c9ef5a08aa7636aa37963153', '0x8f3c6735152074e4ce2b31bba8b48f128998d76d', '0xc7f261b3660ce3d052f27a55f8c81dc67d841ed2'],
-    chatId: "-4106885870"
+    chatId: ["-4106885870"]
   },
   {
     id: "exsat",
@@ -100,7 +100,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x74f3a237e2b70552c865b030eecdf2764b547fcc', '0x1ad81526616c01cb3da22497f1a8dac2ea67b5dc'],
-    chatId: '-4752628954'
+    chatId: ['-4752628954']
   },
   {
     id: "taker",
@@ -108,7 +108,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x294d04731908d5d1c3fdd0b1d752905472e667bb', '0xcb7762b41379cca8c5cc3213f3ef9d000afbe3ae'],
-    chatId: '-4609352134',
+    chatId: ['-4609352134'],
   },
   {
     id: "taker-evm",
@@ -116,7 +116,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x294d04731908d5d1c3fdd0b1d752905472e667bb', '0xcb7762b41379cca8c5cc3213f3ef9d000afbe3ae'],
-    chatId: '-4609352134',
+    chatId: ['-4609352134'],
   },
   {
     id: "fbtc",
@@ -131,7 +131,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xdea32f54823e9feedaf17fe113e817735d3e87e0', '0xcdecac75c4fbb33c47510c1c1e70c8e88b7b597a'],
-    chatId: '-4609258594'
+    chatId: ['-4609258594']
   },
   {
     id: "merl",
@@ -139,7 +139,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: [FREE_SIG_1, '0x4d9eb5be0ae58d5a6c32a816702d89af8ae7a096', '0xb16c8fbf12a56b391dd248543affc0ca0c02c3a5'],
-    chatId: '-4138337624'
+    chatId: ['-4138337624']
   },
   {
     id: "stbtc",
@@ -161,7 +161,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x6c318392621c9dab12c052a3e1d3b2f00b082301', '0x70b9c40dfb04f4036fc2b98065e9eb6e9ac38266'],
-    chatId: '-4605099572'
+    chatId: ['-4605099572']
   },
   {
     id: "memecore",
@@ -169,7 +169,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xe486bf9858f8b995d4bde291c43eb35d94546764', '0xa031e792e26193a3a16c16993b611ff5b3bbdc8f'],
-    chatId: '-4886127651'
+    chatId: ['-4886127651']
   },
   {
     id: "m",
@@ -177,7 +177,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0xe486bf9858f8b995d4bde291c43eb35d94546764', '0xa031e792e26193a3a16c16993b611ff5b3bbdc8f'],
-    chatId: '-4886127651'
+    chatId: ['-4886127651']
   },
   {
     id: "avalon",
@@ -185,7 +185,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 3,
     maxSignatureCount: 4,
     signAddresses: [FREE_SIG_1, FREE_SIG_2, '0x57d6a3de4ee808a3162c541c7d089e006f3969aa', '0x3b47b6a52e2c5bd4ca23ef7295af7c435e63fc92'],
-    chatId: '-4695271255'
+    chatId: ['-4695271255']
   },
   {
     id: "ubtc",
@@ -193,7 +193,7 @@ export const SignatureTimesConfig = [
     requiredMinSignatures: 2,
     maxSignatureCount: 3,
     signAddresses: ['0xf860b08ca3ee77c6c9ef5a08aa7636aa37963153', '0x8f3c6735152074e4ce2b31bba8b48f128998d76d', '0xc7f261b3660ce3d052f27a55f8c81dc67d841ed2'],
-    chatId: "-4106885870"
+    chatId: ["-4106885870"]
   },
 ];
 

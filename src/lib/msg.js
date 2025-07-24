@@ -100,11 +100,14 @@ const sendSignatureMsg = async (msgInfoParams) => {
     })
   }
 
-  !!config.chatId && sendMsg({
-    message: getSignatureMsg(msgInfoParams),
-    chatId: config.chatId,
-    messageThreadId: config.messageThreadId,
-    cacheId: `${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
+  config.chatId?.map((id, index) => {
+    const [chatId, messageThreadId] = id.split(':')
+    sendMsg({
+      message: getSignatureMsg(msgInfoParams),
+      chatId,
+      messageThreadId,
+      cacheId: `${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}:${index}`
+    })
   })
 }
 
