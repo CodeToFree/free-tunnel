@@ -58,12 +58,15 @@ export default function useNonEthersWallets(addToast) {
 
   const connect = React.useCallback(async (nonEvmChain) => {
     if (nonEvmChain === 'sui') {
-      const suiWallets = getSuiWallets().get().filter(w => (
+      const detected = getSuiWallets().get().filter(w => (
         'standard:connect' in w.features &&
         'standard:events' in w.features &&
-        'sui:signAndExecuteTransactionBlock' in w.features &&
-        ['Martian Sui Wallet'].includes(w.name)
+        'sui:signAndExecuteTransactionBlock' in w.features
       ))
+
+      const suiWallets = ['OKX Wallet', 'Martian Sui Wallet', 'Slush']
+        .map(name => detected.find(w => w.name === name))
+        .filter(Boolean)
 
       if (!suiWallets.length) {
         addToast({ type: 'error', content: 'No Sui wallet installed.' })
