@@ -43,7 +43,14 @@ export const sendMsg = async (params) => {
 }
 
 const sendNewMsg = async (params) => {
-  const { message, chatId = CHAT_ID, messageThreadId, cacheId } = params
+  const { message, cacheId } = params
+  let chatId = params.chatId
+  let messageThreadId = params.messageThreadId
+  if (!chatId) {
+    const [chat_id, message_thread_id] = CHAT_ID.split(':')
+    chatId = chat_id
+    messageThreadId = message_thread_id
+  }
   try {
     await MsgCache.create({
       _id: cacheId,
