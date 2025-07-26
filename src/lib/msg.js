@@ -1,8 +1,9 @@
-import { MsgCacheType, sendMsg } from "./api/msg"
-import { CHAT_ID } from "./const"
+import { sendMsg } from "./api/msg"
+import { CHAT_ID, NODE_ENV } from "./const"
 import { defaultTokens } from "./const/defaultTokens"
-import { FREE_LP_ADDRESSES, getSignatureTimesConfig } from "./const/signatureConfig"
-import { SignatureUser } from "./db"
+import { MsgCacheStatus, MsgCacheType } from "./const/msg"
+import { FREE_LP_ADDRESSES, FREE_SIGS, getSignatureTimesConfig } from "./const/signatureConfig"
+import { MsgCache, SignatureUser } from "./db"
 import { parseRequest } from "./request"
 import { shortenAddress } from "./utils"
 
@@ -72,6 +73,7 @@ export const sendSignatureNotice = async (item) => {
       sendSignatureMsg({...msgInfoParams, reqId: item._id})
     }
 
+    checkUrgentStatus(item, config)
     // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({
@@ -215,4 +217,20 @@ const getUrl = (parsedValue, tunnel) => {
 const getIsUnlock = (parsedValue) => {
   const type = parsedValue.actionId & 0x0f
   return type === SwapType.BURN_UNLOCK
+}
+
+const checkUrgentStatus = async (item, config) => {
+  const reqId = item._id
+  const msgCache = await MsgCache.findOne({
+    _id: `${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
+  }).lean()
+  if (msgCache && msgCache.status !== MsgCacheStatus.URGENT) {
+    return
+  }
+  
+  const needPartnerSignLen = config.requiredMinSignatures - config.freeSignatures
+  const partnerSignedAddresses = item.signatures.map(s => s.exe).filter(a => !FREE_SIGS.includes(a))
+  if (needPartnerSignLen <= partnerSignedAddresses.length) {
+    await MsgCache.updateMany({ _id: { $gt: `${reqId}:` } }, { status: MsgCacheStatus.PARTNER_FINISHED })
+  }
 }
