@@ -29,7 +29,7 @@ export const checkRequests = async (needSendMsgs) => {
     const tunnel = tunnels.find(t => t.name === req.channel)
     const config = SignatureTimesConfig.find(c => c.id === tunnel._id)
     if (!config) return
-    const unsignedAddress = config.signAddresses.filter(a => ![...FREE_SIGS, ...req.signatures.map(s => s.exe)].includes(a))
+    const unsignedAddress = config.signAddresses.filter(a => ![...FREE_SIGS, ...req.signatures.map(s => s.exe?.toLowerCase())].includes(a))
     const [chat_id, message_thread_id] = m.chatId.split(':')
     sendMsgAPI({
       message: `👆 Please SIGN\n${unsignedAddress.map(a => {

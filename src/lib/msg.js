@@ -231,7 +231,7 @@ const checkUrgentStatus = async (item, config) => {
   }
   
   const needPartnerSignLen = config.requiredMinSignatures - config.freeSignatures
-  const partnerSignedAddresses = item.signatures.map(s => s.exe).filter(a => !FREE_SIGS.includes(a))
+  const partnerSignedAddresses = item.signatures.map(s => s.exe).filter(a => !FREE_SIGS.includes(a.toLowerCase()))
   const isFinished = (isStage2Finished(item.hash) && isStage1Finished(item.hash))
   if (needPartnerSignLen <= partnerSignedAddresses.length || isFinished) {
     await MsgCache.updateMany({ _id: { $gt: `${reqId}:` } }, { status: MsgCacheStatus.PARTNER_FINISHED })
