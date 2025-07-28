@@ -66,7 +66,7 @@ const { deployContract } = require('./lib')
 module.exports = async function deployHub() {
   await hre.run('compile')
 
-  const chainConfig = require(`../src/lib/const/chains/${hre.network.name}.json`)
+  const chainConfig = require(`../chains/${hre.network.name}.json`)
   const impl = await deployContract('FreeTunnelHub', [], { nonce: 0 })
 
   const data = impl.interface.encodeFunctionData('initialize', [chainConfig.hubId])
