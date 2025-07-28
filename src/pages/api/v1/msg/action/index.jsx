@@ -24,7 +24,7 @@ async function post(req, res) {
         if (!config) return formatErrorMsg(res, MsgErrorCode.MSG_CONFIG_NOT_FOUND)
   
         const needPartnerSignLength = config.requiredMinSignatures - config.freeSignatures
-        const partnerSigned = reqItem.signatures.map(s => s.exe).filter(s => !FREE_SIGS.includes(s))
+        const partnerSigned = reqItem.signatures.map(s => s.exe).filter(s => !FREE_SIGS.includes(s.toLowerCase()))
     
         if (needPartnerSignLength > partnerSigned.length) {
           const needSendMsg = await MsgCache.find({ _id: { $regex: `^${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}` } }).lean()
