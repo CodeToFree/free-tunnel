@@ -29,8 +29,8 @@ async function post(req, res) {
         if (needPartnerSignLength > partnerSigned.length) {
           const needSendMsg = await MsgCache.find({ _id: { $regex: `^${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}` } }).lean()
           if (!needSendMsg || !needSendMsg.length) return formatErrorMsg(res, MsgErrorCode.MSG_PARTNER_SIGNATURE_MSG_NOT_FOUND)
-  
-          await MsgCache.updateMany({ _id: { $gt: `${reqId}:` } }, { status: MsgCacheStatus.URGENT })
+          
+          await MsgCache.updateMany({ _id: { $gt: `${reqId}:`, $lt: `${reqId}:~` } }, { status: MsgCacheStatus.URGENT })
           // check immediately
           checkRequests(needSendMsg.map(m => ({ ...m, status: MsgCacheStatus.URGENT })))
         } else {
