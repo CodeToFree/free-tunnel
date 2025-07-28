@@ -44,7 +44,7 @@ export const checkRequests = async (needSendMsgs) => {
         reply_to_message_id: m.messageId
       })
     } else {
-      await MsgCache.updateMany({ _id: { $regex: `^${reqId}:` } }, { status: MsgCacheStatus.PARTNER_FINISHED })
+      await MsgCache.updateMany({ _id: { $gt: `${reqId}:`, $lt: `${reqId}:~` } }, { status: MsgCacheStatus.PARTNER_FINISHED })
     }
   }))
 }
