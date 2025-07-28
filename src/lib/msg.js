@@ -24,6 +24,8 @@ export const sendSignatureNotice = async (item) => {
     const signatureLength = signatures.length
     const noticeIsLpTransationText = getNoticeIsLpTransationText(item)
 
+    checkUrgentStatus(item, config)
+
     if (isCanceled(item.hash) && !isStage2Finished(item.hash)) {
       sendMsg({
         message: `${swapInfo.msg}\n↩️ CANCELLED`,
@@ -73,7 +75,6 @@ export const sendSignatureNotice = async (item) => {
       sendSignatureMsg({...msgInfoParams, reqId: item._id})
     }
 
-    checkUrgentStatus(item, config)
     // need to be executed
     if (signatureLength >= config.requiredMinSignatures) {
       sendMsg({
@@ -222,15 +223,17 @@ const getIsUnlock = (parsedValue) => {
 const checkUrgentStatus = async (item, config) => {
   const reqId = item._id
   const msgCache = await MsgCache.findOne({
-    _id: `${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}`
+    _id: { $regex: `^${reqId}:${MsgCacheType.NEED_PARTNER_SIGNATURE}` },
+    status: MsgCacheStatus.URGENT
   }).lean()
-  if (msgCache && msgCache.status !== MsgCacheStatus.URGENT) {
+  if (!msgCache) {
     return
   }
   
   const needPartnerSignLen = config.requiredMinSignatures - config.freeSignatures
   const partnerSignedAddresses = item.signatures.map(s => s.exe).filter(a => !FREE_SIGS.includes(a))
-  if (needPartnerSignLen <= partnerSignedAddresses.length) {
+  const isFinished = (isStage2Finished(item.hash) && isStage1Finished(item.hash))
+  if (needPartnerSignLen <= partnerSignedAddresses.length || isFinished) {
     await MsgCache.updateMany({ _id: { $gt: `${reqId}:` } }, { status: MsgCacheStatus.PARTNER_FINISHED })
   }
 }
