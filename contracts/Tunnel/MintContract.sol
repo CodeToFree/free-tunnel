@@ -145,6 +145,8 @@ abstract contract MintContract is Permissions, ReqHelpers {
         uint256 amount = _amountFrom(reqId);
         address tokenAddr = _tokenFrom(reqId);
 
+        IERC20(tokenAddr).approve(address(this), amount);
+
         (bool success, bytes memory data) = tokenAddr.call(abi.encodeWithSelector(BURN_SELECTOR, address(this), amount));
         if (success) {
             require(data.length == 0 || abi.decode(data, (bool)), EBurnFailed());
